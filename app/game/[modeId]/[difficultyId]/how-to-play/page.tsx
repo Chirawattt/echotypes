@@ -61,8 +61,7 @@ export default function HowToPlayPage() {
 
 
     const handlePlayGame = () => {
-        console.log(`Starting game: Mode ${modeId}, Difficulty ${difficultyId}`);
-        alert(`Starting game: Mode ${modeId}, Difficulty ${difficultyId}`);
+        router.push(`/game/${modeId}/${difficultyId}/play`);
     };
 
     const checkScrollPosition = () => {
@@ -79,26 +78,13 @@ export default function HowToPlayPage() {
             // Calculate maxHeight based on the first VISIBLE_CARDS items
             const firstCard = container.children[0] as HTMLElement;
             if (firstCard) {
-                const cardStyle = window.getComputedStyle(firstCard);
-                const cardMarginTop = parseFloat(cardStyle.marginTop);
-                const cardMarginBottom = parseFloat(cardStyle.marginBottom);
-                const cardHeightWithMargins = firstCard.offsetHeight + cardMarginTop + cardMarginBottom;
-
                 // Get container's vertical padding
                 const containerStyle = window.getComputedStyle(container);
                 const containerPaddingTop = parseFloat(containerStyle.paddingTop);
                 const containerPaddingBottom = parseFloat(containerStyle.paddingBottom);
 
-
-                // Calculate total height for VISIBLE_CARDS, considering spacing between cards
-                // The space-y utility adds margin-top to subsequent children.
-                // So, for N cards, there are N-1 such spacings.
-                // However, the `space-y` class applies margin to all but the first child.
-                // A simpler approach is to sum heights of first N cards if they are similar.
-                // For a more robust solution if card heights vary significantly, this might need adjustment.
-
                 let calculatedHeight = 0;
-                let cardsToMeasure = Math.min(steps.length, VISIBLE_CARDS);
+                const cardsToMeasure = Math.min(steps.length, VISIBLE_CARDS);
                 for (let i = 0; i < cardsToMeasure; i++) {
                     const child = container.children[i] as HTMLElement;
                     if (child) {
@@ -115,7 +101,6 @@ export default function HowToPlayPage() {
                     calculatedHeight -= parseFloat(lastCardStyle.marginBottom);
                 }
 
-
                 setScrollContainerMaxHeight(calculatedHeight + containerPaddingTop + containerPaddingBottom);
             }
 
@@ -123,28 +108,18 @@ export default function HowToPlayPage() {
             checkScrollPosition(); // Initial check
             return () => container.removeEventListener("scroll", checkScrollPosition);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps]); // Rerun when steps change
 
     useEffect(() => {
         setCanScroll(steps.length > VISIBLE_CARDS);
         checkScrollPosition(); // Re-check scroll position if steps or visibility changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps, scrollContainerMaxHeight]);
 
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-8 sm:pt-12 px-4 pb-16">
-            {/* Navbar */}
-            <nav className="absolute top-0 left-0 w-full p-4 sm:p-6 flex justify-center items-center">
-                <div
-                    onClick={() => router.push('/')}
-                    className="text-2xl sm:text-3xl font-bold cursor-pointer opacity-55 hover:opacity-100 transition-all duration-300"
-                    style={{ fontFamily: "'Caveat Brush', cursive" }}
-                    title="Go to Home Page"
-                    aria-label="Home Page"
-                >
-                    EchoTypes
-                </div>
-            </nav>
+        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-8 sm:pt-12 px-4">
 
             {/* Page Title */}
             <motion.div
@@ -153,13 +128,13 @@ export default function HowToPlayPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-full max-w-xl lg:max-w-7xl px-4 mt-20 sm:mt-24 mb-8 sm:mb-10" // Existing class
             >
-                <h2 className="text-4xl text-center opacity-80 font-bold" style={{ fontFamily: "'Caveat Brush', cursive" }}>How to Play the Game.</h2>
+                <h2 className="text-5xl text-center opacity-80" style={{ fontFamily: "'Caveat Brush', cursive" }}>How to Play the Game.</h2>
             </motion.div >
 
             {/* Scrollable How to Play Steps Container */}
             <div
                 ref={scrollContainerRef}
-                className="w-full max-w-4xl space-y-10 sm:space-y-12 px-2 sm:px-0 overflow-y-auto custom-scrollbar" // Existing classes + overflow & scrollbar
+                className="w-full max-w-4xl space-y-10 sm:space-y-12 pl-2 pr-6 sm:pl-0 sm:pr-4 overflow-y-auto custom-scrollbar-preline snap-y snap-mandatory scroll-smooth flex-grow" // Existing classes + overflow & scrollbar
                 style={scrollContainerMaxHeight !== undefined ? { maxHeight: `${scrollContainerMaxHeight}px` } : {}} // Dynamic maxHeight
             >
                 {steps.map((step, index) => (
@@ -169,7 +144,7 @@ export default function HowToPlayPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: index * 0.15 + 0.4 }}
                         // Existing card classes - ensure they are consistent with your original design
-                        className="flex items-center space-x-4 sm:space-x-6 relative border border-neutral-700 bg-neutral-800 p-4 sm:p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+                        className="flex items-center space-x-4 sm:space-x-6 relative border border-neutral-700 bg-neutral-800 p-4 sm:p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 snap-start" // Added snap-start
                     >
                         {/* Step Number */}
                         <div
@@ -202,25 +177,35 @@ export default function HowToPlayPage() {
                 ))}
             </div>
 
-            {/* Arrow Down and Play Button */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: steps.length * 0.15 + 0.6 }} // Adjusted delay
-                className="mt-6 flex flex-col items-center"
-            >
-                {canScroll && !isAtBottom && ( // Show arrow if can scroll and not at the bottom
-                    <FaChevronDown className="text-3xl text-white/50 mb-6 sm:mb-8 animate-bounce" />
-                )}
-                <Button
-                    onClick={handlePlayGame}
-                    className="bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-3 px-8 sm:py-4 sm:px-10 rounded-full text-xl sm:text-2xl shadow-lg transition-all duration-200 flex items-center space-x-2 group"
-                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+            {/* Footer: Arrow Down and Play Button */}
+            <div className="relative w-full mt-auto pt-8 pb-10 flex flex-col items-center">
+                {/* Animated Scroll Down Arrow */}
+                <motion.div
+                    animate={{ opacity: canScroll && !isAtBottom ? 1 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute top-[-10px]"
                 >
-                    <span>Play</span>
-                    <FaPlay className="text-red-500 text-lg group-hover:scale-110 transition-transform" />
-                </Button>
-            </motion.div>
+                    <FaChevronDown className="text-3xl text-white/50 animate-bounce" />
+                </motion.div>
+
+                {/* Play Button */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                    <Button
+                        onClick={handlePlayGame}
+                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-6 px-10 rounded-lg text-2xl transition-all 
+                        duration-300 ease-in-out shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/40 flex items-center 
+                         transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 cursor-pointer"
+                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                    >
+                        <span>เริ่มเล่น</span>
+                        <FaPlay className="text-white text-base transition-transform duration-300 group-hover:scale-110" />
+                    </Button>
+                </motion.div>
+            </div>
         </main>
     );
 }

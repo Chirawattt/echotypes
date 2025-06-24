@@ -2,6 +2,9 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { FaClock } from "react-icons/fa";
+
 // Define a type for difficulty levels
 interface DifficultyLevel {
     id: string;
@@ -9,37 +12,34 @@ interface DifficultyLevel {
     description: string;
     limitWords: number; // Limit words for the difficulty level
     highScore: number; // High score for the difficulty level
+    time?: { minutes: number; seconds: number };
 }
 
 // Define available difficulty levels (example)
-const difficultyLevels: DifficultyLevel[] = [
+const baseDifficultyLevels: Omit<DifficultyLevel, 'highScore' | 'time'>[] = [
     {
         id: "easy",
         name: "Easy",
-        description: "คำศัพท์สั้นๆ, คำที่ใช้บ่อยในชีวิตประจำวัน, ความเร็วในการป้อนข้อมูลช้าลง (ถ้ามีจับเวลา), มีคำใบ้ให้ง่ายขึ้นdddddddddddddddddddddddddddddd",
+        description: "คำศัพท์สั้นๆ, คำที่ใช้บ่อยในชีวิตประจำวัน, ความเร็วในการป้อนข้อมูลช้าลง (ถ้ามีจับเวลา), มีคำใบ้ให้ง่ายขึ้น",
         limitWords: 25,
-        highScore: 0
     },
     {
         id: "medium",
         name: "Medium",
         description: "คำศัพท์ที่ใช้บ่อยในชีวิตประจำวัน, ความเร็วในการป้อนข้อมูลปานกลาง, มีคำใบ้ให้ง่ายขึ้น",
         limitWords: 50,
-        highScore: 0
     },
     {
         id: "hard",
         name: "Hard",
         description: "คำศัพท์ที่ยากขึ้น, ความเร็วในการป้อนข้อมูลสูงขึ้น, ไม่มีคำใบ้",
         limitWords: 100,
-        highScore: 0
     },
     {
         id: "expert",
         name: "Expert",
         description: "คำศัพท์ที่ยากมาก, ความเร็วในการป้อนข้อมูลสูงสุด, ไม่มีคำใบ้",
         limitWords: 200,
-        highScore: 0
     }
 ];
 
@@ -47,36 +47,38 @@ export default function DifficultySelectedPage() {
     const router = useRouter();
     const params = useParams();
     const modeId = params.modeId as string;
+    const [difficultyLevels, setDifficultyLevels] = useState<DifficultyLevel[]>([]);
+
+    useEffect(() => {
+        const levelsWithScores = baseDifficultyLevels.map(level => {
+            const storedData = localStorage.getItem(`highScoreData_${modeId}_${level.id}`);
+            if (storedData) {
+                try {
+                    const data = JSON.parse(storedData);
+                    return { ...level, highScore: data.score || 0, time: data.time };
+                } catch (e) {
+                    console.error(`Failed to parse high score for ${level.id}`, e);
+                }
+            }
+            return { ...level, highScore: 0 };
+        });
+        setDifficultyLevels(levelsWithScores);
+    }, [modeId]);
 
     const handleSelectDifficulty = (difficultyId: string) => {
-        console.log(`Selected difficulty: ${difficultyId}`);
         // Navigate to the actual game screen
         router.push(`/game/${modeId}/${difficultyId}/how-to-play`); // Example route
-        alert(`Selected difficulty: ${difficultyId}`);
     };
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-8 sm:pt-12 px-4 pb-16">
-            {/* Navbar */}
-            <nav className="absolute top-0 left-0 w-full p-4 sm:p-6 flex justify-center items-center">
-                <div
-                    onClick={() => router.push('/')}
-                    className="text-2xl sm:text-3xl font-bold cursor-pointer opacity-55 hover:opacity-100 transition-all duration-300"
-                    style={{ fontFamily: "'Caveat Brush', cursive" }}
-                    title="Go to Home Page"
-                    aria-label="Home Page"
-                >
-                    EchoTypes
-                </div>
-            </nav>
-
+        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-10 px-4">
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-full max-w-xl lg:max-w-7xl px-4 mt-20 sm:mt-24 mb-8 sm:mb-10" // Adjusted margins
             >
-                <h2 className="text-4xl text-left opacity-80 font-bold" style={{ fontFamily: "'Caveat Brush', cursive" }}>Difficulty Level</h2>
+                <h2 className="text-5xl text-center opacity-80" style={{ fontFamily: "'Caveat Brush', cursive" }}>Difficulty Level</h2>
             </motion.div >
 
             {/* Difficulty Cards List */}
@@ -102,7 +104,7 @@ export default function DifficultySelectedPage() {
                                 {/* Left Side: Level Name and Description */}
                                 <div className="flex-1 pr-4">
                                     <h3
-                                        className="text-4xl sm:text-5xl text-white/90 mb-2 font-bold"
+                                        className="text-4xl sm:text-5xl text-white/90 mb-2"
                                         style={{ fontFamily: "'Caveat Brush', cursive" }}
                                     >
                                         {level.name}
@@ -120,6 +122,14 @@ export default function DifficultySelectedPage() {
                                     <p className="text-3xl sm:text-4xl text-amber-400 font-bold" style={{ fontFamily: "'Caveat Brush', cursive" }}>
                                         {level.highScore}
                                     </p>
+                                    {level.time && (
+                                        <div className="flex items-center justify-end mt-1 text-sm text-amber-200/80" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                            <FaClock className="mr-1.5" />
+                                            <span>
+                                                {String(level.time.minutes).padStart(2, '0')}m :{String(level.time.seconds).padStart(2, '0')}s
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>

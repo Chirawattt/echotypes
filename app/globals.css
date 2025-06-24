@@ -112,6 +112,23 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+
+/* สไตล์สำหรับ Firefox */
+
+.custom-scrollbar-preline::-webkit-scrollbar {
+  width: 10px; /* ความกว้างของ scrollbar */
+  height: 10px; /* ความสูงของ scrollbar */
+}
+.custom-scrollbar-preline::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9; /* สีของ thumb */
+  border-radius: 4px; /* มุมโค้งของ thumb */
+}
+.custom-scrollbar-preline::-webkit-scrollbar-track {
+  background-color: #272727; /* สีของ track */
+  border-radius: 4px; /* มุมโค้งของ track */
+}
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -122,29 +139,3 @@
 }
 
 
-/* Custom Scrollbar for Webkit browsers (Chrome, Safari, Edge new) */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 10px; /* Width of the scrollbar */
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #1f1f1f; /* Darker background for the track, slightly lighter than pure black */
-  border-radius: 10px; /* Rounded corners for the track */
-  margin-block: 4px; /* Adds a little space at the top and bottom of the track */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4a4a4a; /* A medium gray for the thumb, visible on dark backgrounds */
-  border-radius: 10px; /* Rounded corners for the thumb */
-  border: 2px solid #1f1f1f; /* Creates a border effect around the thumb, same color as track */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #6a6a6a; /* Lighter gray on hover for better interactivity */
-}
-
-/* Custom Scrollbar for Firefox */
-.custom-scrollbar {
-  scrollbar-width: thin; /* "auto" or "thin" */
-  scrollbar-color: #4a4a4a #1f1f1f; /* thumb color track color */
-}

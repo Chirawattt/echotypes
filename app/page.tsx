@@ -35,7 +35,7 @@ export default function Home() {
         initial={{ opacity: 0, y: 50 }} // Changed y to 50 for upward animation
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="text-center pb-5 md:pb-10" // Added padding-bottom
+        className="text-center mb-20" // Added padding-bottom
       >
         <button
           onClick={handleStartGame}

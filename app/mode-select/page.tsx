@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain } from "react-icons/fa"; // Added more icons for potential future modes
 import { Button } from "@/components/ui/button"; // Assuming you might want to use Shadcn Button later
 
+
 // Define a type for our game modes
 interface GameMode {
     id: string;
@@ -70,18 +71,7 @@ export default function ModeSelectPage() {
     const isLastMode = currentModeIndex === gameModes.length - 1;
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-8 sm:pt-12 px-4">
-            {/* Navbar */}
-            <nav className="absolute top-0 left-0 w-full p-4 sm:p-6 flex justify-center items-center">
-                <div
-                    onClick={() => router.push('/')}
-                    className="text-2xl sm:text-3xl font-bold cursor-pointer opacity-55 hover:opacity-100 transition-all duration-300" style={{ fontFamily: "'Caveat Brush', cursive" }}
-                    title="Go to Home Page" aria-label="Home Page"
-                >
-                    EchoTypes
-                </div>
-            </nav>
-
+        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-10 px-4">
             {/* Mode Selecting Title */}
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
@@ -89,7 +79,7 @@ export default function ModeSelectPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-full max-w-xl lg:max-w-7xl px-4 mt-20 sm:mt-24" // Increased top and bottom margin
             >
-                <h2 className="text-4xl text-left opacity-80" style={{ fontFamily: "'Caveat Brush', cursive", fontWeight: 700 }}>Mode Selecting</h2>
+                <h2 className="text-5xl text-center opacity-80" style={{ fontFamily: "'Caveat Brush', cursive" }}>Mode Selecting</h2>
             </motion.div>
 
             {/* Mode Carousel */}
@@ -101,7 +91,7 @@ export default function ModeSelectPage() {
                 className="flex flex-grow flex-col items-center justify-center w-full max-w-4xl"
             >
                 {/* Mode Name */}
-                <h3 className="text-4xl mb-5" style={{ fontFamily: selectedMode.fontFamily, fontWeight: 700 }}>
+                <h3 className="text-4xl mb-5" style={{ fontFamily: selectedMode.fontFamily }}>
                     {selectedMode.name}
                 </h3>
 
@@ -174,7 +164,7 @@ export default function ModeSelectPage() {
                     className="bg-red-500 hover:bg-red-600 text-white font-bold py-5 sm:py-7 px-10 sm:px-12 rounded-lg text-2xl transition-all shadow-lg hover:shadow-red-500/50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
                     style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                 >
-                    เริ่มโหมดนี้
+                    เลือกโหมดนี้
                 </Button>
             </motion.div>
         </main >
