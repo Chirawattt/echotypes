@@ -4,13 +4,14 @@ import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { FaClock } from "react-icons/fa";
+import { getDifficultyInfo } from "@/lib/words-new";
 
 // Define a type for difficulty levels
 interface DifficultyLevel {
     id: string;
     name: string;
+    level: string;
     description: string;
-    limitWords: number; // Limit words for the difficulty level
     highScore: number; // High score for the difficulty level
     time?: { minutes: number; seconds: number };
 }
@@ -18,28 +19,46 @@ interface DifficultyLevel {
 // Define available difficulty levels (example)
 const baseDifficultyLevels: Omit<DifficultyLevel, 'highScore' | 'time'>[] = [
     {
-        id: "easy",
-        name: "Easy",
-        description: "คำศัพท์สั้นๆ, คำที่ใช้บ่อยในชีวิตประจำวัน, ความเร็วในการป้อนข้อมูลช้าลง (ถ้ามีจับเวลา), มีคำใบ้ให้ง่ายขึ้น",
-        limitWords: 25,
+        id: "a1",
+        name: "A1 - Beginner",
+        level: "Beginner",
+        description: "คำศัพท์พื้นฐานที่ใช้ในชีวิตประจำวัน",
     },
     {
-        id: "medium",
-        name: "Medium",
-        description: "คำศัพท์ที่ใช้บ่อยในชีวิตประจำวัน, ความเร็วในการป้อนข้อมูลปานกลาง, มีคำใบ้ให้ง่ายขึ้น",
-        limitWords: 50,
+        id: "a2",
+        name: "A2 - Elementary",
+        level: "Elementary",
+        description: "เข้าใจประโยคและสำนวนที่ใช้บ่อย",
     },
     {
-        id: "hard",
-        name: "Hard",
-        description: "คำศัพท์ที่ยากขึ้น, ความเร็วในการป้อนข้อมูลสูงขึ้น, ไม่มีคำใบ้",
-        limitWords: 100,
+        id: "b1",
+        name: "B1 - Intermediate",
+        level: "Intermediate",
+        description: "สนทนาในหัวข้อที่คุ้นเคยและอธิบายความคิดได้",
     },
     {
-        id: "expert",
-        name: "Expert",
-        description: "คำศัพท์ที่ยากมาก, ความเร็วในการป้อนข้อมูลสูงสุด, ไม่มีคำใบ้",
-        limitWords: 200,
+        id: "b2",
+        name: "B2 - Upper-Intermediate",
+        level: "Upper-Intermediate",
+        description: "เข้าใจเนื้อหาที่ซับซ้อนและสนทนาได้อย่างเป็นธรรมชาติ",
+    },
+    {
+        id: "c1",
+        name: "C1 - Advanced",
+        level: "Advanced",
+        description: "ใช้ภาษาได้อย่างยืดหยุ่นและมีประสิทธิภาพในเชิงสังคมและวิชาการ",
+    },
+    {
+        id: "c2",
+        name: "C2 - Proficient",
+        level: "Proficient",
+        description: "เข้าใจทุกสิ่งที่ได้ยินหรืออ่านได้อย่างง่ายดาย",
+    },
+    {
+        id: "endless",
+        name: "Endless Mode",
+        level: "Endless",
+        description: "ท้าทายตัวเองกับคำศัพท์จากทุกระดับ A1-C2 แบบไม่มีที่สิ้นสุด",
     }
 ];
 
@@ -71,71 +90,144 @@ export default function DifficultySelectedPage() {
     };
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-10 px-4">
-            <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="w-full max-w-xl lg:max-w-7xl px-4 mt-20 sm:mt-24 mb-8 sm:mb-10" // Adjusted margins
-            >
-                <h2 className="text-5xl text-center opacity-80" style={{ fontFamily: "'Caveat Brush', cursive" }}>Difficulty Level</h2>
-            </motion.div >
+        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
+            {/* Simplified Background Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    animate={{
+                        rotate: 360
+                    }}
+                    transition={{
+                        duration: 30,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-full blur-xl"
+                />
+                <motion.div
+                    animate={{
+                        rotate: -360
+                    }}
+                    transition={{
+                        duration: 40,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-br from-red-500/5 to-orange-500/5 rounded-full blur-xl"
+                />
+            </div>
 
-            {/* Difficulty Cards List */}
-            <div className="w-full max-w-7xl space-y-8 px-7" > {/* Increased space-y for more gap */}
-                {
-                    difficultyLevels.map((level, index) => (
-                        <motion.div
-                            key={level.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: index * 0.1 + 0.3 }} // Added a bit more delay
-                            onClick={() => handleSelectDifficulty(level.id)}
-                            className="bg-neutral-800 p-6 sm:p-8 rounded-xl shadow-lg cursor-pointer hover:bg-neutral-700 transition-all duration-200 flex flex-col relative hover:scale-[1.02] active:scale-[1.01]" // Added relative for absolute positioning inside
+            {/* Simplified Title Section */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="w-full max-w-xl lg:max-w-7xl px-4 mt-10 sm:mt-14 mb-12 relative z-10"
+            >
+                <h2
+                    className="text-6xl text-center bg-gradient-to-r from-red-400 via-orange-400 to-red-500 bg-clip-text text-transparent mb-2 py-2"
+                    style={{ fontFamily: "'Caveat Brush', cursive" }}
+                >
+                    Choose Difficulty
+                </h2>
+                <p
+                    className="text-xl text-center text-neutral-300"
+                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                >
+                    เลือกระดับความยากที่เหมาะกับคุณ
+                </p>
+            </motion.div>
+
+            {/* Simplified Difficulty Cards */}
+            <div className="w-full max-w-6xl space-y-4 px-4 relative z-10">
+                {difficultyLevels.map((level, index) => (
+                    <motion.div
+                        key={level.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: index * 0.05 }}
+                        onClick={() => handleSelectDifficulty(level.id)}
+                        className="group cursor-pointer"
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                    >
+                        <div className={`relative p-6 rounded-2xl shadow-lg transition-all duration-200 backdrop-blur-sm border ${level.id === 'endless'
+                            ? 'bg-gradient-to-br from-purple-500/15 to-pink-500/10 border-purple-500/20 hover:from-purple-500/20 hover:to-pink-500/15'
+                            : 'bg-gradient-to-br from-white/8 to-white/4 border-white/15 hover:from-white/12 hover:to-white/8'
+                            } hover:shadow-xl`}
                         >
-                            {/* Limit Words - Absolute Positioned */}
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-500 px-3 py-1 rounded-md shadow-md">
-                                <p className="text-sm sm:text-base text-white font-semibold" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                    Max: {level.limitWords} words
-                                </p>
+                            {/* Simplified Word Count Badge */}
+                            <div className="absolute -top-2 left-6 space-x-3">
+                                <div
+                                    className={`px-2 py-1 rounded-full mb-2 text-xs ${level.id === 'endless'
+                                        ? 'hidden'
+                                        : 'bg-blue-500/85 text-white inline-block '
+                                        }`}
+                                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                >
+                                    {level.level}
+                                </div>
+                                <div
+                                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${level.id === 'endless'
+                                        ? 'bg-purple-600/80 text-purple-100'
+                                        : 'bg-red-500/80 text-white'
+                                        }`}
+                                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                >
+                                    {level.id === 'endless' ? '∞ Endless' : `${getDifficultyInfo(level.id)?.wordCount} คำ`}
+
+                                </div>
                             </div>
 
-                            <div className="flex w-full items-start justify-between mt-4"> {/* Changed items-center to items-start */}
-                                {/* Left Side: Level Name and Description */}
-                                <div className="flex-1 pr-4">
+                            <div className="flex w-full justify-between mt-3">
+                                {/* Left Side: Level Info */}
+                                <div className="flex-1 pr-6">
                                     <h3
-                                        className="text-4xl sm:text-5xl text-white/90 mb-2"
+                                        className={`text-4xl font-bold py-2 ${level.id === 'endless'
+                                            ? 'text-purple-300'
+                                            : 'text-white'
+                                            }`}
                                         style={{ fontFamily: "'Caveat Brush', cursive" }}
                                     >
                                         {level.name}
                                     </h3>
-                                    <p className="text-md text-white/60 mt-3" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+
+                                    <p className="text-base text-neutral-300/80" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
                                         {level.description}
                                     </p>
                                 </div>
 
-                                {/* Right Side: High Score */}
-                                <div className="text-right flex-shrink-0">
-                                    <p className="text-sm text-white/70" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                        High Score
+                                {/* Right Side: Simplified Score Display */}
+                                <div className="text-right flex-shrink-0 bg-amber-500/10 rounded-xl p-4 border border-amber-500/20">
+                                    <p className="text-xs text-amber-300/80 mb-1" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                        คะแนนสูงสุด
                                     </p>
-                                    <p className="text-3xl sm:text-4xl text-amber-400 font-bold" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+                                    <p
+                                        className="text-3xl text-amber-400 font-bold mb-1"
+                                        style={{ fontFamily: "'Caveat Brush', cursive" }}
+                                    >
                                         {level.highScore}
                                     </p>
                                     {level.time && (
-                                        <div className="flex items-center justify-end mt-1 text-sm text-amber-200/80" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                            <FaClock className="mr-1.5" />
+                                        <div
+                                            className="flex items-center justify-end text-xs text-amber-200/80"
+                                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                        >
+                                            <FaClock className="mr-1 text-amber-400" />
                                             <span>
-                                                {String(level.time.minutes).padStart(2, '0')}m :{String(level.time.seconds).padStart(2, '0')}s
+                                                {String(level.time.minutes).padStart(2, '0')}:{String(level.time.seconds).padStart(2, '0')}
                                             </span>
                                         </div>
                                     )}
                                 </div>
                             </div>
-                        </motion.div>
-                    ))
-                }
-            </div >
-        </main >
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Bottom Spacing */}
+            <div className="h-16" />
+        </main>
     );
 }

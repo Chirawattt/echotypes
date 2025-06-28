@@ -108,13 +108,13 @@ export default function HowToPlayPage() {
             checkScrollPosition(); // Initial check
             return () => container.removeEventListener("scroll", checkScrollPosition);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps]); // Rerun when steps change
 
     useEffect(() => {
         setCanScroll(steps.length > VISIBLE_CARDS);
         checkScrollPosition(); // Re-check scroll position if steps or visibility changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps, scrollContainerMaxHeight]);
 
 
@@ -134,7 +134,7 @@ export default function HowToPlayPage() {
             {/* Scrollable How to Play Steps Container */}
             <div
                 ref={scrollContainerRef}
-                className="w-full max-w-4xl space-y-10 sm:space-y-12 pl-2 pr-6 sm:pl-0 sm:pr-4 overflow-y-auto custom-scrollbar-preline snap-y snap-mandatory scroll-smooth flex-grow" // Existing classes + overflow & scrollbar
+                className="w-full max-w-4xl space-y-6 pl-2 pr-6 sm:pl-0 sm:pr-4 overflow-y-auto custom-scrollbar-preline snap-y snap-mandatory scroll-smooth flex-grow" // Existing classes + overflow & scrollbar
                 style={scrollContainerMaxHeight !== undefined ? { maxHeight: `${scrollContainerMaxHeight}px` } : {}} // Dynamic maxHeight
             >
                 {steps.map((step, index) => (
@@ -144,7 +144,7 @@ export default function HowToPlayPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: index * 0.15 + 0.4 }}
                         // Existing card classes - ensure they are consistent with your original design
-                        className="flex items-center space-x-4 sm:space-x-6 relative border border-neutral-700 bg-neutral-800 p-4 sm:p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 snap-start" // Added snap-start
+                        className="flex items-center space-x-4 sm:space-x-6 relative border border-neutral-700 bg-neutral-800 px-8 py-5 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 snap-start" // Added snap-start
                     >
                         {/* Step Number */}
                         <div
