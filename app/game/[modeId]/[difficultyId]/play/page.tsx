@@ -1,20 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getGameSessionWords } from '@/lib/words-new';
-import { Word } from '@/lib/words/types'
+import { useGameStore } from '@/lib/stores/gameStore';
 import { FaVolumeUp, FaHeart, FaRegHeart, FaClock, FaUndo, FaHome, FaLightbulb, FaBrain, FaKeyboard, FaTrophy } from 'react-icons/fa';
 import { IoReturnDownBack } from "react-icons/io5";
 import { Button } from '@/components/ui/button';
-
-type GameStatus = 'countdown' | 'playing' | 'gameOver';
-
-interface IncorrectWord {
-    correct: string;
-    incorrect: string;
-}
+import StreakDisplay from '@/components/game/StreakDisplay';
+import StreakCelebration from '@/components/game/StreakCelebration';
 
 // Configs
 const TYPING_MODE_DURATION = 60; // 60 seconds
@@ -25,24 +20,23 @@ export default function GamePlayPage() {
     const params = useParams();
     const { modeId, difficultyId } = params as { modeId: string, difficultyId: string };
 
-    const [status, setStatus] = useState<GameStatus>('countdown');
-    const [countdown, setCountdown] = useState(0);
-    const [words, setWords] = useState<Word[]>([]);
-    const [currentWordIndex, setCurrentWordIndex] = useState(0);
-    const [userInput, setUserInput] = useState('');
-    const [score, setScore] = useState(0);
-    const [lives, setLives] = useState(3);
-    const [isWrong, setIsWrong] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
-    const [isTransitioning, setIsTransitioning] = useState(false);
+    // Zustand store
+    const {
+        // State
+        status, countdown, words, currentWordIndex, userInput, score, lives,
+        isWrong, isCorrect, isTransitioning, timeLeft, startTime, timeSpent,
+        currentTime, highScore, wpm, isWordVisible, promptText, incorrectWords,
+
+        // Actions
+        setStatus, setCountdown, setWords, setCurrentWordIndex, setUserInput,
+        setScore, setLives, setIsWrong, setIsCorrect, setIsTransitioning,
+        setStartTime, setTimeSpent, setCurrentTime, setHighScore,
+        setWpm, setIsWordVisible, setPromptText,
+        incrementWordIndex, decrementTimeLeft, addIncorrectWord, resetGame, initializeGame,
+        incrementStreak, resetStreak
+    } = useGameStore();
+
     const inputRef = useRef<HTMLInputElement>(null);
-
-    // State for Typing Mode Timer
-    const [timeLeft, setTimeLeft] = useState(TYPING_MODE_DURATION);
-
-    // --- NEW: State for Memory Mode ---
-    const [isWordVisible, setIsWordVisible] = useState(false);
-    const [promptText, setPromptText] = useState('');
 
 
     // Audio refs
@@ -52,13 +46,6 @@ export default function GamePlayPage() {
     const completedAudioRef = useRef<HTMLAudioElement | null>(null);
     const countdownAudioRef = useRef<HTMLAudioElement | null>(null);
 
-    const [incorrectWords, setIncorrectWords] = useState<IncorrectWord[]>([]);
-    const [startTime, setStartTime] = useState<Date | null>(null);
-    const [timeSpent, setTimeSpent] = useState<{ minutes: number, seconds: number }>({ minutes: 0, seconds: 0 });
-    const [highScore, setHighScore] = useState<number>(0);
-    const [currentTime, setCurrentTime] = useState<{ minutes: number, seconds: number }>({ minutes: 0, seconds: 0 });
-    const [wpm, setWpm] = useState<number>(0);
-
     const speak = useCallback((text: string) => {
         if (typeof window !== 'undefined' && window.speechSynthesis) {
             const utterance = new SpeechSynthesisUtterance(text);
@@ -66,6 +53,7 @@ export default function GamePlayPage() {
             utterance.rate = 0.4;
             window.speechSynthesis.speak(utterance);
         }
+        inputRef.current?.focus();
     }, []);
 
     const playSound = useCallback((audioRef: React.RefObject<HTMLAudioElement | null>, volume = 0.7) => {
@@ -84,9 +72,9 @@ export default function GamePlayPage() {
         countdownAudioRef.current = new Audio('/sounds/countdown.mp3');
 
         const sessionWords = getGameSessionWords(difficultyId);
-        setWords(sessionWords);
+        initializeGame(sessionWords);
         inputRef.current?.focus();
-    }, [difficultyId]);
+    }, [difficultyId, initializeGame]);
 
     useEffect(() => {
         if (status === 'countdown') {
@@ -104,7 +92,7 @@ export default function GamePlayPage() {
             return () => clearInterval(interval);
         }
         inputRef.current?.focus();
-    }, [status, playSound]);
+    }, [status, playSound, setCountdown, setStatus]);
 
     // Speak word in Echo mode
     useEffect(() => {
@@ -132,7 +120,7 @@ export default function GamePlayPage() {
 
             return () => clearTimeout(timer);
         }
-    }, [status, currentWordIndex, words, modeId]);
+    }, [status, currentWordIndex, words, modeId, setIsWordVisible, setPromptText]);
 
 
     // --- NEW: Refocus logic for typing and meaning-match modes ---
@@ -153,13 +141,13 @@ export default function GamePlayPage() {
                 console.error("Failed to parse high score data", e);
             }
         }
-    }, [modeId, difficultyId]);
+    }, [modeId, difficultyId, setHighScore]);
 
     useEffect(() => {
         if (status === 'playing' && !startTime) {
             setStartTime(new Date());
         }
-    }, [status, startTime]);
+    }, [status, startTime, setStartTime]);
 
     useEffect(() => {
         if (status === 'gameOver' && startTime) {
@@ -181,7 +169,7 @@ export default function GamePlayPage() {
                 localStorage.setItem(`highScoreData_${modeId}_${difficultyId}`, JSON.stringify({ score: score, time: finalTime }));
             }
         }
-    }, [status, startTime, score, highScore, modeId, difficultyId]);
+    }, [status, startTime, score, highScore, modeId, difficultyId, setTimeSpent, setWpm, setHighScore]);
 
     // Count-up timer for non-typing modes
     useEffect(() => {
@@ -196,28 +184,25 @@ export default function GamePlayPage() {
         return () => {
             if (timerInterval) clearInterval(timerInterval);
         };
-    }, [status, startTime, modeId]);
+    }, [status, startTime, modeId, setCurrentTime]);
 
     // Countdown timer for Typing Mode
     useEffect(() => {
         let timerInterval: NodeJS.Timeout;
         if (status === 'playing' && modeId === 'typing') {
             timerInterval = setInterval(() => {
-                setTimeLeft(prev => {
-                    if (prev <= 1) {
-                        clearInterval(timerInterval);
-                        setStatus('gameOver');
-                        playSound(completedAudioRef, 0.5);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
+                const newTimeLeft = decrementTimeLeft();
+                if (newTimeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    setStatus('gameOver');
+                    playSound(completedAudioRef, 0.5);
+                }
             }, 1000);
         }
         return () => {
             if (timerInterval) clearInterval(timerInterval);
         };
-    }, [status, modeId, playSound]);
+    }, [status, modeId, playSound, decrementTimeLeft, setStatus]);
 
     const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         playSound(keypressAudioRef, 0.4);
@@ -238,13 +223,15 @@ export default function GamePlayPage() {
             }
             if (isCorrect) {
                 playSound(correctAudioRef);
-                setScore(prev => prev + 1);
+                setScore((prev) => prev + 1);
                 setIsCorrect(true);
+                incrementStreak(); // Add streak increment for correct answer
             } else {
                 playSound(incorrectAudioRef);
                 setIsWrong(true);
-                setScore(prev => Math.max(prev - 1, 0)); // Ensure score doesn't go below 0
-                setIncorrectWords(prev => [...prev, { correct: words[currentWordIndex].word, incorrect: userInput.trim() }]);
+                setScore((prev) => Math.max(prev - 1, 0)); // Ensure score doesn't go below 0
+                addIncorrectWord({ correct: words[currentWordIndex].word, incorrect: userInput.trim() });
+                resetStreak(); // Reset streak for incorrect answer
             }
 
             // Handle endless mode - reshuffle words when reaching the end
@@ -253,7 +240,7 @@ export default function GamePlayPage() {
                 setWords(reshuffledWords);
                 setCurrentWordIndex(0);
             } else {
-                setCurrentWordIndex(prev => prev + 1);
+                incrementWordIndex();
             }
             setUserInput('');
             return;
@@ -262,13 +249,15 @@ export default function GamePlayPage() {
         setIsTransitioning(true);
         if (isCorrect) {
             playSound(correctAudioRef);
-            setScore(prev => prev + 1);
+            setScore((prev) => prev + 1);
             setIsCorrect(true);
+            incrementStreak(); // Add streak increment for correct answer
         } else {
             playSound(incorrectAudioRef);
-            setLives(prev => prev - 1);
+            setLives((prev) => prev - 1);
             setIsWrong(true);
-            setIncorrectWords(prev => [...prev, { correct: words[currentWordIndex].word, incorrect: userInput.trim() }]);
+            addIncorrectWord({ correct: words[currentWordIndex].word, incorrect: userInput.trim() });
+            resetStreak(); // Reset streak for incorrect answer
         }
 
         setTimeout(() => {
@@ -287,7 +276,7 @@ export default function GamePlayPage() {
                 setWords(reshuffledWords);
                 setCurrentWordIndex(0);
             } else {
-                setCurrentWordIndex(prev => prev + 1);
+                incrementWordIndex();
             }
             setUserInput('');
             setIsWrong(false);
@@ -298,22 +287,8 @@ export default function GamePlayPage() {
 
     const handleRestartGame = () => {
         const sessionWords = getGameSessionWords(difficultyId);
+        resetGame();
         setWords(sessionWords);
-        setStatus('countdown');
-        setCountdown(3);
-        setCurrentWordIndex(0);
-        setUserInput('');
-        setScore(0);
-        setLives(3);
-        setIsWrong(false);
-        setIsCorrect(false);
-        setIncorrectWords([]);
-        setIsTransitioning(false);
-        setStartTime(null);
-        setTimeSpent({ minutes: 0, seconds: 0 });
-        setCurrentTime({ minutes: 0, seconds: 0 });
-        setTimeLeft(TYPING_MODE_DURATION);
-        setWpm(0);
     };
 
     const renderLives = () => (
@@ -626,6 +601,16 @@ export default function GamePlayPage() {
                 </motion.div>
             )}
 
+            {/* Streak Display - Center with more spacing */}
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="flex justify-center items-center py-6 relative z-10 shrink-0"
+            >
+                <StreakDisplay />
+            </motion.div>
+
             <section className="flex-1 flex flex-col items-center justify-center text-center relative z-10 px-3 py-2 min-h-0 overflow-hidden">
                 {/* Compact Mode-Specific Content */}
                 {modeId === 'echo' && (
@@ -899,6 +884,9 @@ export default function GamePlayPage() {
                     )}
                 </AnimatePresence>
             </section>
+
+            {/* Streak Celebration - Fixed overlay */}
+            <StreakCelebration />
         </main>
     );
 }
