@@ -317,9 +317,24 @@ export default function GamePlayPage() {
     };
 
     const renderLives = () => (
-        <div className="flex items-center space-x-1 text-2xl text-right">
+        <div className="flex items-center space-x-1 text-xl sm:text-2xl">
             {[...Array(3)].map((_, i) => (
-                i < lives ? <FaHeart key={i} className="text-red-500" /> : <FaRegHeart key={i} className="text-red-500/50" />
+                <motion.div
+                    key={i}
+                    initial={{ scale: 1 }}
+                    animate={{
+                        scale: i < lives ? 1 : 0.8,
+                        opacity: i < lives ? 1 : 0.5
+                    }}
+                    transition={{ duration: 0.3 }}
+                    whileHover={{ scale: 1.2 }}
+                >
+                    {i < lives ? (
+                        <FaHeart className="text-red-500 drop-shadow-lg" />
+                    ) : (
+                        <FaRegHeart className="text-red-500/50" />
+                    )}
+                </motion.div>
             ))}
         </div>
     );
@@ -328,9 +343,58 @@ export default function GamePlayPage() {
         // Keep the existing render logic for these states
         if (status === 'countdown') {
             return (
-                <main className="flex flex-col items-center justify-center min-h-screen bg-[#101010] text-white p-4" style={{ fontFamily: "'Caveat Brush', cursive" }}>
-                    <div className="relative flex items-center justify-center" style={{ height: '280px' }}> <AnimatePresence> <motion.div key={countdown} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8, position: 'absolute' }} transition={{ duration: 0.6, ease: "easeInOut" }} className="absolute text-[250px] font-bold text-neutral-300" > {countdown} </motion.div> </AnimatePresence> </div>
-                    <div className="text-5xl text-red-500 mt-8">Game Start</div>
+                <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white p-4 overflow-hidden relative" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+                    {/* Animated Background for Countdown */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <motion.div
+                            animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                            className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-xl"
+                        />
+                        <motion.div
+                            animate={{ rotate: -360, scale: [1.2, 1, 1.2] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                            className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-br from-red-500/10 to-orange-500/10 rounded-full blur-xl"
+                        />
+                    </div>
+
+                    {/* Compact Countdown Display */}
+                    <div className="relative flex items-center justify-center mb-6" style={{ height: '200px' }}>
+                        <AnimatePresence>
+                            <motion.div
+                                key={countdown}
+                                initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
+                                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                                exit={{ opacity: 0, scale: 0.5, rotateY: -90, position: 'absolute' }}
+                                transition={{ duration: 0.6, ease: "easeInOut" }}
+                                className="absolute text-[120px] sm:text-[150px] lg:text-[180px] font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent drop-shadow-2xl"
+                            >
+                                {countdown}
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Pulsing Ring Effect */}
+                        <motion.div
+                            animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.1, 0.3] }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                            className="absolute w-64 h-64 border-4 border-white/20 rounded-full"
+                        />
+                    </div>
+
+                    {/* Compact Game Start Text */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="text-center"
+                    >
+                        <div className="text-3xl sm:text-4xl lg:text-5xl bg-gradient-to-r from-red-400 to-orange-500 bg-clip-text text-transparent font-bold mb-3">
+                            Get Ready! 🚀
+                        </div>
+                        <div className="text-lg sm:text-xl text-blue-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                            The game is starting soon...
+                        </div>
+                    </motion.div>
                 </main>
             );
         }
@@ -478,45 +542,362 @@ export default function GamePlayPage() {
     }
 
     return (
-        <main className="flex flex-col min-h-screen bg-[#101010] text-white p-8 pt-28">
-            <section className="w-full flex justify-between items-center mt-6 text-neutral-300 px-10 max-w-7xl mx-auto" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                <div>
-                    <p className="text-2xl">Word: {currentWordIndex + 1} / {words.length}</p>
-                    <p className="text-xl uppercase text-neutral-400">{difficultyId}</p>
-                </div>
-                <div className="text-right">
-                    {modeId !== 'typing' ? renderLives() : (<div className="text-3xl text-amber-400 font-bold"> {timeLeft}s </div>)}
-                    <p className="text-xl mt-1">{score} Score</p>
-                </div>
-            </section>
+        <main className="flex flex-col h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white overflow-hidden relative">
+            {/* Animated Background Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-full blur-xl"
+                />
+                <motion.div
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                    className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-br from-red-500/5 to-orange-500/5 rounded-full blur-xl"
+                />
+                <motion.div
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.1, 0.3, 0.1]
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-500/5 to-blue-500/5 rounded-full blur-2xl"
+                />
+            </div>
 
+            {/* Header Container */}
+            <div className="w-full shrink-0 relative z-10">
+
+                {/* Game Info Section - Hearts and Word Count */}
+                <section className="w-full flex justify-between items-center py-2 px-6 sm:px-8 max-w-6xl mx-auto" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-left"
+                    >
+                        <p className="text-sm sm:text-base lg:text-lg font-bold">Word: {currentWordIndex + 1} / {words.length}</p>
+                        <p className="text-xs sm:text-sm uppercase text-blue-300 font-medium">{difficultyId}</p>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-right"
+                    >
+                        {modeId !== 'typing' ? (
+                            <motion.div
+                                animate={{ scale: lives <= 1 ? [1, 1.1, 1] : 1 }}
+                                transition={{ duration: 0.5, repeat: lives <= 1 ? Infinity : 0 }}
+                            >
+                                {renderLives()}
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                className={`text-2xl sm:text-3xl font-bold ${timeLeft <= 10 ? 'text-red-400' : 'text-amber-400'}`}
+                                animate={{ scale: timeLeft <= 10 ? [1, 1.1, 1] : 1 }}
+                                transition={{ duration: 0.5, repeat: timeLeft <= 10 ? Infinity : 0 }}
+                            >
+                                {timeLeft}s
+                            </motion.div>
+                        )}
+                        <p className="text-xl mt-1 font-medium">{score} Score</p>
+                    </motion.div>
+                </section>
+            </div>
+
+            {/* Ultra Compact Timer Display for Non-Typing Modes */}
             {modeId !== 'typing' && (
-                <div className="flex justify-center items-center mt-2 flex-col" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-3xl" >
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="flex justify-center items-center py-1 relative z-10 shrink-0"
+                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-300 text-center"
+                    >
                         {String(currentTime.minutes).padStart(2, '0')}:{String(currentTime.seconds).padStart(2, '0')}
                     </motion.div>
-                    <p className="text-md mt-1 text-neutral-400">(minutes:seconds)</p>
-                </div>
+                </motion.div>
             )}
 
-            <section className="flex flex-grow flex-col items-center justify-center text-center">
-                {/* --- Main conditional prompt area --- */}
-                {modeId === 'echo' && (<motion.button onClick={() => speak(words[currentWordIndex].word)} className="flex flex-col items-center group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer" whileHover={{ scale: isTransitioning ? 1 : 1.1 }} whileTap={{ scale: isTransitioning ? 1 : 0.95 }} disabled={isTransitioning} > <div className="bg-neutral-700 p-5 rounded-full shadow-lg"> <FaVolumeUp className="text-3xl text-[#d9d9d9]" /> </div> <span className="text-neutral-400 group-hover:text-white transition-colors" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>(Speak again)</span> </motion.button>)}
-                {modeId === 'meaning-match' && (<motion.div key={`${currentWordIndex}-meaning`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }} className="flex flex-col items-center text-center mb-8" > <div className="bg-neutral-800 p-4 rounded-full shadow-lg mb-4"> <FaLightbulb className="text-4xl text-amber-300" /> </div> <p className="text-neutral-300 text-2xl w-full max-w-4xl min-h-[50px]" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }} > {words[currentWordIndex].meaning} </p> <p className="text-neutral-500 mt-2 text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}> (Type the vocabulary word for this meaning) </p> </motion.div>)}
-                {modeId === 'typing' && (<motion.div key={`${currentWordIndex}-typing`} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center mb-8" > <p className="text-neutral-300 text-7xl w-full max-w-4xl min-h-[50px]" style={{ fontFamily: "'Caveat Brush', cursive" }} > {words[currentWordIndex].word} </p> <p className="text-neutral-500 mt-2 text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}> (Type the word above as fast as you can!) </p> </motion.div>)}
-                {/* --- NEW: Memory Mode Prompt --- */}
-                {modeId === 'memory' && (<motion.div key={`${currentWordIndex}-memory`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center text-center mb-8" > <div className="bg-neutral-800 p-4 rounded-full shadow-lg mb-4"> <FaBrain className="text-4xl text-purple-300" /> </div> <AnimatePresence> {isWordVisible && (<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-neutral-300 text-7xl w-full max-w-4xl min-h-[50px]" style={{ fontFamily: "'Caveat Brush', cursive" }} > {words[currentWordIndex].word} </motion.p>)} </AnimatePresence> <p className="text-neutral-400 mt-2 text-2xl" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}> {promptText} </p> </motion.div>)}
-
-                <form onSubmit={handleFormSubmit} className="w-full max-w-3xl flex flex-col mt-5 items-center ">
-                    <motion.div key={currentWordIndex} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full" >
-                        <input ref={inputRef} type="text" value={userInput} onChange={handleUserInputChange} placeholder="Type here..." autoComplete="off" autoCapitalize="off" autoCorrect="off" disabled={(isTransitioning || (modeId === 'memory' && isWordVisible)) && modeId !== 'typing'} className={`w-full bg-transparent border-b-[1px] text-center text-8xl p-2 focus:outline-none transition-all duration-300 ${isWrong ? 'border-red-500 text-red-400' : isCorrect ? 'border-green-500 text-green-400' : 'border-neutral-500 focus:border-white'} ${isTransitioning ? 'cursor-not-allowed opacity-50' : ''}`} style={{ fontFamily: "'Caveat Brush', cursive" }} />
-                    </motion.div>
-                    <motion.button type="submit" className="mt-10 disabled:opacity-50 disabled:cursor-not-allowed" whileHover={{ scale: isTransitioning ? 1 : 1.15 }} whileTap={{ scale: isTransitioning ? 1 : 0.9 }} disabled={(isTransitioning || (modeId === 'memory' && isWordVisible)) && modeId !== 'typing'} >
-                        <div className="bg-green-400 text-black p-4 rounded-full shadow-lg shadow-green-400/20">
-                            <IoReturnDownBack className="text-5xl" />
+            <section className="flex-1 flex flex-col items-center justify-center text-center relative z-10 px-3 py-2 min-h-0 overflow-hidden">
+                {/* Compact Mode-Specific Content */}
+                {modeId === 'echo' && (
+                    <motion.button
+                        onClick={() => speak(words[currentWordIndex].word)}
+                        className="flex flex-col items-center group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mb-3"
+                        whileHover={{ scale: isTransitioning ? 1 : 1.1 }}
+                        whileTap={{ scale: isTransitioning ? 1 : 0.95 }}
+                        disabled={isTransitioning}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <div className="p-4 sm:p-5 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all duration-300">
+                            <FaVolumeUp className="text-3xl sm:text-4xl lg:text-5xl text-blue-400" />
                         </div>
+                        <span className="text-blue-300 group-hover:text-blue-200 transition-colors mt-2 text-sm sm:text-base font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                            🔊 Click to hear again
+                        </span>
+                    </motion.button>
+                )}
+
+                {modeId === 'meaning-match' && (
+                    <motion.div
+                        key={`${currentWordIndex}-meaning`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="flex flex-col items-center text-center mb-3 max-w-4xl"
+                    >
+                        <div className="mb-3">
+                            <FaLightbulb className="text-3xl sm:text-4xl lg:text-5xl text-amber-400 mx-auto mb-2" />
+                        </div>
+                        <div className="mb-3">
+                            <p className="text-white text-lg sm:text-xl lg:text-2xl font-bold mb-2" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+                                💡 What does this mean?
+                            </p>
+                            <p className="text-amber-200 text-base sm:text-lg lg:text-xl leading-relaxed font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                &ldquo;{words[currentWordIndex].meaning}&rdquo;
+                            </p>
+                        </div>
+                        <p className="text-neutral-400 text-xs sm:text-sm lg:text-base" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                            Type the English word for this meaning ✨
+                        </p>
+                    </motion.div>
+                )}
+
+                {modeId === 'typing' && (
+                    <motion.div
+                        key={`${currentWordIndex}-typing`}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex flex-col items-center text-center mb-3 max-w-4xl"
+                    >
+                        <div className="mb-3">
+                            <FaKeyboard className="text-3xl sm:text-4xl lg:text-5xl text-green-400 mx-auto mb-2" />
+                        </div>
+                        <div className="mb-3">
+                            <p className="text-green-300 text-sm sm:text-base lg:text-lg mb-2 font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                ⚡ Type as fast as you can!
+                            </p>
+                            <p className="text-white text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+                                {words[currentWordIndex].word}
+                            </p>
+                        </div>
+                        <p className="text-neutral-400 text-xs sm:text-sm lg:text-base" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                            Speed and accuracy matter! 🏃‍♂️💨
+                        </p>
+                    </motion.div>
+                )}
+
+                {modeId === 'memory' && (
+                    <motion.div
+                        key={`${currentWordIndex}-memory`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="flex flex-col items-center text-center mb-3 max-w-5xl"
+                    >
+                        <div className="mb-3">
+                            <FaBrain className="text-3xl sm:text-4xl lg:text-5xl text-purple-400 mx-auto mb-2" />
+                        </div>
+                        <div className="min-h-[80px] sm:min-h-[100px] flex flex-col justify-center">
+                            <AnimatePresence mode="wait">
+                                {isWordVisible ? (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        key="word-visible"
+                                        className="text-center"
+                                    >
+                                        <p className="text-purple-300 text-lg sm:text-xl mb-3 font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                            🧠 Memorize this word
+                                        </p>
+                                        <p className="text-white text-3xl sm:text-4xl lg:text-5xl font-bold" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+                                            {words[currentWordIndex].word}
+                                        </p>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        key="word-hidden"
+                                        className="text-center"
+                                    >
+                                        <p className="text-purple-300 text-xl sm:text-2xl font-bold" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+                                            ✨ Now type what you remember!
+                                        </p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                        <motion.p
+                            className="text-purple-400 text-sm sm:text-base font-medium"
+                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                            animate={{ opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                        >
+                            {promptText} 💭
+                        </motion.p>
+                    </motion.div>
+                )}
+
+                {/* Compact Input Form */}
+                <form onSubmit={handleFormSubmit} className="w-full max-w-4xl flex flex-col mt-4 items-center">
+                    <motion.div
+                        key={currentWordIndex}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="w-full relative"
+                    >
+                        {/* Compact Input */}
+                        <div className="relative">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={userInput}
+                                onChange={handleUserInputChange}
+                                placeholder="Type your answer here..."
+                                autoComplete="off"
+                                autoCapitalize="off"
+                                autoCorrect="off"
+                                disabled={(isTransitioning || (modeId === 'memory' && isWordVisible)) && modeId !== 'typing'}
+                                className={`w-full bg-transparent text-center text-3xl sm:text-4xl lg:text-5xl py-4 px-4 focus:outline-none transition-all duration-300 font-bold placeholder:text-white/30 border-b-4 ${isWrong ? 'text-red-400 border-red-500' :
+                                    isCorrect ? 'text-green-400 border-green-500' :
+                                        'text-white border-white/30 focus:border-blue-400'
+                                    } ${isTransitioning ? 'cursor-not-allowed opacity-50' : ''}`}
+                                style={{ fontFamily: "'Caveat Brush', cursive" }}
+                            />
+
+                            {/* Visual Feedback Indicators */}
+                            <AnimatePresence>
+                                {isCorrect && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.5, y: -10 }}
+                                        className="absolute -top-2 right-4 text-green-400 text-2xl sm:text-3xl"
+                                    >
+                                        ✓
+                                    </motion.div>
+                                )}
+                                {isWrong && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.5, y: -10 }}
+                                        className="absolute -top-2 right-4 text-red-400 text-2xl sm:text-3xl"
+                                    >
+                                        ✗
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </motion.div>
+
+                    {/* Compact Submit Button */}
+                    <motion.button
+                        type="submit"
+                        className="mt-6 disabled:opacity-50 disabled:cursor-not-allowed relative group"
+                        whileHover={{ scale: isTransitioning ? 1 : 1.1 }}
+                        whileTap={{ scale: isTransitioning ? 1 : 0.9 }}
+                        disabled={(isTransitioning || (modeId === 'memory' && isWordVisible)) && modeId !== 'typing'}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                    >
+                        <div className="bg-green-400 hover:bg-green-300 text-black p-4 sm:p-6 rounded-full shadow-2xl transition-all duration-300">
+                            <IoReturnDownBack className="text-3xl sm:text-4xl" />
+                        </div>
+
+                        {/* Button Label */}
+                        <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-green-300 text-sm sm:text-base font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                            Submit Answer
+                        </span>
                     </motion.button>
                 </form>
+
+                {/* Floating Success/Error Particles */}
+                <AnimatePresence>
+                    {isCorrect && (
+                        <>
+                            {[...Array(6)].map((_, i) => (
+                                <motion.div
+                                    key={`success-${i}`}
+                                    initial={{
+                                        opacity: 1,
+                                        scale: 0,
+                                        x: Math.random() * window.innerWidth,
+                                        y: window.innerHeight
+                                    }}
+                                    animate={{
+                                        opacity: 0,
+                                        scale: 1.5,
+                                        y: -100,
+                                        rotate: 360
+                                    }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 2, delay: i * 0.1 }}
+                                    className="absolute pointer-events-none text-4xl z-50"
+                                >
+                                    ✨
+                                </motion.div>
+                            ))}
+                        </>
+                    )}
+                    {isWrong && (
+                        <>
+                            {[...Array(4)].map((_, i) => (
+                                <motion.div
+                                    key={`error-${i}`}
+                                    initial={{
+                                        opacity: 1,
+                                        scale: 0,
+                                        x: Math.random() * window.innerWidth,
+                                        y: window.innerHeight / 2
+                                    }}
+                                    animate={{
+                                        opacity: 0,
+                                        scale: 1.2,
+                                        y: window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+                                        x: Math.random() * window.innerWidth,
+                                        rotate: (Math.random() - 0.5) * 180
+                                    }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 1.5, delay: i * 0.1 }}
+                                    className="absolute pointer-events-none text-3xl z-50"
+                                >
+                                    💫
+                                </motion.div>
+                            ))}
+                        </>
+                    )}
+                </AnimatePresence>
+
+                {/* Subtle Floating Words for Motivation */}
+                <AnimatePresence>
+                    {score > 0 && score % 5 === 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 50, scale: 0.8 }}
+                            animate={{ opacity: 0.3, y: -50, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 2, ease: "easeOut" }}
+                            className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
+                        >
+                            <div className="text-2xl sm:text-3xl font-medium bg-gradient-to-r from-yellow-400/60 to-orange-500/60 bg-clip-text text-transparent" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+                                Awesome! 🎉
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </section>
         </main>
     );

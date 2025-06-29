@@ -2,8 +2,7 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { FaVolumeUp, FaKeyboard, FaPlay, FaChevronDown, FaBrain, FaMousePointer } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
+import { FaVolumeUp, FaKeyboard, FaPlay, FaChevronDown, FaBrain, FaLightbulb, FaClock, FaHeart, FaTrophy } from "react-icons/fa";
 import { useRef, useState, useEffect } from "react";
 
 interface HowToPlayStep {
@@ -13,38 +12,180 @@ interface HowToPlayStep {
     icon: React.ElementType;
 }
 
-const steps: HowToPlayStep[] = [
-    {
-        stepNumber: "1",
-        title: "ท่านจะได้ยินเสียงคำศัพท์",
-        description: "อัตโนมัติหนึ่งรอบ หากฟังไม่ทันสามารถกดปุ่มลำโพงเพื่อฟังอีกรอบได้",
-        icon: FaVolumeUp,
-    },
-    {
-        stepNumber: "2",
-        title: "พิมพ์คำศัพท์ตามที่ท่านได้ยิน",
-        description: "เมื่อท่านมั่นใจในคำตอบแล้ว สามารถพิมพ์คำตอบและกด Enter หรือกดปุ่มส่งได้เลย",
-        icon: FaKeyboard,
-    },
-    {
-        stepNumber: "3",
-        title: "จำคำศัพท์ที่ปรากฏ",
-        description: "คำศัพท์จะแสดงขึ้นมาชั่วครู่ แล้วคุณจะต้องพิมพ์ตามความจำ",
-        icon: FaBrain,
-    },
-    {
-        stepNumber: "4",
-        title: "คลิกเลือกคำตอบที่ถูกต้อง",
-        description: "จะมีตัวเลือกคำศัพท์ปรากฏขึ้นมา ให้คลิกเลือกคำที่ได้ยิน",
-        icon: FaMousePointer,
-    },
-    {
-        stepNumber: "5",
-        title: "ดูผลลัพธ์และคะแนน",
-        description: "หลังจบเกมจะมีการสรุปผลคะแนนและคำที่ตอบถูก/ผิด",
-        icon: FaPlay,
-    },
-];
+// โครงสร้างข้อมูลสำหรับข้อมูลโหมด
+interface ModeInfo {
+    name: string;
+    description: string;
+    color: string;
+    gradientFrom: string;
+    gradientTo: string;
+}
+
+// ข้อมูลของแต่ละโหมด
+const getModeInfo = (modeId: string): ModeInfo => {
+    switch (modeId) {
+        case 'echo':
+            return {
+                name: 'Echo Mode',
+                description: 'ฟังและพิมพ์ตามที่ได้ยิน',
+                color: 'text-blue-400',
+                gradientFrom: 'from-blue-400',
+                gradientTo: 'to-blue-600'
+            };
+        case 'typing':
+            return {
+                name: 'Typing Mode',
+                description: 'พิมพ์อย่างรวดเร็วและแม่นยำ',
+                color: 'text-green-400',
+                gradientFrom: 'from-green-400',
+                gradientTo: 'to-green-600'
+            };
+        case 'memory':
+            return {
+                name: 'Memory Mode',
+                description: 'จำและพิมพ์คำศัพท์',
+                color: 'text-purple-400',
+                gradientFrom: 'from-purple-400',
+                gradientTo: 'to-purple-600'
+            };
+        case 'meaning-match':
+            return {
+                name: 'Meaning Match',
+                description: 'จับคู่คำศัพท์กับความหมาย',
+                color: 'text-orange-400',
+                gradientFrom: 'from-orange-400',
+                gradientTo: 'to-orange-600'
+            };
+        default:
+            return {
+                name: 'Game Mode',
+                description: 'เล่นเกมเพื่อฝึกคำศัพท์',
+                color: 'text-gray-400',
+                gradientFrom: 'from-gray-400',
+                gradientTo: 'to-gray-600'
+            };
+    }
+};
+
+// Steps สำหรับแต่ละโหมด - ปรับปรุงให้เฉพาะเจาะจงมากขึ้น
+const getStepsForMode = (modeId: string): HowToPlayStep[] => {
+    switch (modeId) {
+        case 'echo':
+            return [
+                {
+                    stepNumber: "1",
+                    title: "ฟังเสียงคำศัพท์อย่างตั้งใจ",
+                    description: "กดปุ่มลำโพงหรือรอให้ระบบเล่นเสียงคำศัพท์ ฟังอย่างตั้งใจและจดจำการออกเสียง คุณสามารถฟังซ้ำได้หากจำเป็น",
+                    icon: FaVolumeUp,
+                },
+                {
+                    stepNumber: "2",
+                    title: "พิมพ์คำที่ได้ยินทันที",
+                    description: "พิมพ์คำศัพท์ที่ได้ยินลงในช่องข้อความ ไม่ต้องกังวลกับตัวเล็ก-ใหญ่ ระบบจะตรวจสอบให้อัตโนมัติ",
+                    icon: FaKeyboard,
+                },
+                {
+                    stepNumber: "3",
+                    title: "ระบบให้ผลลัพธ์ทันที",
+                    description: "หากตอบถูกจะแสดงเครื่องหมายถูกสีเขียว หากผิดจะแสดงกากบาทสีแดงและคำตอบที่ถูกต้อง คุณมีชีวิต 3 ครั้ง",
+                    icon: FaHeart,
+                },
+                {
+                    stepNumber: "4",
+                    title: "ดูผลลัพธ์และความก้าวหน้า",
+                    description: "เมื่อจบเกม ดูคะแนนรวม เปอร์เซ็นต์ความแม่นยำ และรายการคำที่ตอบผิดเพื่อทบทวน",
+                    icon: FaTrophy,
+                }
+            ];
+
+        case 'typing':
+            return [
+                {
+                    stepNumber: "1",
+                    title: "เตรียมความพร้อมสำหรับการพิมพ์",
+                    description: "วางนิ้วในตำแหน่งที่ถูกต้อง (Home Row) คำศัพท์จะแสดงบนหน้าจอและเริ่มจับเวลา 60 วินาทีทันที",
+                    icon: FaClock,
+                },
+                {
+                    stepNumber: "2",
+                    title: "พิมพ์ให้เร็วและแม่นยำ",
+                    description: "พิมพ์คำศัพท์ที่แสดงให้เร็วที่สุดแต่ยังคงความแม่นยำ ระบบจะคำนวณ WPM (Words Per Minute) แบบเรียลไทม์",
+                    icon: FaKeyboard,
+                },
+                {
+                    stepNumber: "3",
+                    title: "ติดตามคะแนน WPM",
+                    description: "ดูคะแนน WPM ที่เพิ่มขึ้นเรื่อยๆ ในขณะที่พิมพ์ ยิ่งพิมพ์เร็วและถูกต้องมากยิ่งได้คะแนนสูง",
+                    icon: FaTrophy,
+                },
+                {
+                    stepNumber: "4",
+                    title: "ท้าทายตัวเองให้ดีขึ้น",
+                    description: "เมื่อหมดเวลา ดูผลลัพธ์ WPM สูงสุดและเฉลี่ย พยายามทำลายสถิติของตัวเองในรอบถัดไป",
+                    icon: FaPlay,
+                }
+            ];
+
+        case 'memory':
+            return [
+                {
+                    stepNumber: "1",
+                    title: "สังเกตคำศัพท์ให้ละเอียด",
+                    description: "คำศัพท์จะแสดงเป็นเวลา 2 วินาที มองดูอย่างตั้งใจ สังเกตการสะกดทุกตัวอักษร และพยายามจำให้ได้",
+                    icon: FaBrain,
+                },
+                {
+                    stepNumber: "2",
+                    title: "จำคำในใจขณะนับถอยหลัง",
+                    description: "เมื่อคำหายไป จะมีการนับถอยหลัง 3-2-1 ใช้เวลานี้ในการทบทวนคำที่เห็นในใจ",
+                    icon: FaClock,
+                },
+                {
+                    stepNumber: "3",
+                    title: "พิมพ์ตามที่จำได้",
+                    description: "พิมพ์คำศัพท์ที่จำได้ลงในช่อง ไม่ต้องรีบร้อน ใช้เวลาคิดให้ดีก่อนพิมพ์",
+                    icon: FaKeyboard,
+                },
+                {
+                    stepNumber: "4",
+                    title: "พัฒนาความจำต่อเนื่อง",
+                    description: "ทำแบบนี้ต่อไปเรื่อยๆ จนจบเกม การฝึกซ้ำจะช่วยพัฒนาความจำระยะสั้นของคุณ",
+                    icon: FaTrophy,
+                }
+            ];
+
+        case 'meaning-match':
+            return [
+                {
+                    stepNumber: "1",
+                    title: "อ่านความหมายอย่างละเอียด",
+                    description: "อ่านความหมายที่แสดงบนหน้าจอให้เข้าใจ ถ้าเป็นคำที่ยาก ลองคิดถึงคำที่เกี่ยวข้องหรือคล้ายกัน",
+                    icon: FaLightbulb,
+                },
+                {
+                    stepNumber: "2",
+                    title: "ใช้ความรู้ในการเดาคำ",
+                    description: "จากความหมายที่อ่าน ใช้ความรู้คำศัพท์ที่มีอยู่ในการคิดหาคำภาษาอังกฤษที่ตรงกัน",
+                    icon: FaBrain,
+                },
+                {
+                    stepNumber: "3",
+                    title: "พิมพ์คำตอบที่คิดได้",
+                    description: "พิมพ์คำศัพท์ภาษาอังกฤษที่คิดว่าตรงกับความหมาย หากไม่แน่ใจ ให้ลองคำที่ใกล้เคียงที่สุด",
+                    icon: FaKeyboard,
+                },
+                {
+                    stepNumber: "4",
+                    title: "เรียนรู้จากคำตอบ",
+                    description: "ไม่ว่าจะตอบถูกหรือผิด ระบบจะแสดงคำตอบที่ถูกต้อง เป็นโอกาสเรียนรู้คำศัพท์ใหม่",
+                    icon: FaTrophy,
+                }
+            ];
+
+        default:
+            return [];
+    }
+};
 
 const VISIBLE_CARDS = 3;
 
@@ -54,11 +195,14 @@ export default function HowToPlayPage() {
     const modeId = params.modeId as string;
     const difficultyId = params.difficultyId as string;
 
+    // Get mode info and steps based on mode
+    const modeInfo = getModeInfo(modeId);
+    const steps = getStepsForMode(modeId);
+
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [isAtBottom, setIsAtBottom] = useState(false);
     const [canScroll, setCanScroll] = useState(steps.length > VISIBLE_CARDS);
     const [scrollContainerMaxHeight, setScrollContainerMaxHeight] = useState<number | undefined>(undefined);
-
 
     const handlePlayGame = () => {
         router.push(`/game/${modeId}/${difficultyId}/play`);
@@ -108,102 +252,164 @@ export default function HowToPlayPage() {
             checkScrollPosition(); // Initial check
             return () => container.removeEventListener("scroll", checkScrollPosition);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps]); // Rerun when steps change
 
     useEffect(() => {
         setCanScroll(steps.length > VISIBLE_CARDS);
         checkScrollPosition(); // Re-check scroll position if steps or visibility changes
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps, scrollContainerMaxHeight]);
 
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-[#101010] text-white pt-8 sm:pt-12 px-4">
+        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-8 sm:pt-12 px-4 overflow-hidden relative">
+            {/* Animated Background Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-full blur-xl"
+                />
+                <motion.div
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                    className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-br from-red-500/5 to-orange-500/5 rounded-full blur-xl"
+                />
+                <motion.div
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.5, 0.3]
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-500/3 to-blue-500/3 rounded-full blur-2xl"
+                />
+            </div>
 
-            {/* Page Title */}
+            {/* Enhanced Page Title with Mode Info */}
             <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="w-full max-w-xl lg:max-w-7xl px-4 mt-20 sm:mt-24 mb-8 sm:mb-10" // Existing class
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="w-full max-w-xl lg:max-w-7xl px-4 mt-12 sm:mt-16 mb-8 relative z-10"
             >
-                <h2 className="text-5xl text-center opacity-80" style={{ fontFamily: "'Caveat Brush', cursive" }}>How to Play the Game.</h2>
-            </motion.div >
+                <h2
+                    className="text-5xl sm:text-6xl text-center bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4"
+                    style={{ fontFamily: "'Caveat Brush', cursive" }}
+                >
+                    How to Play
+                </h2>
+                <p
+                    className={`text-lg sm:text-xl text-center ${modeInfo.color} font-medium`}
+                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                >
+                    {modeInfo.description}
+                </p>
 
-            {/* Scrollable How to Play Steps Container */}
+                {/* Mode Badge */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="flex items-center justify-center mt-4"
+                >
+                    <span className={`flex items-center gap-2 px-4 py-2 rounded-full mb-4 bg-gradient-to-r ${modeInfo.gradientFrom} ${modeInfo.gradientTo} text-white text-sm font-bold`}>{modeInfo.name}</span>
+                </motion.div>
+            </motion.div>
+
+            {/* Enhanced Steps Container */}
             <div
                 ref={scrollContainerRef}
-                className="w-full max-w-4xl space-y-6 pl-2 pr-6 sm:pl-0 sm:pr-4 overflow-y-auto custom-scrollbar-preline snap-y snap-mandatory scroll-smooth flex-grow" // Existing classes + overflow & scrollbar
-                style={scrollContainerMaxHeight !== undefined ? { maxHeight: `${scrollContainerMaxHeight}px` } : {}} // Dynamic maxHeight
+                className="w-full max-w-5xl space-y-6 px-4 pt-6 pb-4 overflow-y-auto scroll-smooth flex-grow relative z-10 custom-scrollbar"
+                style={scrollContainerMaxHeight !== undefined ? {
+                    maxHeight: `${scrollContainerMaxHeight}px`,
+                    maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)'
+                } : {}}
             >
                 {steps.map((step, index) => (
                     <motion.div
                         key={index}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: index * 0.15 + 0.4 }}
-                        // Existing card classes - ensure they are consistent with your original design
-                        className="flex items-center space-x-4 sm:space-x-6 relative border border-neutral-700 bg-neutral-800 px-8 py-5 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 snap-start" // Added snap-start
+                        transition={{ duration: 0.6, delay: index * 0.15 }}
+                        className="group"
                     >
-                        {/* Step Number */}
-                        <div
-                            className="text-8xl sm:text-9xl text-white/80 font-bold flex-shrink-0"
-                            style={{ fontFamily: "'Caveat Brush', cursive", lineHeight: '1' }}
-                        >
-                            {step.stepNumber}
-                        </div>
-
-                        {/* Step Details */}
-                        <div className="flex-1 pt-2 sm:pt-3 border-l border-neutral-700 pl-4 sm:pl-6">
-                            <h3
-                                className="text-2xl sm:text-3xl text-white/90 font-semibold mb-1 sm:mb-1.5"
-                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                            >
-                                {step.title}
-                            </h3>
-                            <p className="text-sm sm:text-base text-white/70" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                {step.description}
-                            </p>
-                        </div>
-
-                        {/* Icon */}
-                        <div className="flex flex-col items-center h-full pt-2 sm:pt-3">
-                            <div className="bg-white/70 p-3 sm:p-4 rounded-full shadow-md">
-                                <step.icon className="text-5xl text-[#101010]" />
+                        <div className="relative p-8 pt-12 rounded-3xl shadow-2xl transition-all duration-300 backdrop-blur-md border bg-gradient-to-br from-white/10 to-white/5 border-white/20 hover:from-white/15 hover:to-white/10 hover:shadow-2xl hover:scale-[1.02] transform">
+                            {/* Enhanced Step Number Badge */}
+                            <div className={`absolute -top-2 left-8 bg-gradient-to-r ${modeInfo.gradientFrom} ${modeInfo.gradientTo} text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg z-10 group-hover:scale-110 transition-transform duration-300`}>
+                                <div className={`absolute inset-0 bg-gradient-to-r ${modeInfo.gradientFrom} ${modeInfo.gradientTo} rounded-full blur-sm opacity-50`}></div>
+                                <span className="relative z-10">Step {step.stepNumber}</span>
                             </div>
+
+                            <div className="flex items-start space-x-8 mt-2">
+                                {/* Enhanced Icon Container */}
+                                <div className={`flex-shrink-0 bg-gradient-to-br from-white/15 to-white/8 p-6 rounded-3xl border border-white/25 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                                    <step.icon className={`text-5xl ${modeInfo.color} drop-shadow-lg`} />
+                                </div>
+
+                                {/* Enhanced Content */}
+                                <div className="flex-1">
+                                    <h3
+                                        className="text-3xl text-white font-bold mb-4 group-hover:text-blue-200 transition-colors duration-300"
+                                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                    >
+                                        {step.title}
+                                    </h3>
+                                    <p
+                                        className="text-neutral-300 leading-relaxed text-lg group-hover:text-neutral-200 transition-colors duration-300"
+                                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                    >
+                                        {step.description}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Progress Line for non-last steps */}
+                            {index < steps.length - 1 && (
+                                <motion.div
+                                    initial={{ scaleY: 0 }}
+                                    animate={{ scaleY: 1 }}
+                                    transition={{ duration: 0.5, delay: (index * 0.15) + 0.3 }}
+                                    className={`absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-1 h-8 bg-gradient-to-b ${modeInfo.gradientFrom} ${modeInfo.gradientTo} rounded-full origin-top opacity-60`}
+                                />
+                            )}
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Footer: Arrow Down and Play Button */}
-            <div className="relative w-full mt-auto pt-8 pb-10 flex flex-col items-center">
-                {/* Animated Scroll Down Arrow */}
+            {/* Enhanced Footer */}
+            <div className="w-full mt-auto pt-8 pb-10 flex flex-col items-center relative z-10">
+                {/* Scroll Indicator */}
                 <motion.div
                     animate={{ opacity: canScroll && !isAtBottom ? 1 : 0 }}
                     transition={{ duration: 0.3 }}
                     className="absolute top-[-10px]"
                 >
-                    <FaChevronDown className="text-3xl text-white/50 animate-bounce" />
+                    <FaChevronDown className="text-2xl text-white/40 animate-bounce" />
                 </motion.div>
 
-                {/* Play Button */}
+                {/* Enhanced Play Button */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                 >
-                    <Button
+                    <button
                         onClick={handlePlayGame}
-                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-6 px-10 rounded-lg text-2xl transition-all 
-                        duration-300 ease-in-out shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/40 flex items-center 
-                         transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 cursor-pointer"
-                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                        className="relative group focus:outline-none"
                     >
-                        <span>เริ่มเล่น</span>
-                        <FaPlay className="text-white text-base transition-transform duration-300 group-hover:scale-110" />
-                    </Button>
+                        {/* Enhanced Glowing Background */}
+                        <div className={`absolute inset-0 bg-gradient-to-r ${modeInfo.gradientFrom} ${modeInfo.gradientTo} rounded-3xl blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-300`} />
+
+                        {/* Main Button */}
+                        <div className={`relative bg-gradient-to-r ${modeInfo.gradientFrom} ${modeInfo.gradientTo} text-white font-bold py-6 px-20 rounded-3xl text-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 border border-white/30 flex items-center gap-4`}
+                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                            <span className="relative z-10">เริ่มเล่น</span>
+                            <FaPlay className="text-white text-xl" />
+                        </div>
+                    </button>
                 </motion.div>
             </div>
         </main>
