@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb, FaArrowLeft } from "react-icons/fa";
 
 
 // Define a type for our game modes
@@ -67,9 +67,11 @@ export default function ModeSelectPage() {
     }
 
     const handleStartSelectedMode = () => {
-        // Navigate to the actual game page for the selected mode
-        console.log(`Starting game in ${selectedMode.name} mode`);
-        router.push(`/game/${selectedMode.id}/difficulty`); // Placeholder, you'll create this route
+        router.push(`/play/${selectedMode.id}`);
+    }
+
+    const handleGoBack = () => {
+        router.back();
     }
 
     const isFirstMode = currentModeIndex === 0;
@@ -116,6 +118,29 @@ export default function ModeSelectPage() {
                     className="absolute top-1/3 right-1/4 w-32 h-32 bg-gradient-to-br from-green-500/5 to-teal-500/5 rounded-full blur-lg"
                 />
             </div>
+
+            {/* Back Button */}
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="w-full max-w-xl lg:max-w-7xl px-4 mt-6 relative z-10"
+            >
+                <motion.button
+                    onClick={handleGoBack}
+                    className="flex items-center space-x-2 text-white/70 hover:text-white transition-colors duration-300 group py-3 px-4 -mx-4 rounded-lg hover:bg-white/5"
+                    whileHover={{ x: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    <FaArrowLeft className="text-lg group-hover:text-red-400 transition-colors duration-300" />
+                    <span
+                        className="text-lg font-medium group-hover:text-red-400 transition-colors duration-300"
+                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                    >
+                        Back
+                    </span>
+                </motion.button>
+            </motion.div>
 
             {/* Mode Selecting Title */}
             <motion.div
@@ -336,4 +361,3 @@ export default function ModeSelectPage() {
         </main>
     );
 }
-

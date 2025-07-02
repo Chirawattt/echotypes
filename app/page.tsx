@@ -10,7 +10,7 @@ export default function Home() {
   const handleStartGame = () => {
     // Navigate to the game page or another page
     // For now, let's log to console or navigate to a placeholder
-    router.push('/mode-select');
+    router.push('/play');
   };
 
   const gameFeatures = [

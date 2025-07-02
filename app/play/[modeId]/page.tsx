@@ -3,7 +3,7 @@
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { FaClock } from "react-icons/fa";
+import { FaClock, FaArrowLeft } from "react-icons/fa";
 import { getDifficultyInfo } from "@/lib/words-new";
 
 // Define a type for difficulty levels
@@ -85,44 +85,46 @@ export default function DifficultySelectedPage() {
     }, [modeId]);
 
     const handleSelectDifficulty = (difficultyId: string) => {
-        // Navigate to the actual game screen
-        router.push(`/game/${modeId}/${difficultyId}/how-to-play`); // Example route
+        // Navigate to the pre-game screen - Updated to new structure
+        router.push(`/play/${modeId}/${difficultyId}/pre-game`);
+    };
+
+    const handleGoBack = () => {
+        router.back();
     };
 
     return (
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
-            {/* Simplified Background Elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    animate={{
-                        rotate: 360
-                    }}
-                    transition={{
-                        duration: 30,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-full blur-xl"
-                />
-                <motion.div
-                    animate={{
-                        rotate: -360
-                    }}
-                    transition={{
-                        duration: 40,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-br from-red-500/5 to-orange-500/5 rounded-full blur-xl"
-                />
-            </div>
+
+            {/* Back Button */}
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="w-full max-w-xl lg:max-w-7xl px-4 mt-6 relative z-10"
+            >
+                <motion.button
+                    onClick={handleGoBack}
+                    className="flex items-center space-x-2 text-white/70 hover:text-white transition-colors duration-300 group py-3 px-4 -mx-4 rounded-lg hover:bg-white/5"
+                    whileHover={{ x: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    <FaArrowLeft className="text-lg group-hover:text-red-400 transition-colors duration-300" />
+                    <span
+                        className="text-lg font-medium group-hover:text-red-400 transition-colors duration-300"
+                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                    >
+                        Back
+                    </span>
+                </motion.button>
+            </motion.div>
 
             {/* Simplified Title Section */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="w-full max-w-xl lg:max-w-7xl px-4 mt-10 sm:mt-14 mb-12 relative z-10"
+                className="w-full max-w-xl lg:max-w-7xl px-4 mb-10 relative z-10"
             >
                 <h2
                     className="text-6xl text-center bg-gradient-to-r from-red-400 via-orange-400 to-red-500 bg-clip-text text-transparent mb-2 py-2"

@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getGameSessionWords } from '@/lib/words-new';
 import { useGameStore } from '@/lib/stores/gameStore';
-import { FaVolumeUp, FaHeart, FaRegHeart, FaClock, FaUndo, FaHome, FaLightbulb, FaBrain, FaKeyboard, FaTrophy } from 'react-icons/fa';
+import { FaVolumeUp, FaHeart, FaRegHeart, FaClock, FaUndo, FaHome, FaLightbulb, FaBrain, FaKeyboard, FaTrophy, FaArrowLeft } from 'react-icons/fa';
 import { IoReturnDownBack } from "react-icons/io5";
 import { Button } from '@/components/ui/button';
 import StreakDisplay from '@/components/game/StreakDisplay';
@@ -50,7 +50,7 @@ export default function GamePlayPage() {
         if (typeof window !== 'undefined' && window.speechSynthesis) {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
-            utterance.rate = 0.4;
+            utterance.rate = 0.6; // Adjust rate for better clarity
             window.speechSynthesis.speak(utterance);
         }
         inputRef.current?.focus();
@@ -289,6 +289,10 @@ export default function GamePlayPage() {
         const sessionWords = getGameSessionWords(difficultyId);
         resetGame();
         setWords(sessionWords);
+    };
+
+    const handleGoBack = () => {
+        router.back();
     };
 
     const renderLives = () => (
@@ -542,9 +546,31 @@ export default function GamePlayPage() {
 
             {/* Header Container */}
             <div className="w-full shrink-0 relative z-10">
+                {/* Back Button */}
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="absolute top-4 left-6 z-20"
+                >
+                    <motion.button
+                        onClick={handleGoBack}
+                        className="flex items-center space-x-2 text-white/60 hover:text-white transition-colors duration-300 group py-2 px-3 -mx-3 rounded-lg hover:bg-white/10"
+                        whileHover={{ x: -3 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <FaArrowLeft className="text-sm group-hover:text-red-400 transition-colors duration-300" />
+                        <span
+                            className="text-sm font-medium group-hover:text-red-400 transition-colors duration-300"
+                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                        >
+                            Back
+                        </span>
+                    </motion.button>
+                </motion.div>
 
                 {/* Game Info Section - Hearts and Word Count */}
-                <section className="w-full flex justify-between items-center py-2 px-6 sm:px-8 max-w-6xl mx-auto" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <section className="w-full flex justify-between items-center mt-10 pt-6 px-6 sm:px-8 max-w-6xl mx-auto" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
