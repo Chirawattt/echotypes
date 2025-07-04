@@ -73,13 +73,13 @@ export default function GameEffects({ isCorrect, isWrong, score }: GameEffectsPr
                 {score > 0 && score % 5 === 0 && (
                     <motion.div
                         initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                        animate={{ opacity: 0.3, y: -50, scale: 1 }}
+                        animate={{ opacity: 0.1, y: -50, scale: 4 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 2, ease: "easeOut" }}
                         className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
                     >
                         <div
-                            className="text-2xl sm:text-3xl font-medium bg-gradient-to-r from-yellow-400/60 to-orange-500/60 bg-clip-text text-transparent"
+                            className="text-3xl sm:text-4xl font-medium bg-gradient-to-r from-yellow-400/80 to-orange-500/80 bg-clip-text text-transparent"
                             style={{ fontFamily: "'Caveat Brush', cursive" }}
                         >
                             Awesome! 🎉

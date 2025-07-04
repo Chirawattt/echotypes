@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaVolumeUp, FaClock } from 'react-icons/fa';
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { cancelSpeechSynthesis } from '@/lib/cleanup';
 
 interface EchoModeProps {
     currentWord: string;
@@ -11,6 +12,9 @@ interface EchoModeProps {
     gameStyle?: 'practice' | 'challenge';
     currentWordIndex: number;
     onTimeUp?: () => void;
+    speechUtterance?: SpeechSynthesisUtterance | null; // Add this to get onend event
+    onCountdownChange?: (isCountingDown: boolean) => void; // Add this to communicate countdown state
+    onTimerReady?: (stopTimer: () => void) => void; // Add this to pass stop timer function to parent
 }
 
 export default function EchoMode({ 
@@ -19,201 +23,128 @@ export default function EchoMode({
     onSpeak, 
     gameStyle = 'practice',
     currentWordIndex,
-    onTimeUp 
+    onTimeUp,
+    speechUtterance,
+    onCountdownChange,
+    onTimerReady
 }: EchoModeProps) {
     const [listenCount, setListenCount] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(8);
+    const [timeLeft, setTimeLeft] = useState(5);
     const [isCountingDown, setIsCountingDown] = useState(false);
-    const [hasFirstSpeechStarted, setHasFirstSpeechStarted] = useState(false);
-    const [isInitializing, setIsInitializing] = useState(false);
     
     // Use refs to avoid stale closure issues
     const timerRef = useRef<NodeJS.Timeout | null>(null);
-    const timeLeftRef = useRef(8);
-    const isCountingDownRef = useRef(false);
     const onTimeUpRef = useRef(onTimeUp);
-    const isTransitioningRef = useRef(isTransitioning);
-    const speechTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Keep refs updated
+    // Update refs when props change
     useEffect(() => {
         onTimeUpRef.current = onTimeUp;
     }, [onTimeUp]);
 
+    // Function to stop the timer (when answer is submitted)
+    const stopTimer = useCallback(() => {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+        setIsCountingDown(false);
+        console.log('Timer stopped - answer submitted');
+    }, []);
+
+    // Listen for answer submission to stop timer
     useEffect(() => {
-        isTransitioningRef.current = isTransitioning;
+        if (onTimerReady) {
+            // Pass the stop timer function to parent so it can call it when answer is submitted
+            onTimerReady(stopTimer);
+        }
+    }, [onTimerReady, stopTimer]);
+
+    // Notify parent when countdown state changes
+    useEffect(() => {
+        if (onCountdownChange) {
+            onCountdownChange(isCountingDown);
+        }
+        
+        // Focus input when countdown starts (challenge mode)
+        if (gameStyle === 'challenge' && isCountingDown) {
+            setTimeout(() => {
+                const inputElement = document.querySelector('input[type="text"]') as HTMLInputElement;
+                if (inputElement && !inputElement.disabled) {
+                    inputElement.focus();
+                }
+            }, 100);
+        }
+    }, [isCountingDown, onCountdownChange, gameStyle]);
+
+    // Simple timer function
+    const startTimer = useCallback(() => {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+        
+        console.log('Starting 5-second timer');
+        setTimeLeft(5);
+        
+        const tick = (remainingTime: number) => {
+            if (remainingTime > 0 && !isTransitioning) {
+                console.log(`Timer: ${remainingTime}`);
+                setTimeLeft(remainingTime);
+                timerRef.current = setTimeout(() => tick(remainingTime - 1), 1000);
+            } else if (remainingTime === 0) {
+                console.log('Time up!');
+                setTimeLeft(0);
+                setIsCountingDown(false);
+                onTimeUpRef.current?.();
+            }
+        };
+        
+        timerRef.current = setTimeout(() => tick(4), 1000); // Start from 4 to show 5 seconds total
     }, [isTransitioning]);
 
-    // Update refs when state changes
-    useEffect(() => {
-        timeLeftRef.current = timeLeft;
-    }, [timeLeft]);
-
-    useEffect(() => {
-        isCountingDownRef.current = isCountingDown;
-    }, [isCountingDown]);
-
-    // Countdown function using useCallback with minimal dependencies
-    const startCountdown = useCallback(() => {
-        if (timerRef.current) {
-            console.log('Clearing existing timer');
-            clearTimeout(timerRef.current);
-            timerRef.current = null;
-        }
-
-        const tick = () => {
-            // Use refs to get latest values without dependencies
-            // Also check if we're not transitioning to avoid timer running during word changes
-            if (timeLeftRef.current > 0 && isCountingDownRef.current && !isTransitioningRef.current) {
-                const newTime = timeLeftRef.current - 1;
-                console.log(`Timer tick: ${timeLeftRef.current} -> ${newTime}`);
-                timeLeftRef.current = newTime;
-                setTimeLeft(newTime);
-                
-                if (newTime > 0) {
-                    timerRef.current = setTimeout(tick, 1000);
-                } else {
-                    console.log('Time is up! Calling onTimeUp');
-                    setIsCountingDown(false);
-                    // Access the latest onTimeUp via ref
-                    if (onTimeUpRef.current) {
-                        onTimeUpRef.current();
-                    }
-                }
-            } else {
-                console.log('Timer stopped - conditions not met:', { 
-                    timeLeft: timeLeftRef.current, 
-                    isCountingDown: isCountingDownRef.current,
-                    isTransitioning: isTransitioningRef.current
-                });
-            }
-        };
-
-        console.log('Starting new timer with timeLeft:', timeLeftRef.current);
-        timerRef.current = setTimeout(tick, 1000);
-    }, []); // Empty dependency array - function never changes
-
-    // Reset counters when word changes
+    // Reset when word changes
     useEffect(() => {
         console.log('Word changed, resetting...');
-        
-        // Clear all timers immediately
         if (timerRef.current) {
             clearTimeout(timerRef.current);
-            timerRef.current = null;
         }
-        if (speechTimeoutRef.current) {
-            clearTimeout(speechTimeoutRef.current);
-            speechTimeoutRef.current = null;
-        }
-        
-        // Set initializing flag to prevent other effects from running
-        setIsInitializing(true);
-        
-        // Reset all states synchronously
         setListenCount(0);
-        setTimeLeft(8);
-        timeLeftRef.current = 8;
+        setTimeLeft(5);
         setIsCountingDown(false);
-        isCountingDownRef.current = false;
-        setHasFirstSpeechStarted(false);
-        
-        // Clear initializing flag after a short delay to allow state updates
-        setTimeout(() => {
-            setIsInitializing(false);
-        }, 10);
     }, [currentWordIndex]);
 
-    // Start countdown immediately when first speech begins (auto-play)
+    // Handle speech end event for challenge mode
     useEffect(() => {
-        console.log('First speech effect triggered:', { 
-            gameStyle, 
-            hasFirstSpeechStarted, 
-            isTransitioning, 
-            currentWordIndex, 
-            isInitializing 
-        });
-        
-        // Don't do anything if we're initializing (resetting state)
-        if (isInitializing) {
-            console.log('Skipping - currently initializing');
-            return;
-        }
-        
-        // Only start first speech countdown if:
-        // 1. It's challenge mode
-        // 2. First speech hasn't started yet
-        // 3. Not transitioning between words
-        // 4. Not already counting down (to avoid duplicate timers)
-        if (gameStyle === 'challenge' && 
-            !hasFirstSpeechStarted && 
-            !isTransitioning && 
-            !isCountingDown) {
-            console.log('Starting first speech countdown...');
-            setHasFirstSpeechStarted(true);
+        if (gameStyle === 'challenge' && speechUtterance) {
+            const handleSpeechEnd = () => {
+                console.log('Speech ended, starting timer...');
+                setIsCountingDown(true);
+                startTimer();
+                
+                // Focus input after countdown starts
+                setTimeout(() => {
+                    const inputElement = document.querySelector('input[type="text"]') as HTMLInputElement;
+                    if (inputElement) {
+                        inputElement.focus();
+                    }
+                }, 150);
+            };
+
+            speechUtterance.addEventListener('end', handleSpeechEnd);
             
-            // Start countdown after a brief delay for speech to begin
-            speechTimeoutRef.current = setTimeout(() => {
-                // Double check we're still in the right state before starting countdown
-                if (!isTransitioningRef.current) {
-                    console.log('Setting isCountingDown to true');
-                    setIsCountingDown(true);
-                } else {
-                    console.log('Aborted countdown - transitioning');
-                }
-            }, 1500); // Approximate speech duration
+            return () => {
+                speechUtterance.removeEventListener('end', handleSpeechEnd);
+            };
         }
-    }, [gameStyle, hasFirstSpeechStarted, isTransitioning, isCountingDown, currentWordIndex, isInitializing]);
+    }, [gameStyle, speechUtterance, startTimer]);
 
-    // Start timer when counting down begins - only once per countdown session  
-    useEffect(() => {
-        console.log('Timer effect triggered:', { 
-            gameStyle, 
-            isCountingDown, 
-            isTransitioning, 
-            hasFirstSpeechStarted,
-            hasExistingTimer: !!timerRef.current,
-            currentWordIndex,
-            isInitializing
-        });
-        
-        // Don't do anything if we're initializing (resetting state)
-        if (isInitializing) {
-            console.log('Skipping timer - currently initializing');
-            return;
-        }
-        
-        // Only start timer if:
-        // 1. It's challenge mode
-        // 2. Countdown is active
-        // 3. Not transitioning
-        // 4. No existing timer
-        // 5. First speech has started (to avoid premature timer start)
-        if (gameStyle === 'challenge' && 
-            isCountingDown && 
-            !isTransitioning && 
-            !timerRef.current && 
-            hasFirstSpeechStarted) {
-            console.log('Starting countdown timer...');
-            startCountdown();
-        }
-        
-        return () => {
-            if (timerRef.current) {
-                clearTimeout(timerRef.current);
-            }
-        };
-    }, [gameStyle, isCountingDown, isTransitioning, startCountdown, hasFirstSpeechStarted, currentWordIndex, isInitializing]);
-
-    // Cleanup on unmount
+    // Clean up timer on unmount
     useEffect(() => {
         return () => {
             if (timerRef.current) {
                 clearTimeout(timerRef.current);
             }
-            if (speechTimeoutRef.current) {
-                clearTimeout(speechTimeoutRef.current);
-            }
+            // Cancel any ongoing speech synthesis
+            cancelSpeechSynthesis();
         };
     }, []);
 
@@ -233,33 +164,102 @@ export default function EchoMode({
 
     return (
         <div className="flex flex-col items-center">
-            {/* Timer for Challenge Mode - Always show when in challenge mode */}
+            {/* Timer for Challenge Mode - Horizontal Progress Bar Style */}
             {gameStyle === 'challenge' && (
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="mb-4 flex flex-col items-center"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-6 w-full max-w-md"
                 >
-                    <div className={`relative w-16 h-16 rounded-full border-4 flex items-center justify-center ${
-                        timeLeft <= 2 ? 'border-red-500 bg-red-500/20' : 'border-orange-500 bg-orange-500/20'
-                    }`}>
+                    {/* Timer Header */}
+                    <div className="flex items-center justify-between mb-3">
                         <motion.div
-                            animate={{ scale: timeLeft <= 2 ? [1, 1.2, 1] : 1 }}
+                            className="flex items-center space-x-2"
+                            animate={{ scale: timeLeft <= 2 ? [1, 1.05, 1] : 1 }}
                             transition={{ duration: 0.5, repeat: timeLeft <= 2 ? Infinity : 0 }}
-                            className={`text-2xl font-bold ${
-                                timeLeft <= 2 ? 'text-red-400' : 'text-orange-400'
-                            }`}
-                            style={{ fontFamily: "'Caveat Brush', cursive" }}
                         >
-                            {timeLeft}
+                            <div className={`w-3 h-3 rounded-full ${
+                                timeLeft <= 2 ? 'bg-red-400' : 'bg-orange-400'
+                            } animate-pulse`}></div>
+                            <span 
+                                className={`text-lg font-bold ${
+                                    timeLeft <= 2 ? 'text-red-400' : 'text-orange-400'
+                                }`}
+                                style={{ fontFamily: "'Caveat Brush', cursive" }}
+                            >
+                                {timeLeft}s
+                            </span>
                         </motion.div>
+                        <span 
+                            className={`text-sm font-medium ${
+                                timeLeft <= 2 ? 'text-red-300' : 'text-orange-300'
+                            }`}
+                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                        >
+                            {isCountingDown ? '⏰ Time to answer!' : '🎯 Get ready!'}
+                        </span>
                     </div>
-                    <p 
-                        className="text-orange-300 text-sm mt-2 font-medium"
-                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                    >
-                        {isCountingDown ? '⏰ Time to answer!' : '🎯 Get ready!'}
-                    </p>
+                    
+                    {/* Progress Bar Container */}
+                    <div className="relative">
+                        {/* Background Bar */}
+                        <div className="w-full h-3 bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-gray-700/30">
+                            {/* Animated Progress Bar */}
+                            <motion.div
+                                className={`h-full rounded-full transition-all duration-1000 ease-linear ${
+                                    timeLeft <= 2 
+                                        ? 'bg-gradient-to-r from-red-500 to-red-400' 
+                                        : 'bg-gradient-to-r from-orange-500 to-yellow-400'
+                                }`}
+                                style={{ 
+                                    width: `${(timeLeft / 5) * 100}%`,
+                                    boxShadow: timeLeft <= 2 
+                                        ? '0 0 20px rgba(239, 68, 68, 0.5)' 
+                                        : '0 0 20px rgba(249, 115, 22, 0.3)'
+                                }}
+                                animate={{
+                                    opacity: timeLeft <= 2 ? [1, 0.7, 1] : 1,
+                                }}
+                                transition={{ 
+                                    duration: 0.5, 
+                                    repeat: timeLeft <= 2 ? Infinity : 0 
+                                }}
+                            />
+                        </div>
+                        
+                        {/* Progress Bar Glow Effect */}
+                        <div className={`absolute inset-0 rounded-full opacity-30 ${
+                            timeLeft <= 2 ? 'bg-red-400/20' : 'bg-orange-400/20'
+                        } blur-sm`}></div>
+                        
+                        {/* Time Markers */}
+                        <div className="absolute top-0 left-0 w-full h-full flex justify-between items-center px-1">
+                            {[1, 2, 3, 4, 5].map((mark) => (
+                                <div
+                                    key={mark}
+                                    className={`w-0.5 h-2 rounded-full transition-all duration-300 ${
+                                        timeLeft >= mark 
+                                            ? 'bg-white/60' 
+                                            : 'bg-gray-600/40'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    
+                    {/* Timer Status Text */}
+                    <div className="mt-2 text-center">
+                        <motion.p
+                            className={`text-xs font-medium ${
+                                timeLeft <= 2 ? 'text-red-300/80' : 'text-orange-300/80'
+                            }`}
+                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                            animate={{ opacity: timeLeft <= 2 ? [1, 0.6, 1] : 1 }}
+                            transition={{ duration: 0.8, repeat: timeLeft <= 2 ? Infinity : 0 }}
+                        >
+                            {timeLeft <= 2 ? '🚨 Hurry up!' : '💭 Think carefully...'}
+                        </motion.p>
+                    </div>
                 </motion.div>
             )}
 

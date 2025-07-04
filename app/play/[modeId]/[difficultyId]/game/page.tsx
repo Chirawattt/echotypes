@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { getGameSessionWords } from '@/lib/words-new';
 import { useGameStore } from '@/lib/stores/gameStore';
+import { globalCleanup, stopCountdownAudio, registerAudioRef, unregisterAudioRef } from '@/lib/cleanup';
 import { FaHeart, FaRegHeart, FaArrowLeft } from 'react-icons/fa';
 import StreakDisplay from '@/components/game/StreakDisplay';
 import StreakCelebration from '@/components/game/StreakCelebration';
@@ -56,15 +57,46 @@ export default function GamePlayPage() {
     const completedAudioRef = useRef<HTMLAudioElement | null>(null);
     const countdownAudioRef = useRef<HTMLAudioElement | null>(null);
 
-    const speak = useCallback((text: string) => {
+    // Speech utterance ref for Echo mode
+    const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+    
+    // Add state to track Echo mode countdown (to disable input during speech)
+    const [isEchoCountingDown, setIsEchoCountingDown] = useState(false);
+    
+    // Add ref to store the stop timer function from EchoMode
+    const echoStopTimerRef = useRef<(() => void) | null>(null);
+
+    const speak = useCallback((text: string, onEnd?: () => void) => {
         if (typeof window !== 'undefined' && window.speechSynthesis) {
+            // Cancel any ongoing speech before starting new one
+            window.speechSynthesis.cancel();
+            
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
-            utterance.rate = 0.6; // Adjust rate for better clarity
+            utterance.rate = 0.6;
+
+            // Store current utterance reference
+            currentUtteranceRef.current = utterance;
+
+            // เมื่อเสียงพูดจบ ให้เรียก onEnd (ถ้ามี)
+            utterance.onend = () => {
+                if (onEnd) {
+                    onEnd();
+                }
+                // Focus ที่ input หลังจาก countdown เริ่ม (delay สั้นๆ)
+                setTimeout(() => {
+                    inputRef.current?.focus();
+                }, 100);
+            };
+
             window.speechSynthesis.speak(utterance);
+            return utterance;
+        } else {
+           // ถ้า browser ไม่รองรับ ให้ focus ทันที
+           inputRef.current?.focus();
+           return null;
         }
-        inputRef.current?.focus();
-    }, []);
+  }, []);
 
     const playSound = useCallback((audioRef: React.RefObject<HTMLAudioElement | null>, volume = 0.7) => {
         if (audioRef.current) {
@@ -81,13 +113,42 @@ export default function GamePlayPage() {
         completedAudioRef.current = new Audio('/sounds/completed.wav');
         countdownAudioRef.current = new Audio('/sounds/countdown.mp3');
 
+        // Register audio refs for cleanup
+        registerAudioRef(keypressAudioRef);
+        registerAudioRef(correctAudioRef);
+        registerAudioRef(incorrectAudioRef);
+        registerAudioRef(completedAudioRef);
+        registerAudioRef(countdownAudioRef);
+
+        // Clear any pending speech synthesis when component initializes
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+
         const sessionWords = getGameSessionWords(difficultyId);
         initializeGame(sessionWords);
         inputRef.current?.focus();
+
+        // Cleanup function to unregister audio refs
+        return () => {
+            unregisterAudioRef(keypressAudioRef);
+            unregisterAudioRef(correctAudioRef);
+            unregisterAudioRef(incorrectAudioRef);
+            unregisterAudioRef(completedAudioRef);
+            unregisterAudioRef(countdownAudioRef);
+        };
     }, [difficultyId, initializeGame]);
 
     useEffect(() => {
         if (status === 'countdown') {
+            // Clear any pending speech synthesis before countdown starts
+            if (typeof window !== 'undefined' && window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
+            // Stop any existing countdown audio
+            stopCountdownAudio();
+            
             setCountdown(3);
             playSound(countdownAudioRef, 0.5);
             let countdownRef = 3;
@@ -99,7 +160,11 @@ export default function GamePlayPage() {
                     setTimeout(() => setStatus('playing'), 1000);
                 }
             }, 1000);
-            return () => clearInterval(interval);
+            return () => {
+                clearInterval(interval);
+                // Stop countdown audio when leaving countdown state
+                stopCountdownAudio();
+            };
         }
         inputRef.current?.focus();
     }, [status, playSound, setCountdown, setStatus]);
@@ -107,6 +172,11 @@ export default function GamePlayPage() {
     // Speak word in Echo mode
     useEffect(() => {
         if (status === 'playing' && words.length > 0 && modeId === 'echo') {
+            // Clear any pending speech synthesis before speaking new word
+            if (typeof window !== 'undefined' && window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
             speak(words[currentWordIndex].word);
             inputRef.current?.focus();
         }
@@ -225,6 +295,11 @@ export default function GamePlayPage() {
         e.preventDefault();
         if (!userInput.trim() || isTransitioning) return;
 
+        // Stop Echo timer immediately when answer is submitted
+        if (modeId === 'echo' && gameStyle === 'challenge' && echoStopTimerRef.current) {
+            echoStopTimerRef.current();
+        }
+
         const isCorrect = userInput.trim().toLowerCase() === words[currentWordIndex].word.toLowerCase();
 
         if (modeId === 'typing') {
@@ -302,6 +377,10 @@ export default function GamePlayPage() {
     };
 
     const handleGoBack = () => {
+        // Clean up everything before going back
+        globalCleanup();
+        resetGame();
+        setWords([]);
         router.back();
     };
 
@@ -342,6 +421,28 @@ export default function GamePlayPage() {
             }, 1200);
         }
     };
+
+    // Focus input when Echo countdown starts (challenge mode)
+    useEffect(() => {
+        if (modeId === 'echo' && gameStyle === 'challenge' && isEchoCountingDown && status === 'playing') {
+            setTimeout(() => {
+                inputRef.current?.focus();
+            }, 100);
+        }
+    }, [modeId, gameStyle, isEchoCountingDown, status]);
+
+    // Function to handle timer ready from EchoMode
+    const handleEchoTimerReady = useCallback((stopTimer: () => void) => {
+        echoStopTimerRef.current = stopTimer;
+    }, []);
+
+    // Cleanup when component unmounts
+    useEffect(() => {
+        return () => {
+            // Clean up everything when component unmounts
+            globalCleanup();
+        };
+    }, []);
 
     const renderLives = () => (
         <div className="flex items-center space-x-1 text-xl sm:text-2xl">
@@ -492,6 +593,9 @@ export default function GamePlayPage() {
                         gameStyle={gameStyle}
                         currentWordIndex={currentWordIndex}
                         onTimeUp={handleEchoTimeUp}
+                        speechUtterance={currentUtteranceRef.current}
+                        onCountdownChange={setIsEchoCountingDown}
+                        onTimerReady={handleEchoTimerReady}
                     />
                 )}
 
@@ -527,7 +631,7 @@ export default function GamePlayPage() {
                     isWrong={isWrong}
                     isCorrect={isCorrect}
                     isTransitioning={isTransitioning}
-                    isDisabled={(isTransitioning || (modeId === 'memory' && isWordVisible)) && modeId !== 'typing'}
+                    isDisabled={(isTransitioning || (modeId === 'memory' && isWordVisible) || (modeId === 'echo' && gameStyle === 'challenge' && !isEchoCountingDown)) && modeId !== 'typing'}
                     currentWordIndex={currentWordIndex}
                 />
 
