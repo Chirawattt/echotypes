@@ -61,16 +61,6 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
 
     // Trigger animations based on streak changes
     useEffect(() => {
-        // Debug: always log state changes
-        console.log('🔥 Streak Update:', {
-            streakCount,
-            prevStreakCount,
-            isVisible,
-            shouldDisappear,
-            condition1: streakCount > prevStreakCount && streakCount >= 2,
-            condition2: prevStreakCount >= 2 && streakCount === 0,
-            condition3: prevStreakCount >= 2 && streakCount < prevStreakCount && streakCount < 2
-        });
 
         // Only proceed if streak actually changed
         if (streakCount === prevStreakCount) {
@@ -81,7 +71,6 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
 
         if (streakCount > prevStreakCount && streakCount >= 2) {
             // Streak increased - show shake animation
-            console.log('✅ Triggering shake animation');
             setShouldShake(true);
             setIsVisible(true);
             setShouldDisappear(false);
@@ -92,11 +81,9 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
         }
         else if (prevStreakCount >= 2 && streakCount === 0) {
             // Streak reset to 0 - show disappear animation
-            console.log('💥 Triggering disappear animation - streak reset to 0');
             setShouldDisappear(true);
             setShouldShake(false);
             const timer = setTimeout(() => {
-                console.log('🫥 Hiding after disappear animation');
                 setShouldDisappear(false);
                 setIsVisible(false);
                 setPrevStreakCount(streakCount);
@@ -105,11 +92,9 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
         }
         else if (prevStreakCount >= 2 && streakCount < 2) {
             // Streak decreased below 2 - show disappear animation
-            console.log('💥 Triggering disappear animation - streak decreased below 2');
             setShouldDisappear(true);
             setShouldShake(false);
             const timer = setTimeout(() => {
-                console.log('🫥 Hiding after disappear animation');
                 setShouldDisappear(false);
                 setIsVisible(false);
                 setPrevStreakCount(streakCount);
@@ -118,7 +103,6 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
         }
         else if (streakCount >= 2 && !isVisible) {
             // Show streak display if it should be visible
-            console.log('👁️ Making visible');
             setIsVisible(true);
             setShouldDisappear(false);
             setPrevStreakCount(streakCount);
