@@ -6,15 +6,29 @@ import { useGameStore } from "@/lib/stores/gameStore";
 import { Button } from "@/components/ui/button";
 import { Word } from "@/lib/words/types";
 
-export default function GameOver({ modeId, words, difficultyId, handleRestartGame }: {
+export default function GameOver({ modeId, words, difficultyId, handleRestartGame, gameStyle, totalChallengeScore }: {
     modeId: string;
     words: Word[];
     difficultyId: string;
     handleRestartGame: () => void;
+    gameStyle?: 'practice' | 'challenge';
+    totalChallengeScore?: number;
 }) {
 
     const router = useRouter();
     const { timeSpent, wpm, score, highScore, incorrectWords } = useGameStore();
+
+    // Use challenge score if in challenge mode, otherwise use regular score
+    const displayScore = gameStyle === 'challenge' ? (totalChallengeScore || 0) : score;
+    const scoreLabel = gameStyle === 'challenge' ? 'CHALLENGE SCORE' : 'SCORE';
+    const scoreUnit = gameStyle === 'challenge' ? 'pts' : '';
+
+    // For high score, we need to handle challenge mode differently
+    const displayHighScore = gameStyle === 'challenge' ? 
+        (typeof localStorage !== 'undefined' ? 
+            parseInt(localStorage.getItem(`challengeHighScore_${modeId}_${difficultyId}`) || '0') : 0) : 
+        highScore;
+    const highScoreLabel = gameStyle === 'challenge' ? 'CHALLENGE HIGH' : 'HIGH SCORE';
 
     return (
         <main className="flex flex-col items-center min-h-screen bg-[#101010] text-white p-4 pt-28" style={{ fontFamily: "'Caveat Brush', cursive" }}>
@@ -46,7 +60,10 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                         <div className="text-8xl mb-2 text-green-400 font-bold drop-shadow-lg">{wpm}</div>
                         <span className="text-green-300 text-xl tracking-wider">WORDS PER MINUTE</span>
                         <div className="text-sm text-neutral-500 mt-2">
-                            {score} words typed correctly
+                            {gameStyle === 'challenge' ? 
+                                `${score} words typed correctly` : 
+                                `${score} words typed correctly`
+                            }
                         </div>
                     </div>
 
@@ -83,8 +100,16 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
 
                     {/* Score */}
                     <div className="flex flex-col items-center bg-gradient-to-b from-neutral-600/20 to-neutral-700/10 rounded-2xl p-6 border border-neutral-500/30 min-w-[150px]">
-                        <div className="text-6xl mb-2 text-white font-bold">{score}</div>
-                        <span className="text-neutral-400 text-lg tracking-wider">SCORE</span>
+                        <div className="text-6xl mb-2 text-white font-bold">
+                            {displayScore}
+                            {scoreUnit && <span className="text-3xl text-neutral-400 ml-2">{scoreUnit}</span>}
+                        </div>
+                        <span className="text-neutral-400 text-lg tracking-wider">{scoreLabel}</span>
+                        {gameStyle === 'challenge' && (
+                            <div className="text-sm text-neutral-500 mt-2">
+                                {score} words correct
+                            </div>
+                        )}
                     </div>
 
                     {/* Total Words */}
@@ -96,8 +121,11 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                     {/* High Score */}
                     <div className="flex flex-col items-center bg-gradient-to-b from-amber-500/20 to-amber-600/10 rounded-2xl p-6 border border-amber-500/30 min-w-[150px]">
                         <FaTrophy className="text-4xl text-amber-400 mb-2" />
-                        <div className="text-6xl mb-2 text-amber-400 font-bold">{highScore}</div>
-                        <span className="text-amber-300 text-lg tracking-wider">HIGH SCORE</span>
+                        <div className="text-6xl mb-2 text-amber-400 font-bold">
+                            {displayHighScore}
+                            {gameStyle === 'challenge' && <span className="text-3xl text-amber-300 ml-2">pts</span>}
+                        </div>
+                        <span className="text-amber-300 text-lg tracking-wider">{highScoreLabel}</span>
                     </div>
                 </div>
             )}
@@ -151,7 +179,17 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                     </motion.div>
                 </>
             )}
-            <div className="flex space-x-8 mb-8" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}> <Button onClick={handleRestartGame} className="bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-6 px-12 rounded-md text-xl flex items-center gap-2 text-center cursor-pointer"> <FaUndo /> <span>เริ่มใหม่</span> </Button> <Button onClick={() => router.push('/')} className="bg-[#86D95C] hover:bg-[#78C351] text-black font-bold py-6 px-12 rounded-md text-xl flex items-center gap-2 text-center cursor-pointer"> <FaHome /> <span>หน้าแรก</span> </Button> </div>
+            <div className="flex space-x-8 mb-8" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <Button onClick={() => router.push('/')} 
+                    className="bg-[#86D95C] hover:bg-[#78C351] text-black font-bold py-6 px-12 rounded-md text-xl flex items-center gap-2 text-center cursor-pointer"> 
+                        <FaHome /> <span>หน้าแรก</span> 
+                </Button> 
+                <Button onClick={handleRestartGame} 
+                    className="bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-6 px-12 rounded-md text-xl flex items-center gap-2 text-center cursor-pointer">
+                        <FaUndo /> <span>เริ่มใหม่</span> 
+                </Button> 
+                
+            </div>
         </main>
     )
 }

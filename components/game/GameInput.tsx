@@ -26,7 +26,7 @@ const GameInput = forwardRef<HTMLInputElement, GameInputProps>(({
     currentWordIndex
 }, ref) => {
     return (
-        <form onSubmit={onSubmit} className="w-full max-w-6xl flex flex-col mt-4 items-center">
+        <form onSubmit={onSubmit} className="w-full max-w-6xl flex flex-col mt-4 items-center mb-10">
             <motion.div
                 key={currentWordIndex}
                 initial={{ opacity: 0, y: 20 }}
@@ -46,7 +46,7 @@ const GameInput = forwardRef<HTMLInputElement, GameInputProps>(({
                         autoCapitalize="off"
                         autoCorrect="off"
                         disabled={isDisabled}
-                        className={`w-full bg-transparent text-center text-3xl sm:text-4xl lg:text-5xl p-5 focus:outline-none transition-all duration-300 font-bold placeholder:text-white/30 border-b-3 ${isWrong ? 'text-red-400 border-red-500' :
+                        className={`w-full bg-transparent text-center text-3xl sm:text-4xl lg:text-5xl p-5 focus:outline-none transition-all duration-300 font-bold placeholder:text-white/30 border-b-3 mb-10 ${isWrong ? 'text-red-400 border-red-500' :
                             isCorrect ? 'text-green-400 border-green-500' :
                                 'text-white border-white/30 focus:border-blue-400'
                             } ${isTransitioning ? 'cursor-not-allowed opacity-50' : ''}`}

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Word } from '@/lib/words/types';
+import { ScoreCalculation } from '@/lib/scoring';
 
 export type GameStatus = 'countdown' | 'playing' | 'gameOver';
 
@@ -42,6 +43,10 @@ interface GameState {
     streakCount: number;
     bestStreak: number;
 
+    // Challenge Mode Scoring
+    totalChallengeScore: number;
+    lastScoreCalculation: ScoreCalculation | null;
+
     // Actions
     setStatus: (status: GameStatus) => void;
     setCountdown: (countdown: number) => void;
@@ -68,6 +73,12 @@ interface GameState {
     setBestStreak: (count: number) => void;
     incrementStreak: () => void;
     resetStreak: () => void;
+
+    // Challenge Mode Scoring actions
+    setTotalChallengeScore: (score: number | ((prev: number) => number)) => void;
+    setLastScoreCalculation: (calculation: ScoreCalculation | null) => void;
+    addChallengeScore: (calculation: ScoreCalculation) => void;
+    resetChallengeScore: () => void;
 
     // Complex actions
     incrementWordIndex: () => void;
@@ -102,6 +113,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     incorrectWords: [],
     streakCount: 0,
     bestStreak: 0,
+    totalChallengeScore: 0,
+    lastScoreCalculation: null,
 
     // Basic setters
     setStatus: (status) => set({ status }),
@@ -144,6 +157,20 @@ export const useGameStore = create<GameState>((set, get) => ({
     }),
     resetStreak: () => set({ streakCount: 0 }),
 
+    // Challenge Mode Scoring actions
+    setTotalChallengeScore: (score) => set((state) => ({
+        totalChallengeScore: typeof score === 'function' ? score(state.totalChallengeScore) : score
+    })),
+    setLastScoreCalculation: (calculation) => set({ lastScoreCalculation: calculation }),
+    addChallengeScore: (calculation) => set((state) => ({
+        totalChallengeScore: state.totalChallengeScore + calculation.finalScore,
+        lastScoreCalculation: calculation
+    })),
+    resetChallengeScore: () => set({ 
+        totalChallengeScore: 0,
+        lastScoreCalculation: null
+    }),
+
     // Complex actions
     incrementWordIndex: () => set((state) => ({
         currentWordIndex: state.currentWordIndex + 1
@@ -179,6 +206,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         promptText: '',
         incorrectWords: [],
         streakCount: 0,
+        totalChallengeScore: 0,
+        lastScoreCalculation: null,
         // Note: bestStreak is preserved across game resets
     }),
 
@@ -202,6 +231,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         promptText: '',
         incorrectWords: [],
         streakCount: 0,
+        totalChallengeScore: 0,
+        lastScoreCalculation: null,
         // Note: bestStreak is preserved across game initializations
     }),
 }));

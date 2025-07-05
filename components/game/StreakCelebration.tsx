@@ -80,10 +80,10 @@ export default function StreakCelebration({ className = '' }: StreakCelebrationP
     const IconComponent = config.icon;
 
     return (
-        <div className={`fixed top-6 right-6 z-50 pointer-events-none ${className}`}>
+        <div className={`absolute -top-20 left-0 z-50 pointer-events-none ${className}`}>
             <AnimatePresence>
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.5, x: 100 }}
+                    initial={{ opacity: 0, scale: 0.5, x: -50 }}
                     animate={{
                         opacity: 1,
                         scale: 1,
@@ -93,18 +93,18 @@ export default function StreakCelebration({ className = '' }: StreakCelebrationP
                     exit={{
                         opacity: 0,
                         scale: 0.5,
-                        x: 100,
-                        transition: { duration: 0.5 }
+                        x: -50,
+                        transition: { duration: 1 }
                     }}
                     transition={{
-                        duration: 0.6,
+                        duration: 1,
                         rotate: {
                             duration: 0.4,
                             repeat: 1,
                             ease: "easeInOut"
                         }
                     }}
-                    className="relative bg-black/20 backdrop-blur-sm p-4 rounded-2xl border border-white/20"
+                    className="bg-black/20 backdrop-blur-sm p-4 rounded-2xl border border-white/20"
                 >
                     {/* Icon */}
                     <motion.div

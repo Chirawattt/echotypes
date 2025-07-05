@@ -33,7 +33,7 @@ Recent Updates:
 Challenge Mode Concept:
 - Applied Score System into each mode.
 1. Echo Mode ✅: - can listening again only 1 times after that the speak again button will be disabled
-                - there will be a timing for 5 seconds after finished speak to let user typed answer in time!
+                - there will be a timing for 5 seconds after finished speak to let user typed answer in time! ✅
                 - timer stops immediately when answer is submitted ✅
 
 2. Typing Mode: High-Speed Survival Run
@@ -59,3 +59,8 @@ COMPLETED ✅:
     1. timer system in echo mode ✅
     2. Enhanced 4-Tier Streak System ✅
     3. Comprehensive cleanup system ✅ 
+
+
+
+next tomorrow:
+    -   แก้ไขส่วน ScoreBreakdownToast ให้เสร็จ
