@@ -231,10 +231,10 @@ export default function ModeSelectPage() {
                         initial={{ opacity: 0, y: 30, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="flex flex-col items-center text-center"
+                        className="flex flex-col items-center text-center "
                     >
                         <motion.div
-                            className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-3xl p-12 border border-white/20 shadow-2xl"
+                            className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl"
                             whileHover={{ scale: 1.05, y: -10 }}
                             transition={{ duration: 0.3 }}
                             animate={{
@@ -260,7 +260,7 @@ export default function ModeSelectPage() {
                                 }}
                                 className="relative z-10"
                             >
-                                <selectedMode.icon className="text-[180px] bg-gradient-to-br from-red-400 to-orange-400 bg-clip-text drop-shadow-2xl" />
+                                <selectedMode.icon className="md:text-[120px] lg:text-[140px] bg-gradient-to-br from-red-400 to-orange-400 bg-clip-text drop-shadow-2xl" />
                             </motion.div>
                         </motion.div>
                     </motion.div>
@@ -306,7 +306,7 @@ export default function ModeSelectPage() {
                     style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                 >
                     <motion.p
-                        className="text-3xl mb-3 bg-gradient-to-r from-white to-neutral-200 bg-clip-text text-transparent font-medium"
+                        className="text-2xl mb-3 bg-gradient-to-r from-white to-neutral-200 bg-clip-text text-transparent font-medium"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.6, duration: 0.5 }}
@@ -314,7 +314,7 @@ export default function ModeSelectPage() {
                         {selectedMode.descriptionThai}
                     </motion.p>
                     <motion.p
-                        className="text-lg bg-gradient-to-r from-neutral-300 to-neutral-400 bg-clip-text text-transparent"
+                        className="text-md bg-gradient-to-r from-neutral-300 to-neutral-400 bg-clip-text text-transparent"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.8, duration: 0.5 }}

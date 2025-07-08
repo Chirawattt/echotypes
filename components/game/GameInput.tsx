@@ -26,7 +26,7 @@ const GameInput = forwardRef<HTMLInputElement, GameInputProps>(({
     currentWordIndex
 }, ref) => {
     return (
-        <form onSubmit={onSubmit} className="w-full max-w-6xl flex flex-col mt-4 items-center mb-10">
+        <form onSubmit={onSubmit} className="w-full max-w-6xl flex flex-col mt-2 items-center mb-5">
             <motion.div
                 key={currentWordIndex}
                 initial={{ opacity: 0, y: 20 }}

@@ -71,7 +71,7 @@ export default function GamePlayPage() {
 
     return (
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
-            
+
             {/* Streak Glow Effects */}
             <StreakGlowEffects streakCount={gameLogic.streakCount} />
 
@@ -90,14 +90,16 @@ export default function GamePlayPage() {
             {/* Game Timer for non-typing modes */}
             <GameTimer modeId={modeId} currentTime={gameLogic.currentTime} />
 
-            {/* Streak Display */}
-            <div className="flex justify-center items-center py-6 relative z-10 shrink-0">
-                <StreakDisplay />
-            </div>
+
 
             {/* Main Game Content */}
-            <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-10 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl">
-                
+            <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-10 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl ">
+
+                {/* Streak Display */}
+                <div className="flex justify-center items-center relative z-10 shrink-0">
+                    <StreakDisplay />
+                </div>
+
                 {/* Game Mode Renderer */}
                 <GameModeRenderer
                     modeId={modeId}
@@ -136,9 +138,9 @@ export default function GamePlayPage() {
                     isCorrect={gameLogic.isCorrect}
                     isTransitioning={gameLogic.isTransitioning}
                     isDisabled={
-                        (gameLogic.isTransitioning || 
-                         (modeId === 'memory' && gameLogic.isWordVisible) || 
-                         (modeId === 'echo' && gameStyle === 'challenge' && !gameLogic.isEchoCountingDown)) && 
+                        (gameLogic.isTransitioning ||
+                            (modeId === 'memory' && gameLogic.isWordVisible) ||
+                            (modeId === 'echo' && gameStyle === 'challenge' && !gameLogic.isEchoCountingDown)) &&
                         modeId !== 'typing'
                     }
                     currentWordIndex={gameLogic.currentWordIndex}

@@ -64,3 +64,4 @@ COMPLETED ✅:
 
 next tomorrow:
     -   แก้ไขส่วน ScoreBreakdownToast ให้เสร็จ
+    - ทำให้ score เรืองแสงตามระดับ streak

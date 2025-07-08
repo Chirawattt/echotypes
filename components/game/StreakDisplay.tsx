@@ -149,7 +149,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
     }
 
     return (
-        <div className={`flex flex-col items-center justify-center ${className} mt-4`}>
+        <div className={`flex flex-col items-center justify-center ${className} mt-1`}>
             <AnimatePresence mode="wait">
                 {(isVisible || shouldDisappear) && (
                     <motion.div

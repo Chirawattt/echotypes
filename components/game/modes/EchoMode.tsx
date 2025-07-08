@@ -184,13 +184,13 @@ export default function EchoMode({
     const isDisabled = isTransitioning || (gameStyle === 'challenge' && listenCount >= 1);
 
     return (
-        <div className="flex flex-col items-center justify-center mb-5 w-full sm:max-w-lg lg:max-w-2xl max-w-md">
+        <div className="flex flex-col items-center justify-center  w-full sm:max-w-lg lg:max-w-2xl max-w-md">
             {/* Timer for Challenge Mode - Horizontal Progress Bar Style */}
             {gameStyle === 'challenge' && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-6 w-full max-w-xl space-y-5"
+                    className="mb-3 w-full max-w-xl space-y-2"
                 >
 
                     {/* Points Display - for Challenge Mode */}
@@ -198,7 +198,7 @@ export default function EchoMode({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="rounded-lg p-2 text-yellow-400 mb-10 text-center"
+                        className="rounded-lg p-2 text-yellow-400 mb-4 text-center"
                     >
                         <p className='text-3xl font-bold'>{totalChallengeScore} pts.</p>
                     </motion.div>

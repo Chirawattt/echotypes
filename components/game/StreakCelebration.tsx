@@ -80,7 +80,7 @@ export default function StreakCelebration({ className = '' }: StreakCelebrationP
     const IconComponent = config.icon;
 
     return (
-        <div className={`absolute -top-20 left-0 z-50 pointer-events-none ${className}`}>
+        <div className={`absolute -top-5 left-0 z-50 pointer-events-none ${className}`}>
             <AnimatePresence>
                 <motion.div
                     initial={{ opacity: 0, scale: 0.5, x: -50 }}
