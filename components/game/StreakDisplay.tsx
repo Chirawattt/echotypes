@@ -583,12 +583,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                             />
                         )}
 
-                        
-                    </motion.div>
-                    
-                )}
-
-                 {/* Streak Label */}
+                        {/* Streak Label */}
                         <motion.div
                             animate={{
                                 scale: shouldShake 
@@ -635,6 +630,11 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                 </motion.div>
                             )}
                         </motion.div>
+
+                        
+                    </motion.div>
+                    
+                )}
             </AnimatePresence>
         </div>
     );

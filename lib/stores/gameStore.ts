@@ -214,11 +214,21 @@ export const useGameStore = create<GameState>((set, get) => ({
         let newDifficultyLevel = state.currentDifficultyLevel;
         let levelChanged = false;
 
+        console.log('📊 DDA Performance Update:', {
+            isCorrect,
+            oldScore: state.performanceScore,
+            newScore: newPerformanceScore,
+            currentLevel: state.currentDifficultyLevel,
+            levelUpThreshold: LEVEL_UP_THRESHOLD,
+            levelDownThreshold: LEVEL_DOWN_THRESHOLD
+        });
+
         // ตรวจสอบเงื่อนไข Level Up
         if (newPerformanceScore >= LEVEL_UP_THRESHOLD && newDifficultyLevel < MAX_DIFFICULTY_LEVEL) {
             newDifficultyLevel++;
             newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลอัพ
             levelChanged = true;
+            console.log('⬆️ Level Up!', state.currentDifficultyLevel, '→', newDifficultyLevel);
         }
 
         // ตรวจสอบเงื่อนไข Level Down
@@ -226,6 +236,7 @@ export const useGameStore = create<GameState>((set, get) => ({
             newDifficultyLevel--;
             newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลลด
             levelChanged = true;
+            console.log('⬇️ Level Down!', state.currentDifficultyLevel, '→', newDifficultyLevel);
         }
 
         set({ 

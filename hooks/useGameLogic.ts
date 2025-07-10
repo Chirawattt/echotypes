@@ -37,6 +37,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
     const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
     const echoStopTimerRef = useRef<(() => void) | null>(null);
     const scoreBreakdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const lastSpokenWordRef = useRef<string>(''); // Track last spoken word to prevent duplicates
+    const ddaLevelChangeRef = useRef<boolean>(false); // Track DDA level changes to prevent double speech
+    const lastSpeechTimeRef = useRef<number>(0); // Track last speech time to prevent rapid fire
+    const ddaLevelChangeTimeRef = useRef<number>(0); // Track when DDA level changed
 
     // Audio refs
     const keypressAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -51,6 +55,8 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
     const [memoryTimeLeft, setMemoryTimeLeft] = useState(5.0);
     const [meaningMatchTimeLeft, setMeaningMatchTimeLeft] = useState(5.0);
     const [showScoreBreakdown, setShowScoreBreakdown] = useState(false);
+    const [isDdaUpdating, setIsDdaUpdating] = useState(false);
+    const [ddaLevelJustChanged, setDdaLevelJustChanged] = useState(false);
 
     // Audio functions
     const playSound = useCallback((audioRef: React.RefObject<HTMLAudioElement | null>, volume = 0.7) => {
@@ -63,7 +69,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
     // Speech function
     const speak = useCallback((text: string, onEnd?: () => void) => {
+        console.log('🎤 Speak function called with:', text);
+        
         if (typeof window !== 'undefined' && window.speechSynthesis) {
+            console.log('🔇 Cancelling previous speech');
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(text);
@@ -73,12 +82,17 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             currentUtteranceRef.current = utterance;
 
             utterance.onend = () => {
+                console.log('✅ Speech ended for:', text);
                 if (onEnd) {
                     onEnd();
                 }
                 setTimeout(() => {
                     inputRef.current?.focus();
                 }, 100);
+            };
+
+            utterance.onstart = () => {
+                console.log('🎙️ Speech started for:', text);
             };
 
             window.speechSynthesis.speak(utterance);
@@ -114,9 +128,45 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             
             // If level changed, update words immediately
             if (result.levelChanged) {
+                console.log('🔄 DDA Level Changed:', {
+                    oldLevel: result.newDifficultyLevel - (isAnswerCorrect ? 1 : -1),
+                    newLevel: result.newDifficultyLevel,
+                    currentWord: words[currentWordIndex]?.word,
+                    lastSpokenWord: lastSpokenWordRef.current
+                });
+                
+                // Stop any current speech synthesis immediately
+                if (typeof window !== 'undefined' && window.speechSynthesis) {
+                    console.log('🔇 Cancelling speech synthesis');
+                    window.speechSynthesis.cancel();
+                }
+                
+                lastSpokenWordRef.current = ''; // Reset to allow new word to be spoken
+                lastSpeechTimeRef.current = 0; // Reset speech timing
+                ddaLevelChangeRef.current = true; // Mark that DDA level just changed
+                ddaLevelChangeTimeRef.current = Date.now(); // Record when DDA level changed
+                setDdaLevelJustChanged(true); // Use state to track DDA change
+                setIsDdaUpdating(true); // Flag to prevent echo speaking old word
                 const newWords = getDdaGameSessionWords(result.newDifficultyLevel);
+                console.log('📝 New words loaded:', newWords.slice(0, 3).map(w => w.word));
                 setWords(newWords);
                 setCurrentWordIndex(0); // Reset to first word of new level
+                
+                // Use immediate blocking - set a temporary block flag
+                const blockUntil = Date.now() + 1500; // Block for 1.5 seconds
+                ddaLevelChangeTimeRef.current = blockUntil;
+                
+                // Reset flag and speak new word after state updates
+                setTimeout(() => {
+                    console.log('⏰ Resetting DDA updating flag');
+                    setIsDdaUpdating(false);
+                    // Reset DDA level change flag after a delay to allow normal speech flow
+                    setTimeout(() => {
+                        ddaLevelChangeRef.current = false;
+                        setDdaLevelJustChanged(false); // Reset state flag
+                    }, 1000); // เพิ่มเวลาจาก 500ms เป็น 1000ms
+                    // Note: Removed manual speak trigger - useEffect will handle it automatically
+                }, 50);
             }
         }
 
@@ -261,9 +311,45 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             
             // If level changed, update words immediately
             if (result.levelChanged) {
+                console.log('🔄 DDA Level Changed (Time Up):', {
+                    oldLevel: result.newDifficultyLevel + 1,
+                    newLevel: result.newDifficultyLevel,
+                    currentWord: words[currentWordIndex]?.word,
+                    lastSpokenWord: lastSpokenWordRef.current
+                });
+                
+                // Stop any current speech synthesis immediately
+                if (typeof window !== 'undefined' && window.speechSynthesis) {
+                    console.log('🔇 Cancelling speech synthesis (Time Up)');
+                    window.speechSynthesis.cancel();
+                }
+                
+                lastSpokenWordRef.current = ''; // Reset to allow new word to be spoken
+                lastSpeechTimeRef.current = 0; // Reset speech timing
+                ddaLevelChangeRef.current = true; // Mark that DDA level just changed
+                ddaLevelChangeTimeRef.current = Date.now(); // Record when DDA level changed
+                setDdaLevelJustChanged(true); // Use state to track DDA change
+                setIsDdaUpdating(true); // Flag to prevent echo speaking old word
                 const newWords = getDdaGameSessionWords(result.newDifficultyLevel);
+                console.log('📝 New words loaded (Time Up):', newWords.slice(0, 3).map(w => w.word));
                 setWords(newWords);
                 setCurrentWordIndex(0); // Reset to first word of new level
+                
+                // Use immediate blocking - set a temporary block flag
+                const blockUntil = Date.now() + 1500; // Block for 1.5 seconds
+                ddaLevelChangeTimeRef.current = blockUntil;
+                
+                // Reset flag and speak new word after state updates
+                setTimeout(() => {
+                    console.log('⏰ Resetting DDA updating flag (Time Up)');
+                    setIsDdaUpdating(false);
+                    // Reset DDA level change flag after a delay to allow normal speech flow
+                    setTimeout(() => {
+                        ddaLevelChangeRef.current = false;
+                        setDdaLevelJustChanged(false); // Reset state flag
+                    }, 1000); // เพิ่มเวลาจาก 500ms เป็น 1000ms
+                    // Note: Removed manual speak trigger - useEffect will handle it automatically
+                }, 50);
             }
         }
 
@@ -375,6 +461,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             window.speechSynthesis.cancel();
         }
 
+        // Reset spoken word tracking
+        lastSpokenWordRef.current = '';
+        console.log('🔄 Game initialization - Reset lastSpokenWordRef');
+
         // Initialize game with appropriate words based on mode and game style
         let sessionWords;
         if (gameStyle === 'challenge' && modeId !== 'meaning-match') {
@@ -437,16 +527,69 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
     // Speak word in Echo mode
     useEffect(() => {
-        if (status === 'playing' && words.length > 0 && modeId === 'echo') {
+        if (status === 'playing' && words.length > 0 && modeId === 'echo' && !isDdaUpdating) {
+            const currentWord = words[currentWordIndex]?.word;
+            const now = Date.now();
+            
+            // Check if we're in DDA block period
+            const isDdaBlocked = now < ddaLevelChangeTimeRef.current;
+            
+            console.log('🎯 Echo useEffect triggered:', {
+                currentWord,
+                lastSpokenWord: lastSpokenWordRef.current,
+                isDdaUpdating,
+                currentWordIndex,
+                wordsLength: words.length,
+                ddaLevelJustChanged,
+                timeSinceLastSpeech: now - lastSpeechTimeRef.current,
+                isDdaBlocked,
+                blockTimeRemaining: Math.max(0, ddaLevelChangeTimeRef.current - now)
+            });
+            
+            // Prevent speaking the same word twice or if no word available
+            if (!currentWord || lastSpokenWordRef.current === currentWord) {
+                console.log('⛔ Skipping speech - same word or no word available');
+                return;
+            }
+            
+            // Prevent rapid fire speech (minimum 500ms between speech attempts)
+            if (now - lastSpeechTimeRef.current < 500) {
+                console.log('⛔ Skipping speech - too soon since last speech');
+                return;
+            }
+            
+            // **IMMEDIATE BLOCKING**: Check if DDA level change happened recently
+            if (isDdaBlocked && currentWordIndex !== 0) {
+                console.log('🚫 IMMEDIATE BLOCK - DDA level changed recently, only first word allowed', {
+                    isDdaBlocked,
+                    currentWordIndex,
+                    blockTimeRemaining: ddaLevelChangeTimeRef.current - now
+                });
+                return;
+            }
+            
+            // **BACKUP CHECK**: State-based blocking as secondary protection
+            if (ddaLevelJustChanged && currentWordIndex !== 0) {
+                console.log('🚫 STATE BLOCK - DDA level just changed, only first word allowed', {
+                    ddaLevelJustChanged,
+                    currentWordIndex
+                });
+                return;
+            }
+            
             // Clear any pending speech synthesis before speaking new word
             if (typeof window !== 'undefined' && window.speechSynthesis) {
+                console.log('🔇 Cancelling any pending speech');
                 window.speechSynthesis.cancel();
             }
 
-            speak(words[currentWordIndex].word);
+            console.log('🎙️ Speaking word from useEffect:', currentWord);
+            lastSpokenWordRef.current = currentWord;
+            lastSpeechTimeRef.current = now;
+            speak(currentWord);
             inputRef.current?.focus();
         }
-    }, [status, currentWordIndex, words, speak, modeId]);
+    }, [status, currentWordIndex, words, speak, modeId, isDdaUpdating, ddaLevelJustChanged]);
 
     // Logic for Memory Mode word flashing
     useEffect(() => {
