@@ -1,8 +1,22 @@
 import { create } from 'zustand';
 import { Word } from '@/lib/words/types';
 import { ScoreCalculation } from '@/lib/scoring';
+import { ddaConfig } from '@/lib/ddaConfig';
 
 export type GameStatus = 'countdown' | 'playing' | 'gameOver';
+
+// DDA Types
+export interface DdaState {
+    currentDifficultyLevel: number; // 1=A1, 2=A2, 3=B1, 4=B2, 5=C1, 6=C2
+    performanceScore: number;       // คะแนนลับสำหรับวัดฟอร์มการเล่น
+}
+
+export interface DdaActions {
+    updatePerformance: (isCorrect: boolean) => { levelChanged: boolean; newDifficultyLevel: number };
+    resetDdaState: () => void;
+    setCurrentDifficultyLevel: (level: number) => void;
+    setPerformanceScore: (score: number) => void;
+}
 
 export interface IncorrectWord {
     correct: string;
@@ -47,6 +61,10 @@ interface GameState {
     totalChallengeScore: number;
     lastScoreCalculation: ScoreCalculation | null;
 
+    // DDA State
+    currentDifficultyLevel: number;
+    performanceScore: number;
+
     // Actions
     setStatus: (status: GameStatus) => void;
     setCountdown: (countdown: number) => void;
@@ -79,6 +97,12 @@ interface GameState {
     setLastScoreCalculation: (calculation: ScoreCalculation | null) => void;
     addChallengeScore: (calculation: ScoreCalculation) => void;
     resetChallengeScore: () => void;
+
+    // DDA Actions
+    updatePerformance: (isCorrect: boolean) => { levelChanged: boolean; newDifficultyLevel: number };
+    resetDdaState: () => void;
+    setCurrentDifficultyLevel: (level: number) => void;
+    setPerformanceScore: (score: number) => void;
 
     // Complex actions
     incrementWordIndex: () => void;
@@ -115,6 +139,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     bestStreak: 0,
     totalChallengeScore: 0,
     lastScoreCalculation: null,
+    // DDA Initial state
+    currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
+    performanceScore: 0,
 
     // Basic setters
     setStatus: (status) => set({ status }),
@@ -171,6 +198,50 @@ export const useGameStore = create<GameState>((set, get) => ({
         lastScoreCalculation: null
     }),
 
+    // DDA Actions
+    updatePerformance: (isCorrect: boolean) => {
+        const { 
+            PERFORMANCE_ON_CORRECT, 
+            PERFORMANCE_ON_INCORRECT, 
+            LEVEL_UP_THRESHOLD, 
+            LEVEL_DOWN_THRESHOLD, 
+            MAX_DIFFICULTY_LEVEL, 
+            MIN_DIFFICULTY_LEVEL 
+        } = ddaConfig;
+
+        const state = get();
+        let newPerformanceScore = state.performanceScore + (isCorrect ? PERFORMANCE_ON_CORRECT : PERFORMANCE_ON_INCORRECT);
+        let newDifficultyLevel = state.currentDifficultyLevel;
+        let levelChanged = false;
+
+        // ตรวจสอบเงื่อนไข Level Up
+        if (newPerformanceScore >= LEVEL_UP_THRESHOLD && newDifficultyLevel < MAX_DIFFICULTY_LEVEL) {
+            newDifficultyLevel++;
+            newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลอัพ
+            levelChanged = true;
+        }
+
+        // ตรวจสอบเงื่อนไข Level Down
+        if (newPerformanceScore <= LEVEL_DOWN_THRESHOLD && newDifficultyLevel > MIN_DIFFICULTY_LEVEL) {
+            newDifficultyLevel--;
+            newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลลด
+            levelChanged = true;
+        }
+
+        set({ 
+            currentDifficultyLevel: newDifficultyLevel,
+            performanceScore: newPerformanceScore
+        });
+
+        return { levelChanged, newDifficultyLevel };
+    },
+    resetDdaState: () => set({
+        currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
+        performanceScore: 0,
+    }),
+    setCurrentDifficultyLevel: (level) => set({ currentDifficultyLevel: level }),
+    setPerformanceScore: (score) => set({ performanceScore: score }),
+
     // Complex actions
     incrementWordIndex: () => set((state) => ({
         currentWordIndex: state.currentWordIndex + 1
@@ -183,7 +254,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         return newTimeLeft;
     },
 
-    addIncorrectWord: (word) => set((state) => ({
+    addIncorrectWord: (word: IncorrectWord) => set((state) => ({
         incorrectWords: [...state.incorrectWords, word]
     })),
 
@@ -208,10 +279,13 @@ export const useGameStore = create<GameState>((set, get) => ({
         streakCount: 0,
         totalChallengeScore: 0,
         lastScoreCalculation: null,
+        // Reset DDA state
+        currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
+        performanceScore: 0,
         // Note: bestStreak is preserved across game resets
     }),
 
-    initializeGame: (words) => set({
+    initializeGame: (words: Word[]) => set({
         words,
         status: 'countdown',
         countdown: 3,
@@ -233,6 +307,9 @@ export const useGameStore = create<GameState>((set, get) => ({
         streakCount: 0,
         totalChallengeScore: 0,
         lastScoreCalculation: null,
+        // Reset DDA state
+        currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
+        performanceScore: 0,
         // Note: bestStreak is preserved across game initializations
     }),
 }));

@@ -535,7 +535,6 @@ export const a1Words: Word[] = [
     { word: "number", type: "n.", meaning: "ตัวเลข, จำนวน" },
     { word: "nurse", type: "n.", meaning: "พยาบาล" },
     { word: "object", type: "n.", meaning: "วัตถุ, เป้าหมาย" },
-    { word: "o’clock", type: "adv.", meaning: "นาฬิกา (ใช้บอกเวลา)" },
     { word: "October", type: "n.", meaning: "เดือนตุลาคม" },
     { word: "of", type: "prep.", meaning: "ของ" },
     { word: "off", type: "adv., prep.", meaning: "ปิด, ออกไป, ไม่ทำงาน" },

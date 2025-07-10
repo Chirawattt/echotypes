@@ -67,7 +67,14 @@ export default function ModeSelectPage() {
     }
 
     const handleStartSelectedMode = () => {
-        router.push(`/play/${selectedMode.id}`);
+        // For the first 3 modes (echo, typing, memory), go directly to pre-game
+        // For meaning-match, go to difficulty selection
+        if (selectedMode.id === 'meaning-match') {
+            router.push(`/play/${selectedMode.id}`);
+        } else {
+            // For DDA-enabled modes, go directly to pre-game with default difficulty
+            router.push(`/play/${selectedMode.id}/dda`);
+        }
     }
 
     const handleGoBack = () => {

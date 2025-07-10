@@ -32,7 +32,7 @@ export default function EchoMode({
     onTimeLeftChange
 }: EchoModeProps) {
     const [listenCount, setListenCount] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(100.0);
+    const [timeLeft, setTimeLeft] = useState(5.0);
     const [isCountingDown, setIsCountingDown] = useState(false);
     const { totalChallengeScore } = useGameStore();
 
@@ -86,8 +86,7 @@ export default function EchoMode({
             clearTimeout(timerRef.current);
         }
 
-        console.log('Starting 5.0-second timer with 0.1s precision');
-        setTimeLeft(100.0);
+        setTimeLeft(5.0);
 
         const startTime = Date.now();
         const duration = 5000; // 5 seconds in milliseconds
@@ -129,7 +128,7 @@ export default function EchoMode({
             clearTimeout(timerRef.current);
         }
         setListenCount(0);
-        setTimeLeft(100.0);
+        setTimeLeft(5.0);
         setIsCountingDown(false);
     }, [currentWordIndex]);
 

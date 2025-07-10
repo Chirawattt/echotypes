@@ -15,6 +15,7 @@ import GameModeRenderer from '@/components/game/GameModeRenderer';
 import GameInput from '@/components/game/GameInput';
 import GameEffects from '@/components/game/GameEffects';
 import StreakCelebration from '@/components/game/StreakCelebration';
+import DdaDebug from '@/components/game/DdaDebug';
 
 export default function GamePlayPage() {
     const router = useRouter();
@@ -71,6 +72,14 @@ export default function GamePlayPage() {
 
     return (
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
+            
+            {/* DDA Debug Component (Development only) */}
+            <DdaDebug 
+                currentDifficultyLevel={gameLogic.currentDifficultyLevel}
+                performanceScore={gameLogic.performanceScore}
+                gameStyle={gameStyle}
+                modeId={modeId}
+            />
 
             {/* Streak Glow Effects */}
             <StreakGlowEffects streakCount={gameLogic.streakCount} />
