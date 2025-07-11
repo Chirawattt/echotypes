@@ -149,7 +149,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
     }
 
     return (
-        <div className={`flex flex-col items-center justify-center ${className} mt-1`}>
+        <div className={`flex flex-col items-center justify-center ${className} mb-5`}>
             <AnimatePresence mode="wait">
                 {(isVisible || shouldDisappear) && (
                     <motion.div
@@ -169,8 +169,8 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                             duration: shouldShake ? 0.6 : shouldDisappear ? 0.5 : 0.3,
                             ease: shouldDisappear ? "easeOut" : "easeInOut"
                         }}
-                        className={`flex items-center relative px-4 py-2 rounded-xl min-w-0 ${config.bgEffect} ${config.borderGlow} ${config.isLegendary ? 'backdrop-blur-sm' : ''}`}
-                       
+                        className={`flex flex-col items-center justify-center relative px-4 py-2 rounded-xl min-w-0 ${config.bgEffect} ${config.borderGlow} ${config.isLegendary ? 'backdrop-blur-sm' : ''}`}
+
                     >
                         {/* Legendary Background Effects for Tier 3+ */}
                         {config.isLegendary && !shouldDisappear && (
@@ -204,7 +204,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                         />
                                     ))}
                                 </div>
-                                
+
                                 {/* Pulsing Border Effect */}
                                 <motion.div
                                     className="absolute inset-0 rounded-xl border "
@@ -224,110 +224,114 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                             </>
                         )}
 
-                        {/* Fire Icons */}
-                        <div className="flex space-x-1 relative z-10">
-                            {[...Array(config.fireCount)].map((_, i) => (
-                                <motion.div
-                                    key={i}                                        animate={{
-                                            scale: shouldShake 
-                                                ? [1, 1.8, 1] 
-                                                : shouldDisappear 
-                                                    ? [1, 0.9, 0.7] 
+                        <div className='flex justify-center items-center relative z-10 shrink-0'>
+                            {/* Fire Icons */}
+                            <div className="flex space-x-1 relative z-10">
+                                {[...Array(config.fireCount)].map((_, i) => (
+                                    <motion.div
+                                        key={i} animate={{
+                                            scale: shouldShake
+                                                ? [1, 1.8, 1]
+                                                : shouldDisappear
+                                                    ? [1, 0.9, 0.7]
                                                     : config.isLegendary
                                                         ? [1, 1.4, 1.2, 1.6, 1]
                                                         : [1, 1.1, 1],
-                                            rotate: shouldShake 
-                                                ? [0, 25, -25, 0] 
-                                                : shouldDisappear 
-                                                    ? [0, -2, 2] 
+                                            rotate: shouldShake
+                                                ? [0, 25, -25, 0]
+                                                : shouldDisappear
+                                                    ? [0, -2, 2]
                                                     : config.isLegendary
                                                         ? [0, 10, -10, 15, -15, 0]
                                                         : [0, 5, -5, 0],
                                             opacity: shouldDisappear ? [1, 0.7, 0] : 1,
                                         }}
                                         transition={{
-                                            duration: shouldShake 
-                                                ? 0.5 
-                                                : shouldDisappear 
-                                                    ? 0.4 
-                                                    : config.isLegendary 
-                                                        ? 1.5 
+                                            duration: shouldShake
+                                                ? 0.5
+                                                : shouldDisappear
+                                                    ? 0.4
+                                                    : config.isLegendary
+                                                        ? 1.5
                                                         : 2,
                                             repeat: shouldShake || shouldDisappear ? 0 : Infinity,
                                             delay: i * 0.1,
                                             ease: shouldDisappear ? "easeOut" : "easeInOut"
                                         }}
-                                    className={`${shouldDisappear ? 'text-red-400' : config.fireColor} relative`}
-                                >
-                                    <FaFire className={`${config.isLegendary ? 'text-2xl' : 'text-lg'}`} />
-                                    {/* Fire Glow Effect for Legendary */}
-                                    {config.isLegendary && !shouldDisappear && (
-                                        <motion.div
-                                            className="absolute inset-0 text-yellow-300"
-                                            animate={{
-                                                opacity: [0, 0.5, 0]
-                                            }}
-                                            transition={{
-                                                duration: 1,
-                                                repeat: Infinity,
-                                                delay: i * 0.2
-                                            }}
-                                        >
-                                            <FaFire className={`${config.isLegendary ? 'text-2xl' : 'text-lg'}`} />
-                                        </motion.div>
-                                    )}
-                                </motion.div>
-                            ))}
+                                        className={`${shouldDisappear ? 'text-red-400' : config.fireColor} relative`}
+                                    >
+                                        <FaFire className={`${config.isLegendary ? 'text-2xl' : 'text-lg'}`} />
+                                        {/* Fire Glow Effect for Legendary */}
+                                        {config.isLegendary && !shouldDisappear && (
+                                            <motion.div
+                                                className="absolute inset-0 text-yellow-300"
+                                                animate={{
+                                                    opacity: [0, 0.5, 0]
+                                                }}
+                                                transition={{
+                                                    duration: 1,
+                                                    repeat: Infinity,
+                                                    delay: i * 0.2
+                                                }}
+                                            >
+                                                <FaFire className={`${config.isLegendary ? 'text-2xl' : 'text-lg'}`} />
+                                            </motion.div>
+                                        )}
+                                    </motion.div>
+                                ))}
+                            </div>
+
+                            {/* Streak Count */}
+                            <motion.div
+                                animate={{
+                                    scale: shouldShake
+                                        ? [1, 1.6, 1]
+                                        : shouldDisappear
+                                            ? [1, 0.95, 0.8]
+                                            : config.isLegendary
+                                                ? [1, 1.1, 1.05, 1.15, 1]
+                                                : 1,
+                                    opacity: shouldDisappear ? [1, 0.7, 0] : 1,
+                                }}
+                                transition={{
+                                    duration: shouldShake
+                                        ? 0.6
+                                        : shouldDisappear
+                                            ? 0.5
+                                            : config.isLegendary
+                                                ? 2
+                                                : 0.3,
+                                    repeat: config.isLegendary && !shouldShake && !shouldDisappear ? Infinity : 0,
+                                    ease: shouldDisappear ? "easeOut" : "easeInOut"
+                                }}
+                                className={`relative z-10 ${config.isLegendary ? 'text-3xl' : 'text-2xl'} font-bold ${shouldDisappear ? 'text-red-400' : config.textColor} ${shouldDisappear ? '' : config.glow}`}
+                                style={{ fontFamily: "'Caveat Brush', cursive" }}
+                            >
+                                x{streakCount >= 2 ? streakCount : prevStreakCount}
+
+                                {/* Legendary Number Glow */}
+                                {config.isLegendary && !shouldDisappear && (
+                                    <motion.div
+                                        className="absolute inset-0 text-yellow-200"
+                                        animate={{
+                                            opacity: [0, 0.3, 0]
+                                        }}
+                                        transition={{
+                                            duration: 1.5,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                        style={{ fontFamily: "'Caveat Brush', cursive" }}
+                                    >
+                                        x{streakCount >= 2 ? streakCount : prevStreakCount}
+                                    </motion.div>
+                                )}
+                            </motion.div>
                         </div>
 
-                        {/* Streak Count */}
-                        <motion.div
-                            animate={{
-                                scale: shouldShake 
-                                    ? [1, 1.6, 1] 
-                                    : shouldDisappear 
-                                        ? [1, 0.95, 0.8] 
-                                        : config.isLegendary 
-                                            ? [1, 1.1, 1.05, 1.15, 1]
-                                            : 1,
-                                opacity: shouldDisappear ? [1, 0.7, 0] : 1,
-                            }}
-                            transition={{
-                                duration: shouldShake 
-                                    ? 0.6 
-                                    : shouldDisappear 
-                                        ? 0.5 
-                                        : config.isLegendary 
-                                            ? 2 
-                                            : 0.3,
-                                repeat: config.isLegendary && !shouldShake && !shouldDisappear ? Infinity : 0,
-                                ease: shouldDisappear ? "easeOut" : "easeInOut"
-                            }}
-                            className={`relative z-10 ${config.isLegendary ? 'text-3xl' : 'text-2xl'} font-bold ${shouldDisappear ? 'text-red-400' : config.textColor} ${shouldDisappear ? '' : config.glow}`}
-                            style={{ fontFamily: "'Caveat Brush', cursive" }}
-                        >
-                            x{streakCount >= 2 ? streakCount : prevStreakCount}
-                            
-                            {/* Legendary Number Glow */}
-                            {config.isLegendary && !shouldDisappear && (
-                                <motion.div
-                                    className="absolute inset-0 text-yellow-200"
-                                    animate={{
-                                        opacity: [0, 0.3, 0]
-                                    }}
-                                    transition={{
-                                        duration: 1.5,
-                                        repeat: Infinity,
-                                        ease: "easeInOut"
-                                    }}
-                                    style={{ fontFamily: "'Caveat Brush', cursive" }}
-                                >
-                                    x{streakCount >= 2 ? streakCount : prevStreakCount}
-                                </motion.div>
-                            )}
-                        </motion.div>
 
-                       
+
+
 
                         {/* Special Effects for Tier 4 (Unstoppable) */}
                         {streakLevel >= 4 && !shouldDisappear && (
@@ -358,7 +362,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                         </motion.div>
                                     ))}
                                 </div>
-                                
+
                                 {/* Crown Effect */}
                                 <motion.div
                                     className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-3xl"
@@ -415,7 +419,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                 <motion.div
                                     className="fixed top-0 left-0 right-0 h-1 pointer-events-none z-50"
                                     style={{
-                                        background: streakLevel >= 4 
+                                        background: streakLevel >= 4
                                             ? 'linear-gradient(90deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
                                             : 'linear-gradient(90deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
                                     }}
@@ -429,12 +433,12 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                         ease: "easeInOut"
                                     }}
                                 />
-                                
+
                                 {/* Bottom Edge Glow */}
                                 <motion.div
                                     className="fixed bottom-0 left-0 right-0 h-1 pointer-events-none z-50"
                                     style={{
-                                        background: streakLevel >= 4 
+                                        background: streakLevel >= 4
                                             ? 'linear-gradient(90deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
                                             : 'linear-gradient(90deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
                                     }}
@@ -449,12 +453,12 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                         delay: 0.5
                                     }}
                                 />
-                                
+
                                 {/* Left Edge Glow */}
                                 <motion.div
                                     className="fixed top-0 bottom-0 left-0 w-1 pointer-events-none z-50"
                                     style={{
-                                        background: streakLevel >= 4 
+                                        background: streakLevel >= 4
                                             ? 'linear-gradient(180deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
                                             : 'linear-gradient(180deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
                                     }}
@@ -469,12 +473,12 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                         delay: 1
                                     }}
                                 />
-                                
+
                                 {/* Right Edge Glow */}
                                 <motion.div
                                     className="fixed top-0 bottom-0 right-0 w-1 pointer-events-none z-50"
                                     style={{
-                                        background: streakLevel >= 4 
+                                        background: streakLevel >= 4
                                             ? 'linear-gradient(180deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
                                             : 'linear-gradient(180deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
                                     }}
@@ -509,7 +513,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                                 ease: "easeInOut"
                                             }}
                                         />
-                                        
+
                                         {/* Top-Right Corner */}
                                         <motion.div
                                             className="fixed top-0 right-0 w-8 h-8 pointer-events-none z-50"
@@ -527,7 +531,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                                 delay: 0.3
                                             }}
                                         />
-                                        
+
                                         {/* Bottom-Left Corner */}
                                         <motion.div
                                             className="fixed bottom-0 left-0 w-8 h-8 pointer-events-none z-50"
@@ -545,7 +549,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                                 delay: 0.6
                                             }}
                                         />
-                                        
+
                                         {/* Bottom-Right Corner */}
                                         <motion.div
                                             className="fixed bottom-0 right-0 w-8 h-8 pointer-events-none z-50"
@@ -586,22 +590,22 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                         {/* Streak Label */}
                         <motion.div
                             animate={{
-                                scale: shouldShake 
-                                    ? [1, 1.3, 1] 
-                                    : shouldDisappear 
-                                        ? [1, 0.9, 0.7] 
-                                        : config.isLegendary 
+                                scale: shouldShake
+                                    ? [1, 1.3, 1]
+                                    : shouldDisappear
+                                        ? [1, 0.9, 0.7]
+                                        : config.isLegendary
                                             ? [1, 1.05, 1]
                                             : 1,
                                 opacity: shouldDisappear ? [1, 0.6, 0] : 0.9,
                             }}
                             transition={{
-                                duration: shouldShake 
-                                    ? 0.6 
-                                    : shouldDisappear 
-                                        ? 0.5 
-                                        : config.isLegendary 
-                                            ? 1.8 
+                                duration: shouldShake
+                                    ? 0.6
+                                    : shouldDisappear
+                                        ? 0.5
+                                        : config.isLegendary
+                                            ? 1.8
                                             : 0.3,
                                 repeat: config.isLegendary && !shouldShake && !shouldDisappear ? Infinity : 0,
                                 ease: shouldDisappear ? "easeOut" : "easeInOut"
@@ -610,7 +614,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                             style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                         >
                             {config.label}
-                            
+
                             {/* Legendary Label Glow */}
                             {config.isLegendary && !shouldDisappear && (
                                 <motion.div
@@ -631,9 +635,9 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                             )}
                         </motion.div>
 
-                        
+
                     </motion.div>
-                    
+
                 )}
             </AnimatePresence>
         </div>

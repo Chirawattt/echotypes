@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useGameLogic } from '@/hooks/useGameLogic';
+import { useGameLogic } from '@/hooks';
 import { globalCleanup } from '@/lib/cleanup';
 import CountdownToGame from '@/components/game/CountdownToGame';
 import GameOver from '@/components/game/GameOver';

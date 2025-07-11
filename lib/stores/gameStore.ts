@@ -193,20 +193,20 @@ export const useGameStore = create<GameState>((set, get) => ({
         totalChallengeScore: state.totalChallengeScore + calculation.finalScore,
         lastScoreCalculation: calculation
     })),
-    resetChallengeScore: () => set({ 
+    resetChallengeScore: () => set({
         totalChallengeScore: 0,
         lastScoreCalculation: null
     }),
 
     // DDA Actions
     updatePerformance: (isCorrect: boolean) => {
-        const { 
-            PERFORMANCE_ON_CORRECT, 
-            PERFORMANCE_ON_INCORRECT, 
-            LEVEL_UP_THRESHOLD, 
-            LEVEL_DOWN_THRESHOLD, 
-            MAX_DIFFICULTY_LEVEL, 
-            MIN_DIFFICULTY_LEVEL 
+        const {
+            PERFORMANCE_ON_CORRECT,
+            PERFORMANCE_ON_INCORRECT,
+            LEVEL_UP_THRESHOLD,
+            LEVEL_DOWN_THRESHOLD,
+            MAX_DIFFICULTY_LEVEL,
+            MIN_DIFFICULTY_LEVEL
         } = ddaConfig;
 
         const state = get();
@@ -214,21 +214,12 @@ export const useGameStore = create<GameState>((set, get) => ({
         let newDifficultyLevel = state.currentDifficultyLevel;
         let levelChanged = false;
 
-        console.log('📊 DDA Performance Update:', {
-            isCorrect,
-            oldScore: state.performanceScore,
-            newScore: newPerformanceScore,
-            currentLevel: state.currentDifficultyLevel,
-            levelUpThreshold: LEVEL_UP_THRESHOLD,
-            levelDownThreshold: LEVEL_DOWN_THRESHOLD
-        });
-
         // ตรวจสอบเงื่อนไข Level Up
         if (newPerformanceScore >= LEVEL_UP_THRESHOLD && newDifficultyLevel < MAX_DIFFICULTY_LEVEL) {
             newDifficultyLevel++;
             newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลอัพ
             levelChanged = true;
-            console.log('⬆️ Level Up!', state.currentDifficultyLevel, '→', newDifficultyLevel);
+
         }
 
         // ตรวจสอบเงื่อนไข Level Down
@@ -236,10 +227,9 @@ export const useGameStore = create<GameState>((set, get) => ({
             newDifficultyLevel--;
             newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลลด
             levelChanged = true;
-            console.log('⬇️ Level Down!', state.currentDifficultyLevel, '→', newDifficultyLevel);
         }
 
-        set({ 
+        set({
             currentDifficultyLevel: newDifficultyLevel,
             performanceScore: newPerformanceScore
         });

@@ -65,3 +65,23 @@ COMPLETED ✅:
 next tomorrow:
     - แก้ไขส่วน ScoreBreakdownToast ให้เสร็จ
     - ทำให้ score เรืองแสงตามระดับ streak
+
+
+
+
+*** ข้อเสนอแนะการปรับปรุง (sugguestion) ***
+** High Priority **
+- แยก useGameLogic: สร้าง custom hooks ย่อยๆ
+- Add Error Boundaries: จัดการ error แบบ graceful
+- Performance Optimization: ใช้ React.memo, useMemo, useCallback
+- Mobile UX: ปรับปรุง touch experience
+** Medium Priority **
+- Testing: เพิ่ม unit tests สำหรับ game logic
+- Bundle Optimization: ใช้ dynamic imports
+- PWA Features: เพิ่มความสามารถ offline
+- Analytics: ติดตาม user behavior
+** Nice to Have **
+- Storybook: สำหรับ component development
+- E2E Testing: Playwright หรือ Cypress
+- Performance Monitoring: Real User Monitoring
+- Internationalization: รองรับภาษาอื่นๆ
