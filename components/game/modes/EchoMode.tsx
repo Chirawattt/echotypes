@@ -34,7 +34,16 @@ export default function EchoMode({
     const [listenCount, setListenCount] = useState(0);
     const [timeLeft, setTimeLeft] = useState(5.0);
     const [isCountingDown, setIsCountingDown] = useState(false);
-    const { totalChallengeScore } = useGameStore();
+    const { totalChallengeScore, streakCount } = useGameStore();
+
+    // Function to get score color based on streak level
+    const getScoreColorByStreak = (streak: number) => {
+        if (streak >= 20) return 'text-yellow-300 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]'; // Unstoppable!
+        if (streak >= 10) return 'text-orange-300 drop-shadow-[0_0_12px_rgba(251,146,60,0.7)]'; // In The Zone!
+        if (streak >= 5) return 'text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.6)]'; // On a Roll!
+        if (streak >= 2) return 'text-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.5)]'; // Warming Up!
+        return 'text-green-400 drop-shadow-[0_0_4px_rgba(34,197,94,0.4)]'; // Default
+    };
 
     // Use refs to avoid stale closure issues
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -197,9 +206,28 @@ export default function EchoMode({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="rounded-lg p-2 text-yellow-400 mb-4 text-center"
+                        className="rounded-lg p-2 mb-4 text-center"
                     >
-                        <p className='text-3xl font-bold'>{totalChallengeScore} pts.</p>
+                        <motion.p 
+                            className={`text-3xl font-bold ${getScoreColorByStreak(streakCount)}`}
+                            animate={streakCount >= 5 ? {
+                                scale: [1, 1.05, 1],
+                                textShadow: [
+                                    '0 0 10px rgba(250,204,21,0.5)',
+                                    '0 0 20px rgba(250,204,21,0.8)',
+                                    '0 0 10px rgba(250,204,21,0.5)'
+                                ]
+                            } : {}}
+                            transition={{
+                                duration: 2,
+                                repeat: streakCount >= 5 ? Infinity : 0,
+                                ease: "easeInOut"
+                            }}
+                        >
+                            {totalChallengeScore} pts.
+                        </motion.p>
+                        
+                       
                     </motion.div>
 
                     <div className=''>

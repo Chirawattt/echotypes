@@ -8,18 +8,7 @@ interface UseGameModesProps {
     currentWordIndex: number;
     words: Word[];
     speak: (text: string, onEnd?: () => void) => SpeechSynthesisUtterance | null;
-    isDdaUpdating: boolean;
-    ddaLevelJustChanged: boolean;
-    isDdaBlocked: () => {
-        isBlocked: boolean;
-        isTimeBlocked: boolean;
-        isTransitionBlocked?: boolean;
-        blockTimeRemaining: number;
-    };
-    lastSpokenWordRef: React.MutableRefObject<string>;
-    lastSpeechTimeRef: React.MutableRefObject<number>;
     inputRef: React.RefObject<HTMLInputElement | null>;
-    cancelSpeech: () => void;
 }
 
 export function useGameModes({
@@ -28,13 +17,7 @@ export function useGameModes({
     currentWordIndex,
     words,
     speak,
-    isDdaUpdating,
-    ddaLevelJustChanged,
-    isDdaBlocked,
-    lastSpokenWordRef,
-    lastSpeechTimeRef,
     inputRef,
-    cancelSpeech
 }: UseGameModesProps) {
     const {
         setIsWordVisible,
@@ -43,42 +26,13 @@ export function useGameModes({
 
     // Echo mode speech logic
     useEffect(() => {
-        if (status === 'playing' && words.length > 0 && modeId === 'echo') {
+        if (status === 'playing' && words.length > 0 && modeId === 'echo' && currentWordIndex >= 0) {
             const currentWord = words[currentWordIndex]?.word;
-            const now = Date.now();
-            
-            // Check if we're in DDA block period
-            const blockStatus = isDdaBlocked();
-            
-            // Prevent speaking the same word twice or if no word available
-            if (!currentWord || lastSpokenWordRef.current === currentWord) {
-                return;
-            }
-            
-            // MAIN PROTECTION: Block ALL speech during ANY DDA transition
-            if (blockStatus.isBlocked) {
-                return;
-            }
-            
-            // Prevent rapid fire speech
-            const minSpeechInterval = 200; // Minimal interval for responsiveness
-            if (now - (lastSpeechTimeRef.current || 0) < minSpeechInterval) {
-                return;
-            }
-            
-            // Clear any pending speech synthesis before speaking new word
-            cancelSpeech();
 
-            if (lastSpokenWordRef.current) {
-                lastSpokenWordRef.current = currentWord;
-            }
-            if (lastSpeechTimeRef.current !== undefined) {
-                lastSpeechTimeRef.current = now;
-            }
             speak(currentWord);
             inputRef.current?.focus();
         }
-    }, [status, currentWordIndex, words, speak, modeId, isDdaUpdating, ddaLevelJustChanged, isDdaBlocked, lastSpokenWordRef, lastSpeechTimeRef, inputRef, cancelSpeech]);
+    }, [status, currentWordIndex, words, speak, modeId, inputRef]);
 
     // Memory mode word flashing logic
     useEffect(() => {

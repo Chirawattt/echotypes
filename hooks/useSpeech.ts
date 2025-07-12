@@ -5,6 +5,11 @@ export function useSpeech() {
 
     // Speech function
     const speak = useCallback((text: string, onEnd?: () => void) => {
+        if ( !text || typeof text !== 'string' || text.trim() === '') {
+            console.warn('🎤 Speak function called with empty or invalid text');
+            return null;
+        }
+        
         console.log('🎤 Speak function called with:', text);
         
         if (typeof window !== 'undefined' && window.speechSynthesis) {

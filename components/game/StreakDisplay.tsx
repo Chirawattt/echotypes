@@ -412,23 +412,21 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                             </div>
                         )}
 
-                        {/* Screen Edge Glow Effect for Tier 3+ */}
-                        {streakLevel >= 3 && !shouldDisappear && (
+                        {/* Screen Edge Glow Effect for Tier 4 Only (Reduced) */}
+                        {streakLevel >= 4 && !shouldDisappear && (
                             <>
                                 {/* Top Edge Glow */}
                                 <motion.div
                                     className="fixed top-0 left-0 right-0 h-1 pointer-events-none z-50"
                                     style={{
-                                        background: streakLevel >= 4
-                                            ? 'linear-gradient(90deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
-                                            : 'linear-gradient(90deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
+                                        background: 'linear-gradient(90deg, transparent, rgba(251,191,36,0.4), rgba(255,215,0,0.6), rgba(251,191,36,0.4), transparent)'
                                     }}
                                     animate={{
-                                        opacity: [0.3, 1, 0.3],
-                                        scaleX: [0.8, 1.2, 0.8]
+                                        opacity: [0.2, 0.6, 0.2],
+                                        scaleX: [0.9, 1.1, 0.9]
                                     }}
                                     transition={{
-                                        duration: 2,
+                                        duration: 3,
                                         repeat: Infinity,
                                         ease: "easeInOut"
                                     }}
@@ -438,137 +436,93 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                 <motion.div
                                     className="fixed bottom-0 left-0 right-0 h-1 pointer-events-none z-50"
                                     style={{
-                                        background: streakLevel >= 4
-                                            ? 'linear-gradient(90deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
-                                            : 'linear-gradient(90deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
+                                        background: 'linear-gradient(90deg, transparent, rgba(251,191,36,0.4), rgba(255,215,0,0.6), rgba(251,191,36,0.4), transparent)'
                                     }}
                                     animate={{
-                                        opacity: [0.3, 1, 0.3],
-                                        scaleX: [0.8, 1.2, 0.8]
+                                        opacity: [0.2, 0.6, 0.2],
+                                        scaleX: [0.9, 1.1, 0.9]
                                     }}
                                     transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                        delay: 0.5
-                                    }}
-                                />
-
-                                {/* Left Edge Glow */}
-                                <motion.div
-                                    className="fixed top-0 bottom-0 left-0 w-1 pointer-events-none z-50"
-                                    style={{
-                                        background: streakLevel >= 4
-                                            ? 'linear-gradient(180deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
-                                            : 'linear-gradient(180deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
-                                    }}
-                                    animate={{
-                                        opacity: [0.3, 1, 0.3],
-                                        scaleY: [0.8, 1.2, 0.8]
-                                    }}
-                                    transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                        delay: 1
-                                    }}
-                                />
-
-                                {/* Right Edge Glow */}
-                                <motion.div
-                                    className="fixed top-0 bottom-0 right-0 w-1 pointer-events-none z-50"
-                                    style={{
-                                        background: streakLevel >= 4
-                                            ? 'linear-gradient(180deg, transparent, rgba(251,191,36,0.8), rgba(255,215,0,1), rgba(251,191,36,0.8), transparent)'
-                                            : 'linear-gradient(180deg, transparent, rgba(251,146,60,0.6), rgba(251,146,60,0.8), rgba(251,146,60,0.6), transparent)'
-                                    }}
-                                    animate={{
-                                        opacity: [0.3, 1, 0.3],
-                                        scaleY: [0.8, 1.2, 0.8]
-                                    }}
-                                    transition={{
-                                        duration: 2,
+                                        duration: 3,
                                         repeat: Infinity,
                                         ease: "easeInOut",
                                         delay: 1.5
                                     }}
                                 />
 
-                                {/* Corner Glow Effects for Tier 4 */}
-                                {streakLevel >= 4 && (
-                                    <>
-                                        {/* Top-Left Corner */}
-                                        <motion.div
-                                            className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-50"
-                                            style={{
-                                                background: 'radial-gradient(circle, rgba(255,215,0,0.8), transparent 70%)'
-                                            }}
-                                            animate={{
-                                                opacity: [0.5, 1, 0.5],
-                                                scale: [0.8, 1.5, 0.8]
-                                            }}
-                                            transition={{
-                                                duration: 1.5,
-                                                repeat: Infinity,
-                                                ease: "easeInOut"
-                                            }}
-                                        />
+                                {/* Corner Glow Effects - Only for Tier 4 */}
+                                <>
+                                    {/* Top-Left Corner */}
+                                    <motion.div
+                                        className="fixed top-0 left-0 w-6 h-6 pointer-events-none z-50"
+                                        style={{
+                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
+                                        }}
+                                        animate={{
+                                            opacity: [0.3, 0.7, 0.3],
+                                            scale: [0.9, 1.2, 0.9]
+                                        }}
+                                        transition={{
+                                            duration: 2.5,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                    />
 
-                                        {/* Top-Right Corner */}
-                                        <motion.div
-                                            className="fixed top-0 right-0 w-8 h-8 pointer-events-none z-50"
-                                            style={{
-                                                background: 'radial-gradient(circle, rgba(255,215,0,0.8), transparent 70%)'
-                                            }}
-                                            animate={{
-                                                opacity: [0.5, 1, 0.5],
-                                                scale: [0.8, 1.5, 0.8]
-                                            }}
-                                            transition={{
-                                                duration: 1.5,
-                                                repeat: Infinity,
-                                                ease: "easeInOut",
-                                                delay: 0.3
-                                            }}
-                                        />
+                                    {/* Top-Right Corner */}
+                                    <motion.div
+                                        className="fixed top-0 right-0 w-6 h-6 pointer-events-none z-50"
+                                        style={{
+                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
+                                        }}
+                                        animate={{
+                                            opacity: [0.3, 0.7, 0.3],
+                                            scale: [0.9, 1.2, 0.9]
+                                        }}
+                                        transition={{
+                                            duration: 2.5,
+                                            repeat: Infinity,
+                                            ease: "easeInOut",
+                                            delay: 0.6
+                                        }}
+                                    />
 
-                                        {/* Bottom-Left Corner */}
-                                        <motion.div
-                                            className="fixed bottom-0 left-0 w-8 h-8 pointer-events-none z-50"
-                                            style={{
-                                                background: 'radial-gradient(circle, rgba(255,215,0,0.8), transparent 70%)'
-                                            }}
-                                            animate={{
-                                                opacity: [0.5, 1, 0.5],
-                                                scale: [0.8, 1.5, 0.8]
-                                            }}
-                                            transition={{
-                                                duration: 1.5,
-                                                repeat: Infinity,
-                                                ease: "easeInOut",
-                                                delay: 0.6
-                                            }}
-                                        />
+                                    {/* Bottom-Left Corner */}
+                                    <motion.div
+                                        className="fixed bottom-0 left-0 w-6 h-6 pointer-events-none z-50"
+                                        style={{
+                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
+                                        }}
+                                        animate={{
+                                            opacity: [0.3, 0.7, 0.3],
+                                            scale: [0.9, 1.2, 0.9]
+                                        }}
+                                        transition={{
+                                            duration: 2.5,
+                                            repeat: Infinity,
+                                            ease: "easeInOut",
+                                            delay: 1.2
+                                        }}
+                                    />
 
-                                        {/* Bottom-Right Corner */}
-                                        <motion.div
-                                            className="fixed bottom-0 right-0 w-8 h-8 pointer-events-none z-50"
-                                            style={{
-                                                background: 'radial-gradient(circle, rgba(255,215,0,0.8), transparent 70%)'
-                                            }}
-                                            animate={{
-                                                opacity: [0.5, 1, 0.5],
-                                                scale: [0.8, 1.5, 0.8]
-                                            }}
-                                            transition={{
-                                                duration: 1.5,
-                                                repeat: Infinity,
-                                                ease: "easeInOut",
-                                                delay: 0.9
-                                            }}
-                                        />
-                                    </>
-                                )}
+                                    {/* Bottom-Right Corner */}
+                                    <motion.div
+                                        className="fixed bottom-0 right-0 w-6 h-6 pointer-events-none z-50"
+                                        style={{
+                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
+                                        }}
+                                        animate={{
+                                            opacity: [0.3, 0.7, 0.3],
+                                            scale: [0.9, 1.2, 0.9]
+                                        }}
+                                        transition={{
+                                            duration: 2.5,
+                                            repeat: Infinity,
+                                            ease: "easeInOut",
+                                            delay: 1.8
+                                        }}
+                                    />
+                                </>
                             </>
                         )}
 

@@ -49,10 +49,19 @@ export default function GameModeRenderer({
     onMeaningMatchTimeUp,
     onMeaningMatchTimeLeftChange
 }: GameModeRendererProps) {
+    // Don't render any content during DDA transition to prevent word flashing
+    const currentWord = (!words[currentWordIndex]) 
+        ? '' 
+        : words[currentWordIndex]?.word;
+    
+    const currentWordMeaning = (!words[currentWordIndex]) 
+        ? '' 
+        : words[currentWordIndex]?.meaning || '';
+
     if (modeId === 'echo') {
         return (
             <EchoMode
-                currentWord={words[currentWordIndex]?.word}
+                currentWord={currentWord}
                 isTransitioning={isTransitioning}
                 onSpeak={onSpeak}
                 gameStyle={gameStyle}
@@ -69,8 +78,10 @@ export default function GameModeRenderer({
     if (modeId === 'typing') {
         return (
             <TypingMode
-                currentWord={words[currentWordIndex]?.word}
+                currentWord={currentWord}
                 currentWordIndex={currentWordIndex}
+                isTransitioning={isTransitioning}
+
             />
         );
     }
@@ -78,7 +89,7 @@ export default function GameModeRenderer({
     if (modeId === 'meaning-match') {
         return (
             <MeaningMatchMode
-                currentWordMeaning={words[currentWordIndex]?.meaning || ''}
+                currentWordMeaning={currentWordMeaning}
                 currentWordIndex={currentWordIndex}
                 gameStyle={gameStyle}
                 onTimeUp={onMeaningMatchTimeUp || onTimeUp}
@@ -90,7 +101,7 @@ export default function GameModeRenderer({
     if (modeId === 'memory') {
         return (
             <MemoryMode
-                currentWord={words[currentWordIndex]?.word}
+                currentWord={currentWord}
                 currentWordIndex={currentWordIndex}
                 isWordVisible={isWordVisible}
                 promptText={promptText}

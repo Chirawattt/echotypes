@@ -53,13 +53,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         currentWordIndex,
         words,
         speak: speech.speak,
-        isDdaUpdating: dda.isDdaUpdating,
-        ddaLevelJustChanged: dda.ddaLevelJustChanged,
-        isDdaBlocked: dda.isDdaBlocked,
-        lastSpokenWordRef: dda.lastSpokenWordRef,
-        lastSpeechTimeRef: dda.lastSpeechTimeRef,
         inputRef,
-        cancelSpeech: speech.cancelSpeech
     });
 
     // Game events hook
@@ -75,7 +69,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         keypressAudioRef: audio.keypressAudioRef,
         handleDdaUpdate: dda.handleDdaUpdate,
         calculateAndAddScore: scoreUtils.calculateAndAddScore,
-        stopEchoTimer: timers.stopEchoTimer
+        stopEchoTimer: timers.stopEchoTimer,
     });
 
     // Common time up logic for all modes
@@ -186,8 +180,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         // Clear any pending speech synthesis
         speech.cancelSpeech();
 
-        // Reset spoken word tracking
-        dda.resetDdaTracking();
 
         // Initialize game with appropriate words based on mode and game style
         let sessionWords;

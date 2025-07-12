@@ -30,7 +30,7 @@ export function useGameEvents({
     keypressAudioRef,
     handleDdaUpdate,
     calculateAndAddScore,
-    stopEchoTimer
+    stopEchoTimer,
 }: UseGameEventsProps) {
     const {
         userInput,
@@ -71,6 +71,8 @@ export function useGameEvents({
         meaningMatchTimeLeft: number
     ) => {
         e.preventDefault();
+        
+        // Block submission during any type of transition
         if (!userInput.trim() || isTransitioning) return;
 
         // Stop Echo timer immediately when answer is submitted
@@ -79,15 +81,20 @@ export function useGameEvents({
         const isAnswerCorrect = userInput.trim().toLowerCase() === words[currentWordIndex]?.word.toLowerCase();
 
         // Update DDA Performance (except for meaning-match mode)
-        handleDdaUpdate(isAnswerCorrect);
+        // This might trigger DDA transition which will block further actions
+        const ddaResult = handleDdaUpdate(isAnswerCorrect);
 
         // Calculate challenge mode score if in challenge mode and answered correctly
         calculateAndAddScore(isAnswerCorrect, echoTimeLeft, memoryTimeLeft, meaningMatchTimeLeft);
 
+        // For typing mode, check if DDA level changed
         if (modeId === 'typing') {
+            // For typing mode, check if DDA level changed
             if (currentWordIndex === words.length - 1 && difficultyId !== 'endless' && difficultyId !== 'dda') {
                 setStatus('gameOver');
+                return;
             }
+            
             if (isAnswerCorrect) {
                 playSound(correctAudioRef);
                 setScore((prev) => prev + 1);
@@ -101,6 +108,18 @@ export function useGameEvents({
                 resetStreak();
             }
 
+            // Check if DDA level changed - if so, don't handle word progression here
+            // DDA system will handle word replacement and index reset automatically
+            if (ddaResult.levelChanged && difficultyId === 'dda' && gameStyle === 'challenge') {
+                // DDA transition is happening - set transition state and let DDA handle the rest
+                setIsTransitioning(true);
+                
+                // Clear input immediately but let DDA handle word/index changes
+                setUserInput('');
+                return;
+            }
+
+            // Normal word progression (no DDA level change)
             if ((difficultyId === 'endless' || difficultyId === 'dda') && currentWordIndex === words.length - 1) {
                 let reshuffledWords;
                 if (difficultyId === 'dda' && gameStyle === 'challenge' && (modeId as string) !== 'meaning-match') {
@@ -117,6 +136,7 @@ export function useGameEvents({
             return;
         }
 
+        // For non-typing modes (echo, memory, meaning-match), use transition pattern
         setIsTransitioning(true);
         if (isAnswerCorrect) {
             playSound(correctAudioRef);
@@ -140,10 +160,12 @@ export function useGameEvents({
                 setStatus('gameOver');
                 return;
             }
-
+            
+        
             if ((difficultyId === 'endless' || difficultyId === 'dda') && isLastWord) {
                 let reshuffledWords;
                 if (difficultyId === 'dda' && gameStyle === 'challenge' && (modeId as string) !== 'meaning-match') {
+
                     reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
                 } else {
                     reshuffledWords = getGameSessionWords(difficultyId);
