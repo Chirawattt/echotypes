@@ -2,10 +2,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScoreCalculation {
     baseScore: number;
+    firstListenBonus: number;
     timeBonus: number;
     difficultyMultiplier: number;
     streakBonus: number;
     finalScore: number;
+    usedSpeakAgain?: boolean;
 }
 
 interface ScoreBreakdownToastProps {
@@ -56,18 +58,7 @@ export default function ScoreBreakdownToast({
                             +{lastScoreCalculation.baseScore} (base)
                         </motion.div>
 
-                        {/* Time Bonus */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20, scale: 0.8 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            transition={{
-                                duration: 0.4,
-                                delay: 0.3
-                            }}
-                            className="text-cyan-400 font-bold text-md flex items-center justify-end drop-shadow-lg"
-                        >
-                            +{lastScoreCalculation.timeBonus} (time)
-                        </motion.div>
+                        
 
                         {/* Difficulty Multiplier */}
                         <motion.div
@@ -75,7 +66,7 @@ export default function ScoreBreakdownToast({
                             animate={{ opacity: 1, x: 0, scale: 1 }}
                             transition={{
                                 duration: 0.4,
-                                delay: 0.5
+                                delay: 0.2
                             }}
                             className="text-cyan-400 font-bold text-md flex items-center justify-end drop-shadow-lg"
                         >
@@ -88,11 +79,52 @@ export default function ScoreBreakdownToast({
                             animate={{ opacity: 1, x: 0, scale: 1 }}
                             transition={{
                                 duration: 0.4,
-                                delay: 0.7
+                                delay: 0.3
                             }}
                             className="text-cyan-400 font-bold text-md flex items-center justify-end drop-shadow-lg"
                         >
                             +{lastScoreCalculation.streakBonus} (streak)
+                        </motion.div>
+
+
+                        {/* First Listen Bonus */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            transition={{
+                                duration: 0.4,
+                                delay: 0.4
+                            }}
+                            className={`font-bold text-md flex items-center justify-end drop-shadow-lg ${
+                                lastScoreCalculation.usedSpeakAgain 
+                                    ? 'text-red-400' 
+                                    : 'text-green-400'
+                            }`}
+                        >
+                            {lastScoreCalculation.usedSpeakAgain 
+                                ? '+0 (no first listen bonus)' 
+                                : `+${lastScoreCalculation.firstListenBonus} (first listen)`
+                            }
+                        </motion.div>
+
+                        {/* Time Bonus */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            transition={{
+                                duration: 0.4,
+                                delay: 0.4
+                            }}
+                            className={`font-bold text-md flex items-center justify-end drop-shadow-lg ${
+                                lastScoreCalculation.usedSpeakAgain 
+                                    ? 'text-red-400' 
+                                    : 'text-cyan-400'
+                            }`}
+                        >
+                            {lastScoreCalculation.usedSpeakAgain 
+                                ? '+0 (no time bonus)' 
+                                : `+${lastScoreCalculation.timeBonus} (time)`
+                            }
                         </motion.div>
 
                         {/* Final Score */}
@@ -101,12 +133,15 @@ export default function ScoreBreakdownToast({
                             animate={{ opacity: 1, x: 0, scale: 1 }}
                             transition={{
                                 duration: 0.4,
-                                delay: 0.9
+                                delay: 0.5
                             }}
                             className="text-cyan-400 font-bold text-lg flex items-center justify-end pt-2 mt-1 drop-shadow-lg"
                         >
                             = {lastScoreCalculation.finalScore} pts
                         </motion.div>
+
+
+                        
                     </motion.div>
                 )}
             </AnimatePresence>

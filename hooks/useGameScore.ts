@@ -6,9 +6,10 @@ interface UseGameScoreProps {
     gameStyle: 'practice' | 'challenge';
     difficultyId: string;
     modeId: string;
+    usedSpeakAgain?: boolean; // เพิ่ม prop สำหรับ Echo mode
 }
 
-export function useGameScore({ gameStyle, difficultyId, modeId }: UseGameScoreProps) {
+export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain = false }: UseGameScoreProps) {
     const {
         streakCount,
         totalChallengeScore,
@@ -37,7 +38,7 @@ export function useGameScore({ gameStyle, difficultyId, modeId }: UseGameScorePr
         let scoreCalculation;
 
         if (modeId === 'echo') {
-            scoreCalculation = calculateEchoModeScore(echoTimeLeft, difficultyId, streakCount, true);
+            scoreCalculation = calculateEchoModeScore(echoTimeLeft, difficultyId, streakCount, true, usedSpeakAgain);
         } else if (modeId === 'memory') {
             const timeUsed = 5.0 - memoryTimeLeft;
             scoreCalculation = calculateTotalScore(timeUsed, difficultyId, streakCount, true);
@@ -63,7 +64,7 @@ export function useGameScore({ gameStyle, difficultyId, modeId }: UseGameScorePr
         scoreBreakdownTimerRef.current = setTimeout(() => {
             setShowScoreBreakdown(false);
         }, 1500);
-    }, [gameStyle, difficultyId, modeId, streakCount, addChallengeScore]);
+    }, [gameStyle, difficultyId, modeId, streakCount, usedSpeakAgain, addChallengeScore]);
 
     // Calculate score for time up scenarios
     const calculateScoreForTimeUp = useCallback(() => {
@@ -72,13 +73,13 @@ export function useGameScore({ gameStyle, difficultyId, modeId }: UseGameScorePr
         }
 
         if (modeId === 'echo') {
-            const scoreCalculation = calculateEchoModeScore(0, difficultyId, streakCount, false);
+            const scoreCalculation = calculateEchoModeScore(0, difficultyId, streakCount, false, usedSpeakAgain);
             console.log(`Time up! No score added. Calculation: ${scoreCalculation.finalScore}`);
         } else if (modeId === 'meaning-match') {
             const scoreCalculation = calculateTotalScore(5.0, difficultyId, streakCount, false);
             console.log(`Meaning Match time up! No score added. Calculation: ${scoreCalculation.finalScore}`);
         }
-    }, [gameStyle, modeId, difficultyId, streakCount]);
+    }, [gameStyle, modeId, difficultyId, streakCount, usedSpeakAgain]);
 
     // Cleanup function
     const cleanup = useCallback(() => {

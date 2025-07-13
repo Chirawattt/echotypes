@@ -9,6 +9,7 @@ import { useGameStore } from '@/lib/stores/gameStore';
 interface EchoModeProps {
     currentWord: string;
     isTransitioning: boolean;
+    usedSpeakAgain?: boolean; // Default to false if not provided
     onSpeak: (text: string) => void;
     gameStyle?: 'practice' | 'challenge';
     currentWordIndex: number;
@@ -17,11 +18,13 @@ interface EchoModeProps {
     onCountdownChange?: (isCountingDown: boolean) => void; // Add this to communicate countdown state
     onTimerReady?: (stopTimer: () => void) => void; // Add this to pass stop timer function to parent
     onTimeLeftChange?: (timeLeft: number) => void; // Add this to send current time left to parent
+    setSpeakAgainUsed: (used: boolean) => void; // Function to set speak again status in parent
 }
 
 export default function EchoMode({
     currentWord,
     isTransitioning,
+    usedSpeakAgain = false, // Default to false if not provided
     onSpeak,
     gameStyle = 'practice',
     currentWordIndex,
@@ -29,12 +32,14 @@ export default function EchoMode({
     speechUtterance,
     onCountdownChange,
     onTimerReady,
-    onTimeLeftChange
+    onTimeLeftChange,
+    setSpeakAgainUsed
 }: EchoModeProps) {
-    const [listenCount, setListenCount] = useState(0);
+    const [listenCount, setListenCount] = useState(0); // เพิ่ม listenCount state ที่หายไป
     const [timeLeft, setTimeLeft] = useState(5.0);
     const [isCountingDown, setIsCountingDown] = useState(false);
     const { totalChallengeScore, streakCount } = useGameStore();
+
 
     // Function to get score color based on streak level
     const getScoreColorByStreak = (streak: number) => {
@@ -139,7 +144,14 @@ export default function EchoMode({
         setListenCount(0);
         setTimeLeft(5.0);
         setIsCountingDown(false);
-    }, [currentWordIndex]);
+        setSpeakAgainUsed(false); // รีเซ็ต speak again status
+        console.log('Echo Mode - Word changed, resetting state');
+
+        // แจ้งให้ parent รู้ว่า reset แล้ว
+        if (usedSpeakAgain) {
+            setSpeakAgainUsed(false);
+        }
+    }, [currentWordIndex, setSpeakAgainUsed, usedSpeakAgain]);
 
     // Handle speech end event for challenge mode
     useEffect(() => {
@@ -177,28 +189,58 @@ export default function EchoMode({
         };
     }, []);
 
-    const handleSpeak = () => {
+    const handleSpeak = useCallback(() => {
         if (gameStyle === 'challenge' && listenCount >= 1) {
             return; // Prevent speaking more than once in challenge mode
         }
 
-        onSpeak(currentWord);
-
         if (gameStyle === 'challenge') {
             setListenCount(prev => prev + 1);
+
+            // เมื่อกดปุ่ม speak ครั้งแรก = ใช้ speak again (ไม่ได้โบนัส first listen)
+            setSpeakAgainUsed(true);
+
+            stopTimer(); // Stop timer immediately when speaking
         }
-    };
+
+        onSpeak(currentWord);
+    }, [gameStyle, listenCount, setSpeakAgainUsed, stopTimer, onSpeak, currentWord]);
 
     const isDisabled = isTransitioning || (gameStyle === 'challenge' && listenCount >= 1);
 
+    // Keyboard event listener for Shift key to trigger speak
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            // Only trigger if Shift is pressed and input is focused
+            if (event.key === 'Shift') {
+                const activeElement = document.activeElement;
+                const inputElement = document.querySelector('input[type="text"]') as HTMLInputElement;
+
+                // Check if input is focused and speak button is not disabled
+                if (activeElement === inputElement && !isDisabled) {
+                    event.preventDefault(); // Prevent default Shift behavior
+                    handleSpeak();
+                }
+            }
+        };
+
+        // Add event listener to document
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Cleanup event listener
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isDisabled, handleSpeak]); // Add dependencies
+
     return (
-        <div className="flex flex-col items-center justify-center  w-full sm:max-w-lg lg:max-w-2xl max-w-md">
+        <div className="flex flex-col items-center justify-center w-full max-w-md sm:max-w-lg lg:max-w-2xl px-2 sm:px-4">
             {/* Timer for Challenge Mode - Horizontal Progress Bar Style */}
             {gameStyle === 'challenge' && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-3 w-full max-w-xl space-y-2"
+                    className="mb-2 sm:mb-3 w-full space-y-2"
                 >
 
                     {/* Points Display - for Challenge Mode */}
@@ -206,10 +248,10 @@ export default function EchoMode({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="rounded-lg p-2 mb-4 text-center"
+                        className="rounded-lg p-1 sm:p-2 mb-2 sm:mb-4 text-center"
                     >
-                        <motion.p 
-                            className={`text-3xl font-bold ${getScoreColorByStreak(streakCount)}`}
+                        <motion.p
+                            className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${getScoreColorByStreak(streakCount)}`}
                             animate={streakCount >= 5 ? {
                                 scale: [1, 1.05, 1],
                                 textShadow: [
@@ -226,22 +268,22 @@ export default function EchoMode({
                         >
                             {totalChallengeScore} pts.
                         </motion.p>
-                        
-                       
+
+
                     </motion.div>
 
                     <div className=''>
                         {/* Timer Header */}
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex flex-col sm:flex-row items-center justify-between mb-2 sm:mb-3 gap-2 sm:gap-0">
                             <motion.div
-                                className="flex items-center space-x-2"
+                                className="flex items-center space-x-1 sm:space-x-2"
                                 animate={{ scale: timeLeft <= 2.0 ? [1, 1.05, 1] : 1 }}
                                 transition={{ duration: 0.5, repeat: timeLeft <= 2.0 ? Infinity : 0 }}
                             >
-                                <div className={`w-3 h-3 rounded-full ${timeLeft <= 2.0 ? 'bg-red-400' : 'bg-orange-400'
+                                <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${timeLeft <= 2.0 ? 'bg-red-400' : 'bg-orange-400'
                                     } animate-pulse`}></div>
                                 <span
-                                    className={`text-2xl font-bold ${timeLeft <= 2.0 ? 'text-red-400' : 'text-orange-400'
+                                    className={`text-xl sm:text-2xl lg:text-3xl font-bold ${timeLeft <= 2.0 ? 'text-red-400' : 'text-orange-400'
                                         }`}
                                     style={{ fontFamily: "'Caveat Brush', cursive" }}
                                 >
@@ -249,8 +291,8 @@ export default function EchoMode({
                                 </span>
                             </motion.div>
                             <span
-                                className={`text-lg font-medium ${timeLeft <= 2.0 ? 'text-red-300' : 'text-orange-300'
-                                    }`}
+                                className={`text-sm sm:text-lg font-medium ${timeLeft <= 2.0 ? 'text-red-300' : 'text-orange-300'
+                                    } text-center sm:text-right`}
                                 style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                             >
                                 {isCountingDown ? '⏰ Time to answer!' : '🎯 Get ready!'}
@@ -260,18 +302,18 @@ export default function EchoMode({
                         {/* Progress Bar Container */}
                         <div className="relative">
                             {/* Background Bar */}
-                            <div className="w-full h-3 bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-gray-700/30">
+                            <div className="w-full h-2 sm:h-3 bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-gray-700/30">
                                 {/* Animated Progress Bar */}
                                 <motion.div
                                     className={`h-full rounded-full transition-all duration-100 ease-linear ${timeLeft <= 2.0
-                                            ? 'bg-gradient-to-r from-red-500 to-red-400'
-                                            : 'bg-gradient-to-r from-orange-500 to-yellow-400'
+                                        ? 'bg-gradient-to-r from-red-500 to-red-400'
+                                        : 'bg-gradient-to-r from-orange-500 to-yellow-400'
                                         }`}
                                     style={{
                                         width: `${(timeLeft / 5.0) * 100}%`,
                                         boxShadow: timeLeft <= 2.0
-                                            ? '0 0 20px rgba(239, 68, 68, 0.5)'
-                                            : '0 0 20px rgba(249, 115, 22, 0.3)'
+                                            ? '0 0 15px rgba(239, 68, 68, 0.4)'
+                                            : '0 0 15px rgba(249, 115, 22, 0.3)'
                                     }}
                                     animate={{
                                         opacity: timeLeft <= 2.0 ? [1, 0.7, 1] : 1,
@@ -292,9 +334,9 @@ export default function EchoMode({
                                 {[1.0, 2.0, 3.0, 4.0, 5.0].map((mark) => (
                                     <div
                                         key={mark}
-                                        className={`w-0.5 h-2 rounded-full transition-all duration-100 ${timeLeft >= mark
-                                                ? 'bg-white/60'
-                                                : 'bg-gray-600/40'
+                                        className={`w-0.5 h-1 sm:h-2 rounded-full transition-all duration-100 ${timeLeft >= mark
+                                            ? 'bg-white/60'
+                                            : 'bg-gray-600/40'
                                             }`}
                                     />
                                 ))}
@@ -302,9 +344,9 @@ export default function EchoMode({
                         </div>
 
                         {/* Timer Status Text */}
-                        <div className="mt-2 text-center">
+                        <div className="mt-1 sm:mt-2 text-center">
                             <motion.p
-                                className={`text-md font-medium ${timeLeft <= 2.0 ? 'text-red-300/80' : 'text-orange-300/80'
+                                className={`text-sm sm:text-md font-medium ${timeLeft <= 2.0 ? 'text-red-300/80' : 'text-orange-300/80'
                                     }`}
                                 style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                 animate={{ opacity: timeLeft <= 2.0 ? [1, 0.6, 1] : 1 }}
@@ -320,27 +362,27 @@ export default function EchoMode({
             {/* Speaker Button */}
             <motion.button
                 onClick={handleSpeak}
-                className="flex flex-col items-center group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mb-3"
-                whileHover={{ scale: isDisabled ? 1 : 1.1 }}
+                className="flex flex-col items-center group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mb-2 sm:mb-3"
+                whileHover={{ scale: isDisabled ? 1 : 1.05 }}
                 whileTap={{ scale: isDisabled ? 1 : 0.95 }}
                 disabled={isDisabled}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <div className={`p-4 sm:p-5 rounded-full transition-all duration-300 ${isDisabled
-                        ? 'bg-gray-500/10 group-hover:bg-gray-500/10'
-                        : 'bg-blue-500/10 group-hover:bg-blue-500/20'
+                <div className={`p-3 sm:p-4 lg:p-5 rounded-full transition-all duration-300 ${isDisabled
+                    ? 'bg-gray-500/10 group-hover:bg-gray-500/10'
+                    : 'bg-blue-500/10 group-hover:bg-blue-500/20'
                     }`}>
-                    <FaVolumeUp className={`text-3xl sm:text-4xl lg:text-5xl transition-colors ${isDisabled ? 'text-gray-500' : 'text-blue-400'
+                    <FaVolumeUp className={`text-2xl sm:text-3xl lg:text-4xl xl:text-5xl transition-colors ${isDisabled ? 'text-gray-500' : 'text-blue-400'
                         }`} />
                 </div>
 
                 {/* Dynamic button text based on mode and state */}
                 <span
-                    className={`transition-colors mt-2 text-sm sm:text-base font-medium ${isDisabled
-                            ? 'text-gray-500'
-                            : 'text-blue-300 group-hover:text-blue-200'
+                    className={`transition-colors mt-1 sm:mt-2 text-xs sm:text-sm lg:text-base font-medium text-center px-2 ${isDisabled
+                        ? 'text-gray-500'
+                        : 'text-blue-300 group-hover:text-blue-200'
                         }`}
                     style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                 >
@@ -351,12 +393,22 @@ export default function EchoMode({
                     )}
                 </span>
 
+                {/* Keyboard shortcut hint */}
+                {!isDisabled && (
+                    <span
+                        className="transition-colors mt-0.5 sm:mt-1 text-xs text-blue-300/70 group-hover:text-blue-200/70 flex items-center gap-1 px-2 text-center"
+                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                    >
+                        ⌨️ or press <kbd className="px-1 py-0.5 bg-blue-800/30 rounded text-xs border border-blue-600/30">Shift</kbd>
+                    </span>
+                )}
+
                 {/* Listen count indicator for challenge mode */}
                 {gameStyle === 'challenge' && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="flex items-center mt-1 text-xs text-blue-300/80"
+                        className="flex items-center mt-0.5 sm:mt-1 text-xs text-blue-300/80"
                         style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                     >
                         <FaClock className="mr-1" />
@@ -372,7 +424,7 @@ export default function EchoMode({
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="text-blue-300 text-sm text-center max-w-xs"
+                        className="text-blue-300 text-sm sm:text-base lg:text-lg text-center max-w-xs sm:max-w-sm lg:max-w-md px-2"
                         style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                     >
                         ✨ Type your answer now!

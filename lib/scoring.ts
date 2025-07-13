@@ -1,8 +1,10 @@
 // Scoring system for Challenge Mode
-// คะแนนที่ได้ = (คะแนนพื้นฐาน + โบนัสเวลา) * โบนัสความยาก + โบนัส Streak
+// สูตรพื้นฐาน: คะแนนที่ได้ = (คะแนนพื้นฐาน * โบนัสความยาก) + โบนัส Streak
+// สูตรกับโบนัส: คะแนนที่ได้ = ((คะแนนพื้นฐาน + โบนัสฟังครั้งเดียว + โบนัสเวลา) * โบนัสความยาก) + โบนัส Streak
 
 export interface ScoreCalculation {
     baseScore: number;          // คะแนนพื้นฐาน (100 คะแนนต่อข้อ)
+    firstListenBonus: number;   // โบนัสฟังครั้งเดียว (Echo Mode เท่านั้น)
     timeBonus: number;          // โบนัสเวลา
     timeBonusDetails: {
         maxTime: number;        // เวลาสูงสุดต่อข้อ
@@ -12,10 +14,12 @@ export interface ScoreCalculation {
     difficultyMultiplier: number; // โบนัสความยาก
     streakBonus: number;        // โบนัส Streak
     finalScore: number;         // คะแนนสุดท้าย
+    usedSpeakAgain?: boolean;   // ใช้ speak again หรือไม่ (Echo Mode เท่านั้น)
 }
 
 export interface ScoringConfig {
     baseScore: number;
+    firstListenBonus: number;   // โบนัสฟังครั้งเดียว (Echo Mode)
     maxTimePerQuestion: number;
     timeMultiplier: number;
     difficultyMultipliers: Record<string, number>;
@@ -25,6 +29,7 @@ export interface ScoringConfig {
 // Default scoring configuration
 export const DEFAULT_SCORING_CONFIG: ScoringConfig = {
     baseScore: 100,
+    firstListenBonus: 50,       // โบนัสฟังครั้งเดียว 50 คะแนน
     maxTimePerQuestion: 5.0, // 5 วินาที
     timeMultiplier: 15,
     difficultyMultipliers: {
@@ -70,7 +75,7 @@ export function calculateStreakBonus(streak: number): number {
 
 /**
  * คำนวณคะแนนรวม
- * คะแนนที่ได้ = (คะแนนพื้นฐาน + โบนัสเวลา) * โบนัสความยาก + โบนัส Streak
+ * สูตรพื้นฐาน: คะแนนที่ได้ = (คะแนนพื้นฐาน * โบนัสความยาก) + โบนัส Streak
  */
 export function calculateTotalScore(
     timeUsed: number,
@@ -83,6 +88,7 @@ export function calculateTotalScore(
     if (!isCorrect) {
         return {
             baseScore: 0,
+            firstListenBonus: 0,
             timeBonus: 0,
             timeBonusDetails: {
                 maxTime: config.maxTimePerQuestion,
@@ -96,6 +102,7 @@ export function calculateTotalScore(
     }
 
     const baseScore = config.baseScore;
+    const firstListenBonus = 0; // ไม่มีโบนัสฟังครั้งเดียวในโหมดปกติ
     const timeBonus = calculateTimeBonus(timeUsed, config.maxTimePerQuestion, config.timeMultiplier);
     const difficultyMultiplier = getDifficultyMultiplier(difficulty);
     const streakBonus = calculateStreakBonus(streak);
@@ -105,6 +112,7 @@ export function calculateTotalScore(
 
     return {
         baseScore,
+        firstListenBonus,
         timeBonus,
         timeBonusDetails: {
             maxTime: config.maxTimePerQuestion,
@@ -119,26 +127,107 @@ export function calculateTotalScore(
 
 /**
  * คำนวณคะแนนสำหรับ Echo Mode Challenge
+ * สูตร 1 (ฟังครั้งเดียว): คะแนนที่ได้ = ((คะแนนพื้นฐาน + โบนัสฟังครั้งเดียว + โบนัสเวลา) * โบนัสความยาก) + โบนัส Streak
+ * สูตร 2 (ฟังหลายครั้ง): คะแนนที่ได้ = (คะแนนพื้นฐาน * โบนัสความยาก) + โบนัส Streak
  */
 export function calculateEchoModeScore(
     timeLeft: number, // เวลาที่เหลือ (0-5.0)
     difficulty: string,
     streak: number,
-    isCorrect: boolean = true
+    isCorrect: boolean = true,
+    usedSpeakAgain: boolean = false // เพิ่มพารามิเตอร์นี้
 ): ScoreCalculation {
-    // คำนวณเวลาที่ใช้จากเวลาที่เหลือ
+    // ถ้าตอบผิดจะไม่ได้คะแนน
+    if (!isCorrect) {
+        return {
+            baseScore: 0,
+            firstListenBonus: 0,
+            timeBonus: 0,
+            timeBonusDetails: {
+                maxTime: DEFAULT_SCORING_CONFIG.maxTimePerQuestion,
+                timeUsed: DEFAULT_SCORING_CONFIG.maxTimePerQuestion - timeLeft,
+                timeMultiplier: DEFAULT_SCORING_CONFIG.timeMultiplier
+            },
+            difficultyMultiplier: getDifficultyMultiplier(difficulty),
+            streakBonus: 0,
+            finalScore: 0,
+            usedSpeakAgain
+        };
+    }
+
+    const baseScore = DEFAULT_SCORING_CONFIG.baseScore;
+    const difficultyMultiplier = getDifficultyMultiplier(difficulty);
+    const streakBonus = calculateStreakBonus(streak);
     const timeUsed = DEFAULT_SCORING_CONFIG.maxTimePerQuestion - timeLeft;
-    
-    return calculateTotalScore(timeUsed, difficulty, streak, isCorrect);
+
+    let firstListenBonus = 0;
+    let timeBonus = 0;
+    let finalScore = 0;
+
+    if (!usedSpeakAgain) {
+        // สูตร 1: ฟังครั้งเดียว - ได้โบนัสเต็ม
+        firstListenBonus = DEFAULT_SCORING_CONFIG.firstListenBonus;
+        timeBonus = calculateTimeBonus(timeUsed, DEFAULT_SCORING_CONFIG.maxTimePerQuestion, DEFAULT_SCORING_CONFIG.timeMultiplier);
+        finalScore = Math.round((baseScore + firstListenBonus + timeBonus) * difficultyMultiplier + streakBonus);
+    } else {
+        // สูตร 2: ฟังหลายครั้ง - ไม่ได้โบนัสเวลาและโบนัสฟังครั้งเดียว
+        firstListenBonus = 0;
+        timeBonus = 0;
+        finalScore = Math.round(baseScore * difficultyMultiplier + streakBonus);
+    }
+
+    return {
+        baseScore,
+        firstListenBonus,
+        timeBonus,
+        timeBonusDetails: {
+            maxTime: DEFAULT_SCORING_CONFIG.maxTimePerQuestion,
+            timeUsed,
+            timeMultiplier: DEFAULT_SCORING_CONFIG.timeMultiplier
+        },
+        difficultyMultiplier,
+        streakBonus,
+        finalScore,
+        usedSpeakAgain
+    };
 }
 
 /**
  * แสดงรายละเอียดการคำนวณคะแนน
  */
 export function formatScoreBreakdown(calculation: ScoreCalculation): string {
-    const { baseScore, timeBonus, timeBonusDetails, difficultyMultiplier, streakBonus, finalScore } = calculation;
+    const { baseScore, firstListenBonus, timeBonus, timeBonusDetails, difficultyMultiplier, streakBonus, finalScore, usedSpeakAgain } = calculation;
     
-    return `
+    if (usedSpeakAgain !== undefined) {
+        // Echo Mode
+        if (usedSpeakAgain) {
+            return `
+Score Breakdown (Echo Mode - Multiple Listens):
+• Base Score: ${baseScore}
+• First Listen Bonus: 0 (used speak again)
+• Time Bonus: 0 (used speak again)
+• Difficulty: ×${difficultyMultiplier}
+• Streak Bonus: +${streakBonus}
+• Final Score: ${finalScore}
+
+Formula: ${baseScore} × ${difficultyMultiplier} + ${streakBonus} = ${finalScore}
+            `.trim();
+        } else {
+            return `
+Score Breakdown (Echo Mode - First Listen):
+• Base Score: ${baseScore}
+• First Listen Bonus: +${firstListenBonus}
+• Time Bonus: ${timeBonus} (saved ${(timeBonusDetails.maxTime - timeBonusDetails.timeUsed).toFixed(1)}s × ${timeBonusDetails.timeMultiplier})
+• Difficulty: ×${difficultyMultiplier}
+• Streak Bonus: +${streakBonus}
+• Final Score: ${finalScore}
+
+Formula: (${baseScore} + ${firstListenBonus} + ${timeBonus}) × ${difficultyMultiplier} + ${streakBonus} = ${finalScore}
+            `.trim();
+        }
+    } else {
+        // Other modes
+        return `
 Score Breakdown:
 • Base Score: ${baseScore}
 • Time Bonus: ${timeBonus} (saved ${(timeBonusDetails.maxTime - timeBonusDetails.timeUsed).toFixed(1)}s × ${timeBonusDetails.timeMultiplier})
@@ -147,5 +236,6 @@ Score Breakdown:
 • Final Score: ${finalScore}
 
 Formula: (${baseScore} + ${timeBonus}) × ${difficultyMultiplier} + ${streakBonus} = ${finalScore}
-    `.trim();
+        `.trim();
+    }
 }

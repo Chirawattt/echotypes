@@ -23,11 +23,12 @@ export function useDDA({ gameStyle, modeId }: UseDDAProps) {
 
     // Handle DDA performance update with clean transition
     const handleDdaUpdate = useCallback((isCorrect: boolean) => {
-        if (gameStyle !== 'challenge' || modeId === 'meaning-match') {
+        if ( modeId === 'meaning-match') {
             return { levelChanged: false, newDifficultyLevel: currentDifficultyLevel };
         }
 
         const result = updatePerformance(isCorrect);
+
 
         if (result.levelChanged) {
             // Start transition - block all speech during this period
@@ -45,7 +46,9 @@ export function useDDA({ gameStyle, modeId }: UseDDAProps) {
 
                 // 2. Reset to first word of new level
                 // Reset index to -1 because it will be incremented to 0 on next render
-                setCurrentWordIndex(-1);
+                if (modeId === 'echo') setCurrentWordIndex(-1);
+                else if (modeId === 'typing') setCurrentWordIndex(0);
+                else setCurrentWordIndex(0); // Default for other modes
 
             }, 100); // Minimal delay for batched updates
         }

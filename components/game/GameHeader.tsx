@@ -1,28 +1,33 @@
 import { motion } from 'framer-motion';
 import { FaArrowLeft } from 'react-icons/fa';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { useGameStore } from '@/lib/stores/gameStore';
+import { mapLevelToDisplayName } from '@/lib/difficultyHelpers';
 
 interface GameHeaderProps {
     onGoBack: () => void;
-    currentWordIndex: number;
     difficultyId: string;
     modeId: string;
     lives: number;
     timeLeft: number;
     score: number;
     gameStyle: 'practice' | 'challenge';
+    totalWordsPlayed?: number; // เพิ่มสำหรับติดตามจำนวนคำที่เล่นไปแล้วจริงๆ
 }
 
 export default function GameHeader({
     onGoBack,
-    currentWordIndex,
     difficultyId,
     modeId,
     lives,
     timeLeft,
     score,
-    gameStyle
+    gameStyle,
+    totalWordsPlayed = 0 // ค่า default เป็น 0
 }: GameHeaderProps) {
+    // ดึง DDA state จาก gameStore
+    const { currentDifficultyLevel } = useGameStore();
+
     const renderLives = () => (
         <div className="flex items-center space-x-1 text-xl sm:text-2xl">
             {[...Array(3)].map((_, i) => (
@@ -79,8 +84,13 @@ export default function GameHeader({
                     transition={{ duration: 0.5 }}
                     className="text-left"
                 >
-                    <p className="text-sm sm:text-base lg:text-lg font-bold">Word: {currentWordIndex + 1} </p>
-                    <p className="text-xs sm:text-sm uppercase text-blue-300 font-medium">{difficultyId}</p>
+                    <p className="text-sm sm:text-base lg:text-lg font-bold">Words Played: {totalWordsPlayed}</p>
+                    <p className="text-xs sm:text-sm uppercase text-blue-300 font-medium">
+                        {difficultyId === 'dda' 
+                            ? `Level ${mapLevelToDisplayName(currentDifficultyLevel)}`
+                            : difficultyId
+                        }
+                    </p>
                 </motion.div>
 
                 <motion.div

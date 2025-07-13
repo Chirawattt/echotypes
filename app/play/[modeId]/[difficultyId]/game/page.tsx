@@ -15,7 +15,7 @@ import GameModeRenderer from '@/components/game/GameModeRenderer';
 import GameInput from '@/components/game/GameInput';
 import GameEffects from '@/components/game/GameEffects';
 import StreakCelebration from '@/components/game/StreakCelebration';
-import DdaDebug from '@/components/game/DdaDebug';
+// import DdaDebug from '@/components/game/DdaDebug';
 
 export default function GamePlayPage() {
     const router = useRouter();
@@ -73,13 +73,13 @@ export default function GamePlayPage() {
     return (
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
             
-            {/* DDA Debug Component (Development only) */}
+            {/* DDA Debug Component (Development only)
             <DdaDebug 
                 currentDifficultyLevel={gameLogic.currentDifficultyLevel}
                 performanceScore={gameLogic.performanceScore}
                 gameStyle={gameStyle}
                 modeId={modeId}
-            />
+            /> */}
 
             {/* Streak Glow Effects */}
             <StreakGlowEffects streakCount={gameLogic.streakCount} />
@@ -87,13 +87,13 @@ export default function GamePlayPage() {
             {/* Game Header */}
             <GameHeader
                 onGoBack={handleGoBack}
-                currentWordIndex={gameLogic.currentWordIndex}
                 difficultyId={difficultyId}
                 modeId={modeId}
                 lives={gameLogic.lives}
                 timeLeft={gameLogic.timeLeft}
                 score={gameLogic.score}
                 gameStyle={gameStyle}
+                totalWordsPlayed={gameLogic.totalWordsPlayed}
             />
 
             {/* Game Timer for non-typing modes */}
@@ -117,6 +117,7 @@ export default function GamePlayPage() {
                     currentWordIndex={gameLogic.currentWordIndex}
                     isTransitioning={gameLogic.isTransitioning}
                     isWordVisible={gameLogic.isWordVisible}
+                    usedSpeakAgain={gameLogic.usedSpeakAgain}
                     promptText={gameLogic.promptText}
                     onSpeak={gameLogic.speak}
                     onTimeUp={gameLogic.handleEchoTimeUp}
@@ -124,18 +125,21 @@ export default function GamePlayPage() {
                     onCountdownChange={gameLogic.setIsEchoCountingDown}
                     onTimerReady={gameLogic.handleEchoTimerReady}
                     onTimeLeftChange={gameLogic.handleEchoTimeLeftChange}
+                    setSpeakAgainUsed={gameLogic.handleSpeakAgainUsed}
                     onMemoryTimeUp={gameLogic.handleMemoryTimeUp}
                     onMemoryTimeLeftChange={gameLogic.handleMemoryTimeLeftChange}
                     onMeaningMatchTimeUp={gameLogic.handleMeaningMatchTimeUp}
                     onMeaningMatchTimeLeftChange={gameLogic.handleMeaningMatchTimeLeftChange}
                 />
 
-                {/* Score Breakdown Toast */}
-                <ScoreBreakdownToast
-                    gameStyle={gameStyle}
-                    lastScoreCalculation={gameLogic.lastScoreCalculation}
-                    showScoreBreakdown={gameLogic.showScoreBreakdown}
-                />
+                {/* Score Breakdown Toast - Only for non-typing modes */}
+                {modeId !== 'typing' && (
+                    <ScoreBreakdownToast
+                        gameStyle={gameStyle}
+                        lastScoreCalculation={gameLogic.lastScoreCalculation}
+                        showScoreBreakdown={gameLogic.showScoreBreakdown}
+                    />
+                )}
 
                 {/* Game Input */}
                 <GameInput

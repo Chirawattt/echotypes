@@ -13,6 +13,7 @@ interface GameModeRendererProps {
     words: Word[];
     currentWordIndex: number;
     isTransitioning: boolean;
+    usedSpeakAgain?: boolean; // Prop for Echo mode
     onSpeak: (text: string, onEnd?: () => void) => SpeechSynthesisUtterance | null;
     gameStyle: 'practice' | 'challenge';
     onTimeUp: () => void;
@@ -22,6 +23,8 @@ interface GameModeRendererProps {
     onTimeLeftChange: (timeLeft: number) => void;
     isWordVisible: boolean;
     promptText: string;
+    // Echo mode specific
+    setSpeakAgainUsed: (used: boolean) => void; // Function to set speak again status in parent
     // Memory mode specific
     onMemoryTimeUp?: () => void;
     onMemoryTimeLeftChange?: (timeLeft: number) => void;
@@ -35,6 +38,7 @@ export default function GameModeRenderer({
     words,
     currentWordIndex,
     isTransitioning,
+    usedSpeakAgain,
     onSpeak,
     gameStyle,
     onTimeUp,
@@ -44,6 +48,7 @@ export default function GameModeRenderer({
     onTimeLeftChange,
     isWordVisible,
     promptText,
+    setSpeakAgainUsed,
     onMemoryTimeUp,
     onMemoryTimeLeftChange,
     onMeaningMatchTimeUp,
@@ -71,6 +76,8 @@ export default function GameModeRenderer({
                 onCountdownChange={onCountdownChange}
                 onTimerReady={onTimerReady}
                 onTimeLeftChange={onTimeLeftChange}
+                usedSpeakAgain={usedSpeakAgain}
+                setSpeakAgainUsed={setSpeakAgainUsed}
             />
         );
     }
@@ -81,7 +88,6 @@ export default function GameModeRenderer({
                 currentWord={currentWord}
                 currentWordIndex={currentWordIndex}
                 isTransitioning={isTransitioning}
-
             />
         );
     }

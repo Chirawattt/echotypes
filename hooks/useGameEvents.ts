@@ -6,7 +6,6 @@ import { getDdaGameSessionWords } from '@/lib/ddaWords';
 interface UseGameEventsProps {
     modeId: string;
     difficultyId: string;
-    gameStyle: 'practice' | 'challenge';
     currentDifficultyLevel: number;
     playSound: (audioRef: React.RefObject<HTMLAudioElement | null>, volume?: number) => void;
     correctAudioRef: React.RefObject<HTMLAudioElement | null>;
@@ -21,7 +20,6 @@ interface UseGameEventsProps {
 export function useGameEvents({
     modeId,
     difficultyId,
-    gameStyle,
     currentDifficultyLevel,
     playSound,
     correctAudioRef,
@@ -87,6 +85,7 @@ export function useGameEvents({
         // Calculate challenge mode score if in challenge mode and answered correctly
         calculateAndAddScore(isAnswerCorrect, echoTimeLeft, memoryTimeLeft, meaningMatchTimeLeft);
 
+
         // For typing mode, check if DDA level changed
         if (modeId === 'typing') {
             // For typing mode, check if DDA level changed
@@ -108,21 +107,11 @@ export function useGameEvents({
                 resetStreak();
             }
 
-            // Check if DDA level changed - if so, don't handle word progression here
-            // DDA system will handle word replacement and index reset automatically
-            if (ddaResult.levelChanged && difficultyId === 'dda' && gameStyle === 'challenge') {
-                // DDA transition is happening - set transition state and let DDA handle the rest
-                setIsTransitioning(true);
-                
-                // Clear input immediately but let DDA handle word/index changes
-                setUserInput('');
-                return;
-            }
-
             // Normal word progression (no DDA level change)
             if ((difficultyId === 'endless' || difficultyId === 'dda') && currentWordIndex === words.length - 1) {
                 let reshuffledWords;
-                if (difficultyId === 'dda' && gameStyle === 'challenge' && (modeId as string) !== 'meaning-match') {
+                if (difficultyId === 'dda' && (modeId as string) !== 'meaning-match') {
+                    // Use DDA words for both challenge and practice modes
                     reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
                 } else {
                     reshuffledWords = getGameSessionWords(difficultyId);
@@ -130,14 +119,16 @@ export function useGameEvents({
                 setWords(reshuffledWords);
                 setCurrentWordIndex(0);
             } else {
-                incrementWordIndex();
+                if (ddaResult.levelChanged) {
+                    setIsTransitioning(false);
+                }else incrementWordIndex();
             }
             setUserInput('');
             return;
         }
 
         // For non-typing modes (echo, memory, meaning-match), use transition pattern
-        setIsTransitioning(true);
+
         if (isAnswerCorrect) {
             playSound(correctAudioRef);
             setScore((prev) => prev + 1);
@@ -164,8 +155,8 @@ export function useGameEvents({
         
             if ((difficultyId === 'endless' || difficultyId === 'dda') && isLastWord) {
                 let reshuffledWords;
-                if (difficultyId === 'dda' && gameStyle === 'challenge' && (modeId as string) !== 'meaning-match') {
-
+                if (difficultyId === 'dda' && (modeId as string) !== 'meaning-match') {
+                    // Use DDA words for both challenge and practice modes
                     reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
                 } else {
                     reshuffledWords = getGameSessionWords(difficultyId);
@@ -181,7 +172,7 @@ export function useGameEvents({
             setIsTransitioning(false);
         }, 1200);
     }, [
-        userInput, isTransitioning, modeId, gameStyle, words, currentWordIndex, 
+        userInput, isTransitioning, modeId, words, currentWordIndex, 
         difficultyId, lives, currentDifficultyLevel, playSound, correctAudioRef, 
         incorrectAudioRef, completedAudioRef, setStatus, setScore, setIsCorrect, 
         incrementStreak, setIsWrong, addIncorrectWord, resetStreak, setWords, 

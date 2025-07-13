@@ -15,7 +15,8 @@ import GameModeRenderer from '@/components/game/GameModeRenderer';
 import GameInput from '@/components/game/GameInput';
 import GameEffects from '@/components/game/GameEffects';
 import StreakCelebration from '@/components/game/StreakCelebration';
-import DdaDebug from '@/components/game/DdaDebug';
+import AnimatedBackground from '@/components/game/AnimatedBackground';
+// import DdaDebug from '@/components/game/DdaDebug';
 
 export default function DdaGamePlayPage() {
     const router = useRouter();
@@ -73,13 +74,8 @@ export default function DdaGamePlayPage() {
     return (
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
 
-            {/* DDA Debug Component (Development only) */}
-            <DdaDebug
-                currentDifficultyLevel={gameLogic.currentDifficultyLevel}
-                performanceScore={gameLogic.performanceScore}
-                gameStyle={gameStyle}
-                modeId={modeId}
-            />
+            {/* Animated Background */}
+            <AnimatedBackground />
 
             {/* Streak Glow Effects */}
             <StreakGlowEffects streakCount={gameLogic.streakCount} />
@@ -87,13 +83,13 @@ export default function DdaGamePlayPage() {
             {/* Game Header */}
             <GameHeader
                 onGoBack={handleGoBack}
-                currentWordIndex={gameLogic.currentWordIndex}
                 difficultyId="dda"
                 modeId={modeId}
                 lives={gameLogic.lives}
                 timeLeft={gameLogic.timeLeft}
                 score={gameLogic.score}
                 gameStyle={gameStyle}
+                totalWordsPlayed={gameLogic.totalWordsPlayed}
             />
 
             {/* Game Timer for non-typing modes */}
@@ -128,14 +124,17 @@ export default function DdaGamePlayPage() {
                     onMemoryTimeLeftChange={gameLogic.handleMemoryTimeLeftChange}
                     onMeaningMatchTimeUp={gameLogic.handleMeaningMatchTimeUp}
                     onMeaningMatchTimeLeftChange={gameLogic.handleMeaningMatchTimeLeftChange}
+                    setSpeakAgainUsed={gameLogic.handleSpeakAgainUsed}
                 />
 
-                {/* Score Breakdown Toast */}
-                <ScoreBreakdownToast
-                    gameStyle={gameStyle}
-                    lastScoreCalculation={gameLogic.lastScoreCalculation}
-                    showScoreBreakdown={gameLogic.showScoreBreakdown}
-                />
+                {/* Score Breakdown Toast - Only for non-typing modes */}
+                {modeId !== 'typing' && (
+                    <ScoreBreakdownToast
+                        gameStyle={gameStyle}
+                        lastScoreCalculation={gameLogic.lastScoreCalculation}
+                        showScoreBreakdown={gameLogic.showScoreBreakdown}
+                    />
+                )}
 
                 {/* Game Input */}
                 <GameInput

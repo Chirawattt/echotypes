@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 import { useGameStore } from '@/lib/stores/gameStore';
 import { getGameSessionWords } from '@/lib/words-new';
 import { getDdaGameSessionWords } from '@/lib/ddaWords';
@@ -38,13 +38,19 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
     const inputRef = useRef<HTMLInputElement>(null);
     const isInitializedRef = useRef(false); // Flag to prevent re-initialization
+    
+    // เพิ่ม state สำหรับติดตาม speak again
+    const [usedSpeakAgain, setUsedSpeakAgain] = useState(false);
+    
+    // เพิ่ม state สำหรับติดตาม total words played
+    const [totalWordsPlayed, setTotalWordsPlayed] = useState(0);
 
     // Initialize custom hooks
     const audio = useAudio();
     const speech = useSpeech();
     const dda = useDDA({ gameStyle, modeId });
     const timers = useGameTimers({ modeId, gameStyle });
-    const scoreUtils = useGameScore({ gameStyle, difficultyId, modeId });
+    const scoreUtils = useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain });
 
     // Game modes hook
     useGameModes({
@@ -60,7 +66,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
     const events = useGameEvents({
         modeId,
         difficultyId,
-        gameStyle,
         currentDifficultyLevel: dda.currentDifficultyLevel,
         playSound: audio.playSound,
         correctAudioRef: audio.correctAudioRef,
@@ -95,9 +100,9 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
             // Handle endless mode and DDA mode - reshuffle words when reaching the end
             if ((difficultyId === 'endless' || difficultyId === 'dda') && isLastWord) {
-                // Use DDA for challenge mode, regular difficulty for practice mode
+                // Use DDA for both challenge and practice modes when difficultyId is 'dda'
                 let reshuffledWords;
-                if (difficultyId === 'dda' && gameStyle === 'challenge' && modeId !== 'meaning-match') {
+                if (difficultyId === 'dda' && modeId !== 'meaning-match') {
                     reshuffledWords = getDdaGameSessionWords(dda.currentDifficultyLevel);
                 } else {
                     reshuffledWords = getGameSessionWords(difficultyId);
@@ -106,6 +111,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
                 setCurrentWordIndex(0);
             } else {
                 incrementWordIndex();
+                
             }
 
             setLives(newLives);
@@ -114,7 +120,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             setIsCorrect(false);
             setIsTransitioning(false);
         }, 1200);
-    }, [lives, currentWordIndex, words, difficultyId, gameStyle, modeId, dda, audio, setStatus, setIsTransitioning, setIsWrong, addIncorrectWord, resetStreak, setWords, setCurrentWordIndex, incrementWordIndex, setLives, setUserInput, setIsCorrect]);
+    }, [lives, currentWordIndex, words, difficultyId, modeId, dda, audio, setStatus, setIsTransitioning, setIsWrong, addIncorrectWord, resetStreak, setWords, setCurrentWordIndex, incrementWordIndex, setLives, setUserInput, setIsCorrect]);
 
     // Handle time up for Echo mode challenge
     const handleEchoTimeUp = useCallback(() => {
@@ -141,9 +147,9 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
     // Handle restart game
     const handleRestartGame = useCallback(() => {
-        // Use DDA system for challenge mode, regular difficulty selection for practice mode
+        // Use DDA system for DDA difficulty mode, regular difficulty selection otherwise
         let sessionWords;
-        if (gameStyle === 'challenge' && modeId !== 'meaning-match') {
+        if (difficultyId === 'dda' && modeId !== 'meaning-match') {
             // Reset DDA state first, then get words from initial level
             dda.resetDdaState();
             sessionWords = getDdaGameSessionWords(ddaConfig.INITIAL_DIFFICULTY_LEVEL); // Always start from A1
@@ -181,9 +187,9 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         speech.cancelSpeech();
 
 
-        // Initialize game with appropriate words based on mode and game style
+        // Initialize game with appropriate words based on difficulty and mode
         let sessionWords;
-        if (gameStyle === 'challenge' && modeId !== 'meaning-match') {
+        if (difficultyId === 'dda' && modeId !== 'meaning-match') {
             sessionWords = getDdaGameSessionWords(ddaConfig.INITIAL_DIFFICULTY_LEVEL);
         } else {
             sessionWords = getGameSessionWords(difficultyId);
@@ -192,10 +198,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         initializeGame(sessionWords);
         if (gameStyle === 'challenge') {
             scoreUtils.resetChallengeScore();
-            if (modeId !== 'meaning-match') {
-                dda.resetDdaState();
-                dda.initDifficultyLevelRef.current = ddaConfig.INITIAL_DIFFICULTY_LEVEL;
-            }
+        }
+        
+        // Initialize DDA system for DDA difficulty mode regardless of game style
+        if (difficultyId === 'dda' && modeId !== 'meaning-match') {
+            dda.resetDdaState();
+            dda.initDifficultyLevelRef.current = ddaConfig.INITIAL_DIFFICULTY_LEVEL;
         }
         inputRef.current?.focus();
 
@@ -286,12 +294,31 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         }
     }, [modeId, gameStyle, timers.isEchoCountingDown, status]);
 
+    // รีเซ็ต speak again state เมื่อเปลี่ยนคำ
+    useEffect(() => {
+        setUsedSpeakAgain(false);
+    }, [currentWordIndex, setUsedSpeakAgain]);
+
+    // อัปเดต total words played เมื่อมีการเปลี่ยนคำ (ไม่นับครั้งแรกที่เกมเริ่ม)
+    useEffect(() => {
+        if (currentWordIndex > 0) {
+            setTotalWordsPlayed(prev => prev + 1);
+        }
+    }, [currentWordIndex]);
+
+    // รีเซ็ต total words played เมื่อเริ่มเกมใหม่หรือ restart
+    useEffect(() => {
+        if (status === 'countdown') {
+            setTotalWordsPlayed(0);
+        }
+    }, [status]);
+
     return {
         // State
         status, words, currentWordIndex, userInput, score: gameScore, lives,
         isWrong, isCorrect, isTransitioning, timeLeft, startTime,
         currentTime, highScore, isWordVisible, promptText, streakCount,
-        totalChallengeScore, lastScoreCalculation,
+        totalChallengeScore, lastScoreCalculation, usedSpeakAgain, totalWordsPlayed,
         
         // Timer state
         isEchoCountingDown: timers.isEchoCountingDown,
@@ -349,6 +376,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         updatePerformance: dda.handleDdaUpdate,
         resetDdaState: dda.resetDdaState,
         setCurrentDifficultyLevel: dda.setDifficultyLevel,
-        setPerformanceScore: dda.setPerformanceScoreManually
+        setPerformanceScore: dda.setPerformanceScoreManually,
+
+        // Echo mode state และ functions
+
+        handleSpeakAgainUsed: useCallback((used: boolean) => {
+            setUsedSpeakAgain(used);
+        }, [setUsedSpeakAgain]),
     };
 }
