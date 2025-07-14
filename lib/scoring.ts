@@ -239,3 +239,63 @@ Formula: (${baseScore} + ${timeBonus}) × ${difficultyMultiplier} + ${streakBonu
         `.trim();
     }
 }
+
+// Typing Mode Challenge scoring configuration
+export interface TypingScoreCalculation {
+    baseScore: number;          // คะแนนพื้นฐาน = 100 + (จำนวนตัวอักษร * 5)
+    comboMultiplier: number;    // ตัวคูณคอมโบ (Combo Multiplier)
+    finalScore: number;         // คะแนนสุดท้าย = คะแนนพื้นฐาน * ตัวคูณคอมโบ
+    wordLength: number;         // จำนวนตัวอักษรในคำ
+    comboCount: number;         // จำนวนคอมโบปัจจุบัน
+}
+
+export const TYPING_CHALLENGE_CONFIG = {
+    baseScoreConstant: 100,     // คะแนนพื้นฐาน 100
+    scorePerCharacter: 5,       // 5 คะแนนต่อตัวอักษร
+    maxComboMultiplier: 5.0,    // ตัวคูณคอมโบสูงสุด 5 เท่า
+    comboStep: 0.1              // เพิ่มตัวคูณ 0.1 ต่อคอมโบ
+};
+
+/**
+ * คำนวณตัวคูณคอมโบสำหรับ Typing Mode Challenge
+ * ตัวคูณจะเพิ่มขึ้น 0.1 ทุกคอมโบ สูงสุด 5.0 เท่า
+ */
+export function calculateComboMultiplier(comboCount: number): number {
+    const multiplier = 1.0 + (comboCount * TYPING_CHALLENGE_CONFIG.comboStep);
+    return Math.min(multiplier, TYPING_CHALLENGE_CONFIG.maxComboMultiplier);
+}
+
+/**
+ * คำนวณคะแนนสำหรับ Typing Mode Challenge
+ * สูตร: คะแนนที่ได้ต่อ 1 คำ = คะแนนพื้นฐาน * ตัวคูณคอมโบ
+ * คะแนนพื้นฐาน = 100 + (จำนวนตัวอักษร * 5)
+ */
+export function calculateTypingModeScore(
+    word: string,
+    comboCount: number,
+    isCorrect: boolean = true
+): TypingScoreCalculation {
+    // ถ้าตอบผิดจะไม่ได้คะแนน
+    if (!isCorrect) {
+        return {
+            baseScore: 0,
+            comboMultiplier: 1.0,
+            finalScore: 0,
+            wordLength: word.length,
+            comboCount: 0
+        };
+    }
+
+    const wordLength = word.length;
+    const baseScore = TYPING_CHALLENGE_CONFIG.baseScoreConstant + (wordLength * TYPING_CHALLENGE_CONFIG.scorePerCharacter);
+    const comboMultiplier = calculateComboMultiplier(comboCount);
+    const finalScore = Math.round(baseScore * comboMultiplier);
+
+    return {
+        baseScore,
+        comboMultiplier,
+        finalScore,
+        wordLength,
+        comboCount
+    };
+}

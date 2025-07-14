@@ -14,19 +14,21 @@ interface ScoreBreakdownToastProps {
     gameStyle: 'practice' | 'challenge';
     lastScoreCalculation: ScoreCalculation | null;
     showScoreBreakdown: boolean;
+    modeId?: string;
 }
 
 export default function ScoreBreakdownToast({
     gameStyle,
     lastScoreCalculation,
-    showScoreBreakdown
+    showScoreBreakdown,
+    modeId
 }: ScoreBreakdownToastProps) {
     if (gameStyle !== 'challenge' || !lastScoreCalculation) {
         return null;
     }
 
     return (
-        <div className="absolute -top-5 right-4 max-w-xs z-20">
+        <div className="absolute top-5 right-4 max-w-xs z-20">
             <AnimatePresence mode="wait">
                 {showScoreBreakdown && (
                     <motion.div
@@ -60,7 +62,7 @@ export default function ScoreBreakdownToast({
 
                         
 
-                        {/* Difficulty Multiplier */}
+                        {/* Difficulty Multiplier / Combo Multiplier */}
                         <motion.div
                             initial={{ opacity: 0, x: 20, scale: 0.8 }}
                             animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -70,62 +72,67 @@ export default function ScoreBreakdownToast({
                             }}
                             className="text-cyan-400 font-bold text-md flex items-center justify-end drop-shadow-lg"
                         >
-                            ×{lastScoreCalculation.difficultyMultiplier} (difficulty)
+                            ×{lastScoreCalculation.difficultyMultiplier.toFixed(2)} ({modeId === 'typing' ? 'combo' : 'difficulty'})
                         </motion.div>
 
-                        {/* Streak Bonus */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20, scale: 0.8 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            transition={{
-                                duration: 0.4,
-                                delay: 0.3
-                            }}
-                            className="text-cyan-400 font-bold text-md flex items-center justify-end drop-shadow-lg"
-                        >
-                            +{lastScoreCalculation.streakBonus} (streak)
-                        </motion.div>
+                        {/* Streak Bonus - Only show for non-typing modes or when > 0 */}
+                        {(modeId !== 'typing' || lastScoreCalculation.streakBonus > 0) && (
+                            <motion.div
+                                initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                transition={{
+                                    duration: 0.4,
+                                    delay: 0.3
+                                }}
+                                className="text-cyan-400 font-bold text-md flex items-center justify-end drop-shadow-lg"
+                            >
+                                +{lastScoreCalculation.streakBonus} (streak)
+                            </motion.div>
+                        )}
 
+                        {/* First Listen Bonus - Only show for non-typing modes */}
+                        {modeId !== 'typing' && (
+                            <motion.div
+                                initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                transition={{
+                                    duration: 0.4,
+                                    delay: 0.4
+                                }}
+                                className={`font-bold text-md flex items-center justify-end drop-shadow-lg ${
+                                    lastScoreCalculation.usedSpeakAgain 
+                                        ? 'text-red-400' 
+                                        : 'text-green-400'
+                                }`}
+                            >
+                                {lastScoreCalculation.usedSpeakAgain 
+                                    ? '+0 (no first listen bonus)' 
+                                    : `+${lastScoreCalculation.firstListenBonus} (first listen)`
+                                }
+                            </motion.div>
+                        )}
 
-                        {/* First Listen Bonus */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20, scale: 0.8 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            transition={{
-                                duration: 0.4,
-                                delay: 0.4
-                            }}
-                            className={`font-bold text-md flex items-center justify-end drop-shadow-lg ${
-                                lastScoreCalculation.usedSpeakAgain 
-                                    ? 'text-red-400' 
-                                    : 'text-green-400'
-                            }`}
-                        >
-                            {lastScoreCalculation.usedSpeakAgain 
-                                ? '+0 (no first listen bonus)' 
-                                : `+${lastScoreCalculation.firstListenBonus} (first listen)`
-                            }
-                        </motion.div>
-
-                        {/* Time Bonus */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20, scale: 0.8 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            transition={{
-                                duration: 0.4,
-                                delay: 0.4
-                            }}
-                            className={`font-bold text-md flex items-center justify-end drop-shadow-lg ${
-                                lastScoreCalculation.usedSpeakAgain 
-                                    ? 'text-red-400' 
-                                    : 'text-cyan-400'
-                            }`}
-                        >
-                            {lastScoreCalculation.usedSpeakAgain 
-                                ? '+0 (no time bonus)' 
-                                : `+${lastScoreCalculation.timeBonus} (time)`
-                            }
-                        </motion.div>
+                        {/* Time Bonus - Only show for non-typing modes */}
+                        {modeId !== 'typing' && (
+                            <motion.div
+                                initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                transition={{
+                                    duration: 0.4,
+                                    delay: 0.4
+                                }}
+                                className={`font-bold text-md flex items-center justify-end drop-shadow-lg ${
+                                    lastScoreCalculation.usedSpeakAgain 
+                                        ? 'text-red-400' 
+                                        : 'text-cyan-400'
+                                }`}
+                            >
+                                {lastScoreCalculation.usedSpeakAgain 
+                                    ? '+0 (no time bonus)' 
+                                    : `+${lastScoreCalculation.timeBonus} (time)`
+                                }
+                            </motion.div>
+                        )}
 
                         {/* Final Score */}
                         <motion.div

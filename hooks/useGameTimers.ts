@@ -24,10 +24,15 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
 
     // Timer refs
     const echoStopTimerRef = useRef<(() => void) | null>(null);
+    const memoryStopTimerRef = useRef<(() => void) | null>(null);
 
     // Timer callback handlers
     const handleEchoTimerReady = useCallback((stopTimer: () => void) => {
         echoStopTimerRef.current = stopTimer;
+    }, []);
+
+    const handleMemoryTimerReady = useCallback((stopTimer: () => void) => {
+        memoryStopTimerRef.current = stopTimer;
     }, []);
 
     const handleEchoTimeLeftChange = useCallback((timeLeft: number) => {
@@ -46,6 +51,13 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
     const stopEchoTimer = useCallback(() => {
         if (modeId === 'echo' && gameStyle === 'challenge' && echoStopTimerRef.current) {
             echoStopTimerRef.current();
+        }
+    }, [modeId, gameStyle]);
+
+    // Stop Memory timer
+    const stopMemoryTimer = useCallback(() => {
+        if (modeId === 'memory' && gameStyle === 'challenge' && memoryStopTimerRef.current) {
+            memoryStopTimerRef.current();
         }
     }, [modeId, gameStyle]);
 
@@ -71,10 +83,10 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
         };
     }, [status, startTime, modeId, setCurrentTime]);
 
-    // Countdown timer for Typing Mode
+    // Countdown timer for Typing Mode (only in Practice Mode)
     useEffect(() => {
         let timerInterval: NodeJS.Timeout;
-        if (status === 'playing' && modeId === 'typing') {
+        if (status === 'playing' && modeId === 'typing' && gameStyle === 'practice') {
             timerInterval = setInterval(() => {
                 const newTimeLeft = decrementTimeLeft();
                 if (newTimeLeft <= 0) {
@@ -86,7 +98,7 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
         return () => {
             if (timerInterval) clearInterval(timerInterval);
         };
-    }, [status, modeId, decrementTimeLeft, setStatus]);
+    }, [status, modeId, gameStyle, decrementTimeLeft, setStatus]);
 
     return {
         // State
@@ -104,9 +116,11 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
         setMemoryTimeLeft,
         setMeaningMatchTimeLeft,
         handleEchoTimerReady,
+        handleMemoryTimerReady,
         handleEchoTimeLeftChange,
         handleMemoryTimeLeftChange,
         handleMeaningMatchTimeLeftChange,
-        stopEchoTimer
+        stopEchoTimer,
+        stopMemoryTimer
     };
 }

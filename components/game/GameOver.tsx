@@ -16,7 +16,8 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
 }) {
 
     const router = useRouter();
-    const { timeSpent, wpm, score, highScore, incorrectWords } = useGameStore();
+    const { timeSpent, wpm, score, highScore, incorrectWords, bestStreak } = useGameStore();
+    // Remove useAudio and sound playing from GameOver - moved to GameOverOverlay
 
     // Use challenge score if in challenge mode, otherwise use regular score
     const displayScore = gameStyle === 'challenge' ? (totalChallengeScore || 0) : score;
@@ -28,109 +29,182 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
         (typeof localStorage !== 'undefined' ? 
             parseInt(localStorage.getItem(`challengeHighScore_${modeId}_${difficultyId}`) || '0') : 0) : 
         highScore;
-    const highScoreLabel = gameStyle === 'challenge' ? 'CHALLENGE HIGH' : 'HIGH SCORE';
 
     return (
-        <main className="flex flex-col items-center min-h-screen bg-[#101010] text-white p-2 sm:p-4 pt-20 sm:pt-28" style={{ fontFamily: "'Caveat Brush', cursive" }}>
+        <motion.main 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-center min-h-screen bg-[#101010] text-white p-2 sm:p-4 pt-20 sm:pt-28" 
+            style={{ fontFamily: "'Caveat Brush', cursive" }}
+        >
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.3 }} className="w-full max-w-xl lg:max-w-7xl px-2 sm:px-4 mt-2 sm:mt-5 mb-4 sm:mb-8" > 
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl text-center opacity-80">Result</h2> 
             </motion.div >
 
-            {/* Conditional Grid Layout for Typing vs Other Modes */}
-            {modeId === 'typing' ? (
-                // Typing Mode: Clean 3-column layout (Time, WPM, High Score) - stacks on mobile
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl mb-8 sm:mb-15 mt-6 sm:mt-10 px-2 sm:px-4 text-center place-items-center gap-4 sm:gap-6 lg:gap-12">
-                    <div className="flex flex-col items-center bg-gradient-to-b from-blue-500/20 to-blue-600/10 rounded-2xl p-4 sm:p-6 border border-blue-500/30 w-full max-w-sm">
-                        <FaClock className="text-3xl sm:text-4xl lg:text-5xl text-blue-400 mb-2 sm:mb-3" />
-                        <span className="text-blue-300 text-sm sm:text-base lg:text-lg tracking-wider mb-2">TIME SPENT</span>
-                        <div className="flex items-center justify-center gap-2 sm:gap-3">
-                            <div className="text-center">
-                                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-400">{String(timeSpent.minutes).padStart(2, '0')}</div>
-                                <div className="text-xs sm:text-sm text-blue-300/70">min</div>
-                            </div>
-                            <div className="text-xl sm:text-2xl lg:text-3xl text-blue-400 font-bold">:</div>
-                            <div className="text-center">
-                                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-400">{String(timeSpent.seconds).padStart(2, '0')}</div>
-                                <div className="text-xs sm:text-sm text-blue-300/70">sec</div>
-                            </div>
+            {/* Unified Layout for All Modes */}
+            <div className="w-full max-w-6xl mb-8 sm:mb-15 mt-6 sm:mt-10 px-2 sm:px-4">
+                
+                {/* Main Score Display */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    {/* Final Score - Most Prominent */}
+                    <div className="flex flex-col items-center bg-gradient-to-b from-green-500/20 to-green-600/10 rounded-2xl p-6 sm:p-8 border border-green-500/30 lg:col-span-2">
+                        <FaTrophy className="text-5xl sm:text-6xl lg:text-7xl text-green-400 mb-3" />
+                        <div className="text-6xl sm:text-7xl lg:text-9xl mb-3 text-green-400 font-bold drop-shadow-lg">
+                            {displayScore}
+                            {scoreUnit && <span className="text-3xl sm:text-4xl text-green-300 ml-2">{scoreUnit}</span>}
+                        </div>
+                        <span className="text-green-300 text-xl sm:text-2xl lg:text-3xl tracking-wider text-center font-bold">
+                            {scoreLabel}
+                        </span>
+                        <div className="text-sm sm:text-base text-green-200/80 mt-2 text-center">
+                            🏁 {modeId === 'typing' ? 'Race Complete! Final Result' : 'Challenge Complete!'}
                         </div>
                     </div>
 
-                    {/* Main WPM Display - Larger and More Prominent */}
-                    <div className="flex flex-col items-center bg-gradient-to-b from-green-500/20 to-green-600/10 rounded-2xl p-6 sm:p-8 border border-green-500/30 w-full max-w-sm sm:col-span-2 lg:col-span-1">
-                        <FaKeyboard className="text-4xl sm:text-5xl lg:text-6xl text-green-400 mb-2 sm:mb-3" />
-                        <div className="text-5xl sm:text-6xl lg:text-8xl mb-2 text-green-400 font-bold drop-shadow-lg">{wpm}</div>
-                        <span className="text-green-300 text-base sm:text-lg lg:text-xl tracking-wider text-center">WORDS PER MINUTE</span>
-                        <div className="text-xs sm:text-sm text-neutral-500 mt-2 text-center">
-                            {gameStyle === 'challenge' ? 
-                                `${score} words typed correctly` : 
-                                `${score} words typed correctly`
-                            }
+                    {/* WPM Display - Only for Typing Mode */}
+                    {modeId === 'typing' ? (
+                        <div className="flex flex-col items-center bg-gradient-to-b from-blue-500/20 to-blue-600/10 rounded-2xl p-6 sm:p-8 border border-blue-500/30">
+                            <FaKeyboard className="text-4xl sm:text-5xl lg:text-6xl text-blue-400 mb-3" />
+                            <div className="text-4xl sm:text-5xl lg:text-6xl mb-2 text-blue-400 font-bold">{wpm}</div>
+                            <span className="text-blue-300 text-lg sm:text-xl tracking-wider text-center">WPM</span>
+                            <div className="text-xs sm:text-sm text-blue-200/70 mt-2 text-center">
+                                Words Per Minute
+                            </div>
+                        </div>
+                    ) : (
+                        /* Time Display for Other Modes */
+                        <div className="flex flex-col items-center bg-gradient-to-b from-blue-500/20 to-blue-600/10 rounded-2xl p-6 sm:p-8 border border-blue-500/30">
+                            <FaClock className="text-4xl sm:text-5xl lg:text-6xl text-blue-400 mb-3" />
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="text-center">
+                                    <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-400">{String(timeSpent.minutes).padStart(2, '0')}</div>
+                                    <div className="text-sm text-blue-300/70">min</div>
+                                </div>
+                                <div className="text-2xl sm:text-3xl lg:text-4xl text-blue-400 font-bold">:</div>
+                                <div className="text-center">
+                                    <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-400">{String(timeSpent.seconds).padStart(2, '0')}</div>
+                                    <div className="text-sm text-blue-300/70">sec</div>
+                                </div>
+                            </div>
+                            <span className="text-blue-300 text-lg sm:text-xl tracking-wider text-center">TIME SPENT</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Detailed Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    
+                    {/* Highest Streak - Show for all modes */}
+                    <div className="flex flex-col items-center bg-gradient-to-b from-orange-500/20 to-orange-600/10 rounded-2xl p-4 sm:p-6 border border-orange-500/30">
+                        <div className="text-3xl mb-2">🔥</div>
+                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-orange-400 font-bold">{bestStreak}</div>
+                        <span className="text-orange-300 text-sm sm:text-base tracking-wider text-center">HIGHEST STREAK</span>
+                        <div className="text-xs text-orange-200/70 mt-1 text-center">
+                            Max consecutive hits
                         </div>
                     </div>
 
-                    <div className="flex items-start justify-center gap-3 sm:gap-4 w-full max-w-sm sm:col-span-2 lg:col-span-1">
-                        <div className="flex flex-col items-center text-neutral-300 mr-2">
-                            <FaTrophy className="text-4xl sm:text-5xl lg:text-6xl text-amber-400" />
-                            <span className="text-sm sm:text-base lg:text-lg text-neutral-400">best speed</span>
+                    {/* Correct Words/Answers */}
+                    <div className="flex flex-col items-center bg-gradient-to-b from-green-500/20 to-green-600/10 rounded-2xl p-4 sm:p-6 border border-green-500/30">
+                        <div className="text-3xl mb-2">
+                            {modeId === 'typing' ? '⚡' : modeId === 'echo' ? '🔊' : modeId === 'memory' ? '🧠' : '💭'}
                         </div>
-                        <div className="flex flex-col items-center">
-                            <div className="text-3xl sm:text-4xl lg:text-5xl mb-1 text-amber-400 font-bold">{highScore}</div>
-                            <span className="text-neutral-400 text-sm sm:text-base lg:text-lg">WPM</span>
+                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-green-400 font-bold">{score}</div>
+                        <span className="text-green-300 text-sm sm:text-base tracking-wider text-center">
+                            {modeId === 'typing' && gameStyle === 'challenge' ? 'NITRO BOOSTS' : 
+                             modeId === 'typing' ? 'CORRECT WORDS' :
+                             modeId === 'echo' ? 'CORRECT ECHOES' :
+                             modeId === 'memory' ? 'REMEMBERED WORDS' :
+                             'CORRECT ANSWERS'}
+                        </span>
+                        <div className="text-xs text-green-200/70 mt-1 text-center">
+                            {modeId === 'typing' && gameStyle === 'challenge' ? 'Energy refills' : 
+                             modeId === 'typing' ? 'Words typed correctly' :
+                             modeId === 'echo' ? 'Words echoed back' :
+                             modeId === 'memory' ? 'Words recalled' :
+                             'Questions answered'}
+                        </div>
+                    </div>
+
+                    {/* Mistakes */}
+                    <div className="flex flex-col items-center bg-gradient-to-b from-red-500/20 to-red-600/10 rounded-2xl p-4 sm:p-6 border border-red-500/30">
+                        <div className="text-3xl mb-2">💥</div>
+                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-red-400 font-bold">{incorrectWords.length}</div>
+                        <span className="text-red-300 text-sm sm:text-base tracking-wider text-center">
+                            {modeId === 'typing' && gameStyle === 'challenge' ? 'COLLISIONS' : 'MISTAKES'}
+                        </span>
+                        <div className="text-xs text-red-200/70 mt-1 text-center">
+                            {modeId === 'typing' && gameStyle === 'challenge' ? 'Energy crashes' : 'Incorrect attempts'}
+                        </div>
+                    </div>
+
+                    {/* Personal Best */}
+                    <div className="flex flex-col items-center bg-gradient-to-b from-amber-500/20 to-amber-600/10 rounded-2xl p-4 sm:p-6 border border-amber-500/30">
+                        <FaTrophy className="text-3xl sm:text-4xl text-amber-400 mb-2" />
+                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-amber-400 font-bold">
+                            {displayHighScore}
+                            {gameStyle === 'challenge' && <span className="text-xl text-amber-300 ml-1">pts</span>}
+                        </div>
+                        <span className="text-amber-300 text-sm sm:text-base tracking-wider text-center">PERSONAL BEST</span>
+                        <div className="text-xs text-amber-200/70 mt-1 text-center">
+                            {gameStyle === 'challenge' ? 'Best challenge score' : 
+                             modeId === 'typing' ? 'Best WPM achieved' : 'Best score achieved'}
                         </div>
                     </div>
                 </div>
-            ) : (
-                // Other Modes: 4-column layout with improved time display - responsive grid
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full max-w-5xl mb-8 sm:mb-15 mt-6 sm:mt-10 px-2 sm:px-4 text-center place-items-center">
-                    {/* Time Spent - Beautiful Card Design */}
-                    <div className="flex flex-col items-center bg-gradient-to-b from-blue-500/20 to-blue-600/10 rounded-2xl p-4 sm:p-6 border border-blue-500/30 w-full max-w-sm">
-                        <FaClock className="text-3xl sm:text-4xl lg:text-5xl text-blue-400 mb-2 sm:mb-3" />
-                        <span className="text-blue-300 text-sm sm:text-base lg:text-lg tracking-wider mb-2 sm:mb-3 text-center">TIME SPENT</span>
-                        <div className="flex items-center gap-2">
-                            <div className="text-center">
-                                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-400">{String(timeSpent.minutes).padStart(2, '0')}</div>
-                                <div className="text-xs sm:text-sm text-blue-300/70">min</div>
+
+                {/* Performance Summary */}
+                {gameStyle === 'challenge' && (
+                    <div className="mt-6 p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl border border-purple-500/20">
+                        <div className="text-center">
+                            <div className="text-lg sm:text-xl text-purple-300 mb-2">
+                                🏁 {modeId === 'typing' ? 'Race Summary' : 'Challenge Summary'}
                             </div>
-                            <div className="text-xl sm:text-2xl lg:text-3xl text-blue-400 font-bold">:</div>
-                            <div className="text-center">
-                                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-400">{String(timeSpent.seconds).padStart(2, '0')}</div>
-                                <div className="text-xs sm:text-sm text-blue-300/70">sec</div>
+                            <div className="text-sm sm:text-base text-gray-300">
+                                {modeId === 'typing' ? 
+                                    `You survived ${score} energy refills before depletion • ` :
+                                    `You completed ${score} correct answers • `
+                                }
+                                Accuracy: {score > 0 ? Math.round((score / (score + incorrectWords.length)) * 100) : 0}% • 
+                                {bestStreak > 0 && ` Max streak: ${bestStreak} consecutive hits`}
                             </div>
                         </div>
                     </div>
+                )}
 
-                    {/* Score */}
-                    <div className="flex flex-col items-center bg-gradient-to-b from-neutral-600/20 to-neutral-700/10 rounded-2xl p-4 sm:p-6 border border-neutral-500/30 w-full max-w-sm">
-                        <div className="text-4xl sm:text-5xl lg:text-6xl mb-2 text-white font-bold">
-                            {displayScore}
-                            {scoreUnit && <span className="text-2xl sm:text-3xl text-neutral-400 ml-2">{scoreUnit}</span>}
+                {/* Additional Stats for Non-Typing Modes */}
+                {modeId !== 'typing' && (
+                    <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Total Words/Questions */}
+                        <div className="flex items-center justify-center bg-gradient-to-r from-neutral-500/10 to-neutral-600/10 rounded-xl p-4 border border-neutral-500/20">
+                            <div className="text-center">
+                                <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                                    {difficultyId === 'endless' ? score : words.length}
+                                </div>
+                                <div className="text-sm text-neutral-400">
+                                    {difficultyId === 'endless' ? 
+                                        (modeId === 'echo' ? 'Words Echoed' : 
+                                         modeId === 'memory' ? 'Words Remembered' : 'Questions Completed') :
+                                        (modeId === 'echo' ? 'Total Echo Challenges' : 
+                                         modeId === 'memory' ? 'Total Memory Challenges' : 'Total Questions')
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <span className="text-neutral-400 text-sm sm:text-base lg:text-lg tracking-wider text-center">{scoreLabel}</span>
-                        {gameStyle === 'challenge' && (
-                            <div className="text-xs sm:text-sm text-neutral-500 mt-2 text-center">
-                                {score} words correct
+
+                        {/* WPM for Non-Typing Modes (if applicable) */}
+                        {wpm > 0 && (
+                            <div className="flex items-center justify-center bg-gradient-to-r from-blue-500/10 to-blue-600/10 rounded-xl p-4 border border-blue-500/20">
+                                <div className="text-center">
+                                    <div className="text-2xl sm:text-3xl font-bold text-blue-400 mb-1">{wpm}</div>
+                                    <div className="text-sm text-blue-300">Words Per Minute</div>
+                                </div>
                             </div>
                         )}
                     </div>
-
-                    {/* Total Words */}
-                    <div className="flex flex-col items-center bg-gradient-to-b from-neutral-600/20 to-neutral-700/10 rounded-2xl p-4 sm:p-6 border border-neutral-500/30 w-full max-w-sm">
-                        <div className="text-4xl sm:text-5xl lg:text-6xl mb-2 text-white font-bold">{difficultyId === 'endless' ? score : words.length}</div>
-                        <span className="text-neutral-400 text-sm sm:text-base lg:text-lg tracking-wider text-center">{difficultyId === 'endless' ? 'WORDS COMPLETED' : 'TOTAL WORDS'}</span>
-                    </div>
-
-                    {/* High Score */}
-                    <div className="flex flex-col items-center bg-gradient-to-b from-amber-500/20 to-amber-600/10 rounded-2xl p-4 sm:p-6 border border-amber-500/30 w-full max-w-sm">
-                        <FaTrophy className="text-3xl sm:text-4xl text-amber-400 mb-2" />
-                        <div className="text-4xl sm:text-5xl lg:text-6xl mb-2 text-amber-400 font-bold">
-                            {displayHighScore}
-                            {gameStyle === 'challenge' && <span className="text-2xl sm:text-3xl text-amber-300 ml-2">pts</span>}
-                        </div>
-                        <span className="text-amber-300 text-sm sm:text-base lg:text-lg tracking-wider text-center">{highScoreLabel}</span>
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
             {incorrectWords.length > 0 && (
                 <>
                     <motion.div
@@ -192,6 +266,6 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                 </Button> 
                 
             </div>
-        </main>
+        </motion.main>
     )
 }

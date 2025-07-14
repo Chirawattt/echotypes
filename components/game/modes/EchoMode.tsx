@@ -268,8 +268,6 @@ export default function EchoMode({
                         >
                             {totalChallengeScore} pts.
                         </motion.p>
-
-
                     </motion.div>
 
                     <div className=''>

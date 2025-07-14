@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { useGameStore } from '@/lib/stores/gameStore';
-import { calculateEchoModeScore, calculateTotalScore } from '@/lib/scoring';
+import { calculateEchoModeScore, calculateTotalScore, calculateTypingModeScore } from '@/lib/scoring';
 
 interface UseGameScoreProps {
     gameStyle: 'practice' | 'challenge';
@@ -29,7 +29,8 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         isCorrect: boolean,
         echoTimeLeft: number,
         memoryTimeLeft: number,
-        meaningMatchTimeLeft: number
+        meaningMatchTimeLeft: number,
+        currentWord?: string
     ) => {
         if (gameStyle !== 'challenge' || !isCorrect) {
             return;
@@ -39,6 +40,24 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
 
         if (modeId === 'echo') {
             scoreCalculation = calculateEchoModeScore(echoTimeLeft, difficultyId, streakCount, true, usedSpeakAgain);
+        } else if (modeId === 'typing' && currentWord) {
+            // Use new Typing Challenge scoring system with combo multiplier
+            const typingScore = calculateTypingModeScore(currentWord, streakCount, true);
+            // Convert TypingScoreCalculation to ScoreCalculation format
+            scoreCalculation = {
+                baseScore: typingScore.baseScore,
+                firstListenBonus: 0,
+                timeBonus: 0,
+                timeBonusDetails: {
+                    maxTime: 0,
+                    timeUsed: 0,
+                    timeMultiplier: 0
+                },
+                difficultyMultiplier: typingScore.comboMultiplier,
+                streakBonus: 0,
+                finalScore: typingScore.finalScore,
+                usedSpeakAgain: false
+            };
         } else if (modeId === 'memory') {
             const timeUsed = 5.0 - memoryTimeLeft;
             scoreCalculation = calculateTotalScore(timeUsed, difficultyId, streakCount, true);

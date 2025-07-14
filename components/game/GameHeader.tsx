@@ -106,13 +106,23 @@ export default function GameHeader({
                         >
                             {renderLives()}
                         </motion.div>
-                    ) : (
+                    ) : gameStyle === 'practice' ? (
                         <motion.div
                             className={`text-2xl sm:text-3xl font-bold ${timeLeft <= 10 ? 'text-red-400' : 'text-amber-400'}`}
                             animate={{ scale: timeLeft <= 10 ? [1, 1.1, 1] : 1 }}
                             transition={{ duration: 0.5, repeat: timeLeft <= 10 ? Infinity : 0 }}
                         >
                             {timeLeft}s
+                        </motion.div>
+                    ) : (
+                        // For Typing Challenge Mode, show score instead of timer/lives
+                        <motion.div className="text-right">
+                            <p className="text-2xl sm:text-3xl font-bold text-green-400">
+                                {score}
+                            </p>
+                            <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+                                WPM
+                            </p>
                         </motion.div>
                     )}
                     {gameStyle === 'practice' && (

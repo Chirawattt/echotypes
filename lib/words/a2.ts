@@ -551,7 +551,7 @@ export const a2Words: Word[] = [
     { word: "peace", type: "n.", meaning: "ความสงบ" },
     { word: "penny", type: "n.", meaning: "เพนนี (เหรียญสตางค์)" },
     { word: "per", type: "prep.", meaning: "ต่อ (เช่น ต่อชั่วโมง)" },
-    { word: "per cent", type: "n., adj./adv.", meaning: "เปอร์เซ็นต์" },
+    { word: "percent", type: "n., adj./adv.", meaning: "เปอร์เซ็นต์" },
     { word: "perform", type: "v.", meaning: "แสดง, ปฏิบัติ" },
     { word: "perhaps", type: "adv.", meaning: "บางที, อาจจะ" },
     { word: "permission", type: "n.", meaning: "การอนุญาต" },

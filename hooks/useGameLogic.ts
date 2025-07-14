@@ -12,6 +12,8 @@ import { useGameTimers } from './useGameTimers';
 import { useGameScore } from './useGameScore';
 import { useGameModes } from './useGameModes';
 import { useGameEvents } from './useGameEvents';
+import { useNitroEnergy } from './useNitroEnergy';
+import { useOverdriveSystem } from './useOverdriveSystem';
 
 interface UseGameLogicProps {
     modeId: string;
@@ -22,7 +24,7 @@ interface UseGameLogicProps {
 export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicProps) {
     const {
         // State
-        status, words, currentWordIndex, userInput, score: gameScore, lives,
+        status, words, currentWordIndex, userInput, score: wordsTypedCount, lives,
         isWrong, isCorrect, isTransitioning, timeLeft, startTime,
         currentTime, highScore, isWordVisible, promptText, streakCount,
         totalChallengeScore, lastScoreCalculation,
@@ -51,6 +53,23 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
     const dda = useDDA({ gameStyle, modeId });
     const timers = useGameTimers({ modeId, gameStyle });
     const scoreUtils = useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain });
+    
+    // Overdrive system for Typing Challenge Mode
+    const overdriveSystem = useOverdriveSystem({
+        isTypingMode: modeId === 'typing' && gameStyle === 'challenge',
+        isGameActive: status === 'playing',
+        correctWordsCount: streakCount, // Use streak count as correct words count
+    });
+
+    // Nitro energy for Typing Challenge Mode
+    const nitroEnergy = useNitroEnergy({
+        isTypingMode: modeId === 'typing' && gameStyle === 'challenge',
+        isGameActive: status === 'playing',
+        energyDecayInterval: overdriveSystem.currentHeatLevel.energyDecayInterval,
+        onEnergyDepleted: () => {
+            setStatus('gameOver');
+        }
+    });
 
     // Game modes hook
     useGameModes({
@@ -60,6 +79,8 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         words,
         speak: speech.speak,
         inputRef,
+        gameStyle,
+        ddaLevel: dda.currentDifficultyLevel,
     });
 
     // Game events hook
@@ -75,6 +96,9 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         handleDdaUpdate: dda.handleDdaUpdate,
         calculateAndAddScore: scoreUtils.calculateAndAddScore,
         stopEchoTimer: timers.stopEchoTimer,
+        stopMemoryTimer: timers.stopMemoryTimer,
+        addEnergy: nitroEnergy.addEnergy,
+        removeEnergy: nitroEnergy.removeEnergy,
     });
 
     // Common time up logic for all modes
@@ -93,7 +117,11 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             const isLastWord = currentWordIndex === words.length - 1;
 
             if (newLives <= 0 || (isLastWord && difficultyId !== 'endless' && difficultyId !== 'dda')) {
-                audio.playSound(audio.completedAudioRef, 0.5);
+                // Only play completed sound for non-echo modes
+                // Echo mode will play sound in GameOverOverlay
+                if (modeId !== 'echo') {
+                    audio.playSound(audio.completedAudioRef, 0.5);
+                }
                 setStatus('gameOver');
                 return;
             }
@@ -162,7 +190,11 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         if (gameStyle === 'challenge') {
             scoreUtils.resetChallengeScore();
         }
-    }, [difficultyId, gameStyle, modeId, resetGame, setWords, dda, scoreUtils]);
+        // Reset Nitro Energy for Typing Challenge Mode
+        if (modeId === 'typing' && gameStyle === 'challenge') {
+            nitroEnergy.resetEnergy();
+        }
+    }, [difficultyId, gameStyle, modeId, resetGame, setWords, dda, scoreUtils, nitroEnergy]);
 
     // Form submit wrapper
     const handleFormSubmit = useCallback((e: React.FormEvent) => {
@@ -198,6 +230,11 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         initializeGame(sessionWords);
         if (gameStyle === 'challenge') {
             scoreUtils.resetChallengeScore();
+        }
+        
+        // Reset Nitro Energy for Typing Challenge Mode
+        if (modeId === 'typing' && gameStyle === 'challenge') {
+            nitroEnergy.resetEnergy();
         }
         
         // Initialize DDA system for DDA difficulty mode regardless of game style
@@ -265,13 +302,13 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
             if (modeId === 'typing') {
                 const timeInMinutes = TYPING_MODE_DURATION / 60;
-                const wordsPerMinute = Math.round(gameScore / timeInMinutes);
+                const wordsPerMinute = Math.round(wordsTypedCount / timeInMinutes);
                 setWpm(wordsPerMinute);
             }
 
-            if (gameScore > highScore) {
-                setHighScore(gameScore);
-                localStorage.setItem(`highScoreData_${modeId}_${difficultyId}`, JSON.stringify({ score: gameScore, time: finalTime }));
+            if (wordsTypedCount > highScore) {
+                setHighScore(wordsTypedCount);
+                localStorage.setItem(`highScoreData_${modeId}_${difficultyId}`, JSON.stringify({ score: wordsTypedCount, time: finalTime }));
             }
 
             if (gameStyle === 'challenge') {
@@ -283,7 +320,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status, startTime, gameScore, highScore, modeId, difficultyId, gameStyle, totalChallengeScore]); // Remove store functions to prevent infinite loop
+    }, [status, startTime, wordsTypedCount, highScore, modeId, difficultyId, gameStyle, totalChallengeScore]); // Remove store functions to prevent infinite loop
 
     // Focus input when Echo countdown starts (challenge mode)
     useEffect(() => {
@@ -313,10 +350,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         }
     }, [status]);
 
-    return {
+    const returnObject = {
         // State
-        status, words, currentWordIndex, userInput, score: gameScore, lives,
-        isWrong, isCorrect, isTransitioning, timeLeft, startTime,
+        status, words, currentWordIndex, userInput, 
+        score: wordsTypedCount, // For backward compatibility - this is actually words typed count for WPM calculation
+        wordsTypedCount, // Clear name for what this actually represents
+        lives, isWrong, isCorrect, isTransitioning, timeLeft, startTime,
         currentTime, highScore, isWordVisible, promptText, streakCount,
         totalChallengeScore, lastScoreCalculation, usedSpeakAgain, totalWordsPlayed,
         
@@ -360,6 +399,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         handleMemoryTimeUp,
         handleMeaningMatchTimeUp,
         handleEchoTimerReady: timers.handleEchoTimerReady,
+        handleMemoryTimerReady: timers.handleMemoryTimerReady,
         handleEchoTimeLeftChange: timers.handleEchoTimeLeftChange,
         handleMemoryTimeLeftChange: timers.handleMemoryTimeLeftChange,
         handleMeaningMatchTimeLeftChange: timers.handleMeaningMatchTimeLeftChange,
@@ -379,9 +419,23 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         setPerformanceScore: dda.setPerformanceScoreManually,
 
         // Echo mode state และ functions
-
         handleSpeakAgainUsed: useCallback((used: boolean) => {
             setUsedSpeakAgain(used);
         }, [setUsedSpeakAgain]),
+        
+        // Nitro Energy for Typing Challenge
+        energy: nitroEnergy.energy,
+        maxEnergy: nitroEnergy.maxEnergy,
+        isLowEnergy: nitroEnergy.isLowEnergy,
+        addEnergy: nitroEnergy.addEnergy,
+        removeEnergy: nitroEnergy.removeEnergy,
+        resetEnergy: nitroEnergy.resetEnergy,
+        
+        // Overdrive System for Typing Challenge
+        heatLevel: overdriveSystem.currentHeatLevel,
+        correctWordsCount: streakCount,
+        isOverdriveTransitioning: overdriveSystem.isTransitioning,
     };
+
+    return returnObject;
 }

@@ -13,8 +13,12 @@ interface UseGameEventsProps {
     completedAudioRef: React.RefObject<HTMLAudioElement | null>;
     keypressAudioRef: React.RefObject<HTMLAudioElement | null>;
     handleDdaUpdate: (isCorrect: boolean, onComplete?: () => void) => { levelChanged: boolean; newDifficultyLevel: number };
-    calculateAndAddScore: (isCorrect: boolean, echoTimeLeft: number, memoryTimeLeft: number, meaningMatchTimeLeft: number) => void;
+    calculateAndAddScore: (isCorrect: boolean, echoTimeLeft: number, memoryTimeLeft: number, meaningMatchTimeLeft: number, currentWord?: string) => void;
     stopEchoTimer: () => void;
+    stopMemoryTimer: () => void;
+    // Nitro energy functions
+    addEnergy?: (wordLength: number) => void;
+    removeEnergy?: () => void;
 }
 
 export function useGameEvents({
@@ -29,6 +33,9 @@ export function useGameEvents({
     handleDdaUpdate,
     calculateAndAddScore,
     stopEchoTimer,
+    stopMemoryTimer,
+    addEnergy,
+    removeEnergy,
 }: UseGameEventsProps) {
     const {
         userInput,
@@ -75,6 +82,9 @@ export function useGameEvents({
 
         // Stop Echo timer immediately when answer is submitted
         stopEchoTimer();
+        
+        // Stop Memory timer immediately when answer is submitted  
+        stopMemoryTimer();
 
         const isAnswerCorrect = userInput.trim().toLowerCase() === words[currentWordIndex]?.word.toLowerCase();
 
@@ -83,7 +93,7 @@ export function useGameEvents({
         const ddaResult = handleDdaUpdate(isAnswerCorrect);
 
         // Calculate challenge mode score if in challenge mode and answered correctly
-        calculateAndAddScore(isAnswerCorrect, echoTimeLeft, memoryTimeLeft, meaningMatchTimeLeft);
+        calculateAndAddScore(isAnswerCorrect, echoTimeLeft, memoryTimeLeft, meaningMatchTimeLeft, words[currentWordIndex]?.word);
 
 
         // For typing mode, check if DDA level changed
@@ -99,12 +109,22 @@ export function useGameEvents({
                 setScore((prev) => prev + 1);
                 setIsCorrect(true);
                 incrementStreak();
+                
+                // Add energy for correct answer in Typing Challenge
+                if (addEnergy) {
+                    addEnergy(words[currentWordIndex]?.word.length || 0);
+                }
             } else {
                 playSound(incorrectAudioRef);
                 setIsWrong(true);
                 setScore((prev) => Math.max(prev - 1, 0));
                 addIncorrectWord({ correct: words[currentWordIndex]?.word || '', incorrect: userInput.trim() });
                 resetStreak();
+                
+                // Remove energy for wrong answer in Typing Challenge
+                if (removeEnergy) {
+                    removeEnergy();
+                }
             }
 
             // Normal word progression (no DDA level change)
@@ -147,7 +167,11 @@ export function useGameEvents({
             const isLastWord = currentWordIndex === words.length - 1;
 
             if (newLives <= 0 || (isLastWord && difficultyId !== 'endless' && difficultyId !== 'dda')) {
-                playSound(completedAudioRef, 0.5);
+                // Only play completed sound for non-echo modes
+                // Echo mode will play sound in GameOverOverlay
+                if (modeId !== 'echo') {
+                    playSound(completedAudioRef, 0.5);
+                }
                 setStatus('gameOver');
                 return;
             }
@@ -177,7 +201,8 @@ export function useGameEvents({
         incorrectAudioRef, completedAudioRef, setStatus, setScore, setIsCorrect, 
         incrementStreak, setIsWrong, addIncorrectWord, resetStreak, setWords, 
         setCurrentWordIndex, incrementWordIndex, setUserInput, setLives, 
-        setIsTransitioning, handleDdaUpdate, calculateAndAddScore, stopEchoTimer
+        setIsTransitioning, handleDdaUpdate, calculateAndAddScore, stopEchoTimer, stopMemoryTimer,
+        addEnergy, removeEnergy
     ]);
 
     return {

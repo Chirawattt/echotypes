@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 interface GameEffectsProps {
     isCorrect: boolean;
@@ -9,6 +10,19 @@ interface GameEffectsProps {
 }
 
 export default function GameEffects({ isCorrect, isWrong, score }: GameEffectsProps) {
+    const [showAwesome, setShowAwesome] = useState(false);
+
+    useEffect(() => {
+        if (score > 0 && score % 5 === 0) {
+            setShowAwesome(true);
+            const timer = setTimeout(() => {
+                setShowAwesome(false);
+            }, 3000); // แสดงเป็นเวลา 3 วินาที
+
+            return () => clearTimeout(timer);
+        }
+    }, [score]);
+
     return (
         <>
             {/* Floating Success/Error Particles */}
@@ -70,7 +84,7 @@ export default function GameEffects({ isCorrect, isWrong, score }: GameEffectsPr
 
             {/* Subtle Floating Words for Motivation */}
             <AnimatePresence>
-                {score > 0 && score % 5 === 0 && (
+                {showAwesome && (
                     <motion.div
                         initial={{ opacity: 0, y: 50, scale: 0.8 }}
                         animate={{ opacity: 0.1, y: -50, scale: 4 }}

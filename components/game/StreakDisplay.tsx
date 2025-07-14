@@ -149,7 +149,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
     }
 
     return (
-        <div className={`flex flex-col items-center justify-center ${className} mb-5`}>
+        <div className={`absolute top-5 left-2 z-40 flex flex-col items-center justify-center ${className}`}>
             <AnimatePresence mode="wait">
                 {(isVisible || shouldDisappear) && (
                     <motion.div
@@ -260,7 +260,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                         }}
                                         className={`${shouldDisappear ? 'text-red-400' : config.fireColor} relative`}
                                     >
-                                        <FaFire className={`${config.isLegendary ? 'text-2xl' : 'text-lg'}`} />
+                                        <FaFire className={`${config.isLegendary ? 'text-lg' : 'text-md'}`} />
                                         {/* Fire Glow Effect for Legendary */}
                                         {config.isLegendary && !shouldDisappear && (
                                             <motion.div
@@ -274,7 +274,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                                     delay: i * 0.2
                                                 }}
                                             >
-                                                <FaFire className={`${config.isLegendary ? 'text-2xl' : 'text-lg'}`} />
+                                                <FaFire className={`${config.isLegendary ? 'text-lg' : 'text-md'}`} />
                                             </motion.div>
                                         )}
                                     </motion.div>
@@ -304,7 +304,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                     repeat: config.isLegendary && !shouldShake && !shouldDisappear ? Infinity : 0,
                                     ease: shouldDisappear ? "easeOut" : "easeInOut"
                                 }}
-                                className={`relative z-10 ${config.isLegendary ? 'text-3xl' : 'text-2xl'} font-bold ${shouldDisappear ? 'text-red-400' : config.textColor} ${shouldDisappear ? '' : config.glow}`}
+                                className={`relative z-10 ${config.isLegendary ? 'text-2xl' : 'text-xl'} font-bold ${shouldDisappear ? 'text-red-400' : config.textColor} ${shouldDisappear ? '' : config.glow}`}
                                 style={{ fontFamily: "'Caveat Brush', cursive" }}
                             >
                                 x{streakCount >= 2 ? streakCount : prevStreakCount}
@@ -328,10 +328,6 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                 )}
                             </motion.div>
                         </div>
-
-
-
-
 
                         {/* Special Effects for Tier 4 (Unstoppable) */}
                         {streakLevel >= 4 && !shouldDisappear && (
@@ -383,10 +379,10 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                         )}
 
                         {/* Special Effects for Tier 3+ */}
-                        {streakLevel >= 3 && !shouldDisappear && (
-                            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-xl">
-                                {/* Floating Stars */}
-                                {[...Array(6)].map((_, i) => (
+                        {/* {streakLevel >= 3 && !shouldDisappear && (
+                            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-xl"> */}
+                        {/* Floating Stars */}
+                        {/* {[...Array(6)].map((_, i) => (
                                     <motion.div
                                         key={`star-${i}`}
                                         className="absolute text-yellow-200 text-lg"
@@ -410,121 +406,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                     </motion.div>
                                 ))}
                             </div>
-                        )}
-
-                        {/* Screen Edge Glow Effect for Tier 4 Only (Reduced) */}
-                        {streakLevel >= 4 && !shouldDisappear && (
-                            <>
-                                {/* Top Edge Glow */}
-                                <motion.div
-                                    className="fixed top-0 left-0 right-0 h-1 pointer-events-none z-50"
-                                    style={{
-                                        background: 'linear-gradient(90deg, transparent, rgba(251,191,36,0.4), rgba(255,215,0,0.6), rgba(251,191,36,0.4), transparent)'
-                                    }}
-                                    animate={{
-                                        opacity: [0.2, 0.6, 0.2],
-                                        scaleX: [0.9, 1.1, 0.9]
-                                    }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                        ease: "easeInOut"
-                                    }}
-                                />
-
-                                {/* Bottom Edge Glow */}
-                                <motion.div
-                                    className="fixed bottom-0 left-0 right-0 h-1 pointer-events-none z-50"
-                                    style={{
-                                        background: 'linear-gradient(90deg, transparent, rgba(251,191,36,0.4), rgba(255,215,0,0.6), rgba(251,191,36,0.4), transparent)'
-                                    }}
-                                    animate={{
-                                        opacity: [0.2, 0.6, 0.2],
-                                        scaleX: [0.9, 1.1, 0.9]
-                                    }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                        delay: 1.5
-                                    }}
-                                />
-
-                                {/* Corner Glow Effects - Only for Tier 4 */}
-                                <>
-                                    {/* Top-Left Corner */}
-                                    <motion.div
-                                        className="fixed top-0 left-0 w-6 h-6 pointer-events-none z-50"
-                                        style={{
-                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
-                                        }}
-                                        animate={{
-                                            opacity: [0.3, 0.7, 0.3],
-                                            scale: [0.9, 1.2, 0.9]
-                                        }}
-                                        transition={{
-                                            duration: 2.5,
-                                            repeat: Infinity,
-                                            ease: "easeInOut"
-                                        }}
-                                    />
-
-                                    {/* Top-Right Corner */}
-                                    <motion.div
-                                        className="fixed top-0 right-0 w-6 h-6 pointer-events-none z-50"
-                                        style={{
-                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
-                                        }}
-                                        animate={{
-                                            opacity: [0.3, 0.7, 0.3],
-                                            scale: [0.9, 1.2, 0.9]
-                                        }}
-                                        transition={{
-                                            duration: 2.5,
-                                            repeat: Infinity,
-                                            ease: "easeInOut",
-                                            delay: 0.6
-                                        }}
-                                    />
-
-                                    {/* Bottom-Left Corner */}
-                                    <motion.div
-                                        className="fixed bottom-0 left-0 w-6 h-6 pointer-events-none z-50"
-                                        style={{
-                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
-                                        }}
-                                        animate={{
-                                            opacity: [0.3, 0.7, 0.3],
-                                            scale: [0.9, 1.2, 0.9]
-                                        }}
-                                        transition={{
-                                            duration: 2.5,
-                                            repeat: Infinity,
-                                            ease: "easeInOut",
-                                            delay: 1.2
-                                        }}
-                                    />
-
-                                    {/* Bottom-Right Corner */}
-                                    <motion.div
-                                        className="fixed bottom-0 right-0 w-6 h-6 pointer-events-none z-50"
-                                        style={{
-                                            background: 'radial-gradient(circle, rgba(255,215,0,0.5), transparent 70%)'
-                                        }}
-                                        animate={{
-                                            opacity: [0.3, 0.7, 0.3],
-                                            scale: [0.9, 1.2, 0.9]
-                                        }}
-                                        transition={{
-                                            duration: 2.5,
-                                            repeat: Infinity,
-                                            ease: "easeInOut",
-                                            delay: 1.8
-                                        }}
-                                    />
-                                </>
-                            </>
-                        )}
+                        )} */}
 
                         {/* Modern Minimal Disappear Effect */}
                         {shouldDisappear && (
@@ -564,7 +446,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                 repeat: config.isLegendary && !shouldShake && !shouldDisappear ? Infinity : 0,
                                 ease: shouldDisappear ? "easeOut" : "easeInOut"
                             }}
-                            className={`relative z-10 ${config.isLegendary ? 'text-base' : 'text-sm'} font-bold ${shouldDisappear ? 'text-red-400' : config.textColor}`}
+                            className={`relative z-10 text-sm font-bold ${shouldDisappear ? 'text-red-400' : config.textColor}`}
                             style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                         >
                             {config.label}
@@ -588,10 +470,7 @@ export default function StreakDisplay({ className = '' }: StreakDisplayProps) {
                                 </motion.div>
                             )}
                         </motion.div>
-
-
                     </motion.div>
-
                 )}
             </AnimatePresence>
         </div>

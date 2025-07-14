@@ -212,7 +212,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         const state = get();
         let newPerformanceScore = state.performanceScore + (isCorrect ? PERFORMANCE_ON_CORRECT : PERFORMANCE_ON_INCORRECT);
 
-        console.log(`Updating performance score: ${state.performanceScore} -> ${newPerformanceScore} (isCorrect: ${isCorrect})`);
 
         // check if performance score is at lowest level and out of bounds
         if (newPerformanceScore < LEVEL_DOWN_THRESHOLD) {

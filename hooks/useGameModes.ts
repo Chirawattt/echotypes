@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useGameStore } from '@/lib/stores/gameStore';
 import { Word } from '@/lib/words/types';
+import { getViewTimeMs } from '@/lib/memoryModeConfig';
 
 interface UseGameModesProps {
     modeId: string;
@@ -9,6 +10,9 @@ interface UseGameModesProps {
     words: Word[];
     speak: (text: string, onEnd?: () => void) => SpeechSynthesisUtterance | null;
     inputRef: React.RefObject<HTMLInputElement | null>;
+    // DDA props for Memory Challenge Mode
+    gameStyle?: 'practice' | 'challenge';
+    ddaLevel?: number;
 }
 
 export function useGameModes({
@@ -18,6 +22,8 @@ export function useGameModes({
     words,
     speak,
     inputRef,
+    gameStyle = 'practice',
+    ddaLevel = 1
 }: UseGameModesProps) {
     const {
         setIsWordVisible,
@@ -34,12 +40,17 @@ export function useGameModes({
         }
     }, [status, currentWordIndex, words, speak, modeId, inputRef]);
 
-    // Memory mode word flashing logic
+    // Memory mode word flashing logic with dynamic viewing time
     useEffect(() => {
         if (status === 'playing' && words.length > 0 && modeId === 'memory') {
             setIsWordVisible(true);
             setPromptText('Memorize...');
             if (inputRef.current) inputRef.current.disabled = true;
+
+            // Calculate dynamic viewing time for Memory Challenge Mode
+            const viewingTimeMs = gameStyle === 'challenge' 
+                ? getViewTimeMs(ddaLevel) 
+                : 2000; // Default 2 seconds for practice mode
 
             const timer = setTimeout(() => {
                 setIsWordVisible(false);
@@ -48,11 +59,11 @@ export function useGameModes({
                     inputRef.current.disabled = false;
                     inputRef.current.focus();
                 }
-            }, 2000); // MEMORY_MODE_FLASH_DURATION
+            }, viewingTimeMs);
 
             return () => clearTimeout(timer);
         }
-    }, [status, currentWordIndex, words, modeId, setIsWordVisible, setPromptText, inputRef]);
+    }, [status, currentWordIndex, words, modeId, setIsWordVisible, setPromptText, inputRef, gameStyle, ddaLevel]);
 
     // Refocus logic for typing and meaning-match modes
     useEffect(() => {

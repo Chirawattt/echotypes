@@ -2,6 +2,7 @@ import EchoMode from '@/components/game/modes/EchoMode';
 import TypingMode from '@/components/game/modes/TypingMode';
 import MeaningMatchMode from '@/components/game/modes/MeaningMatchMode';
 import MemoryMode from '@/components/game/modes/MemoryMode';
+import { HeatLevel } from '@/hooks/useOverdriveSystem';
 
 interface Word {
     word: string;
@@ -28,9 +29,24 @@ interface GameModeRendererProps {
     // Memory mode specific
     onMemoryTimeUp?: () => void;
     onMemoryTimeLeftChange?: (timeLeft: number) => void;
+    onMemoryTimerReady?: (stopTimer: () => void) => void;
     // Meaning match mode specific
     onMeaningMatchTimeUp?: () => void;
     onMeaningMatchTimeLeftChange?: (timeLeft: number) => void;
+    // Nitro energy props for Typing Challenge
+    energy?: number;
+    maxEnergy?: number;
+    isLowEnergy?: boolean;
+    // Overdrive system props for Typing Challenge
+    heatLevel?: HeatLevel;
+    correctWordsCount?: number;
+    isOverdriveTransitioning?: boolean;
+    // Challenge Mode scoring props
+    totalChallengeScore?: number;
+    streakCount?: number;
+    // Debug props for Memory Mode
+    ddaLevel?: number;
+    viewingTime?: number;
 }
 
 export default function GameModeRenderer({
@@ -51,8 +67,18 @@ export default function GameModeRenderer({
     setSpeakAgainUsed,
     onMemoryTimeUp,
     onMemoryTimeLeftChange,
+    onMemoryTimerReady,
     onMeaningMatchTimeUp,
-    onMeaningMatchTimeLeftChange
+    onMeaningMatchTimeLeftChange,
+    energy,
+    maxEnergy,
+    isLowEnergy,
+    heatLevel,
+    correctWordsCount,
+    totalChallengeScore,
+    streakCount,
+    ddaLevel,
+    viewingTime
 }: GameModeRendererProps) {
     // Don't render any content during DDA transition to prevent word flashing
     const currentWord = (!words[currentWordIndex]) 
@@ -88,6 +114,14 @@ export default function GameModeRenderer({
                 currentWord={currentWord}
                 currentWordIndex={currentWordIndex}
                 isTransitioning={isTransitioning}
+                gameStyle={gameStyle}
+                energy={energy}
+                maxEnergy={maxEnergy}
+                isLowEnergy={isLowEnergy}
+                heatLevel={heatLevel}
+                correctWordsCount={correctWordsCount}
+                totalChallengeScore={totalChallengeScore}
+                streakCount={streakCount}
             />
         );
     }
@@ -114,6 +148,11 @@ export default function GameModeRenderer({
                 gameStyle={gameStyle}
                 onTimeUp={onMemoryTimeUp || onTimeUp}
                 onTimeLeftChange={onMemoryTimeLeftChange || onTimeLeftChange}
+                onTimerReady={onMemoryTimerReady}
+                ddaLevel={ddaLevel}
+                viewingTime={viewingTime}
+                streakCount={streakCount}
+                totalScore={totalChallengeScore}
             />
         );
     }

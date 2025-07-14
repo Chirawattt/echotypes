@@ -46,7 +46,7 @@ export function useDDA({ gameStyle, modeId }: UseDDAProps) {
 
                 // 2. Reset to first word of new level
                 // Reset index to -1 because it will be incremented to 0 on next render
-                if (modeId === 'echo') setCurrentWordIndex(-1);
+                if (modeId === 'echo' || modeId === 'memory') setCurrentWordIndex(-1);
                 else if (modeId === 'typing') setCurrentWordIndex(0);
                 else setCurrentWordIndex(0); // Default for other modes
 
