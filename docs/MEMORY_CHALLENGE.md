@@ -35,7 +35,37 @@ const calculateViewTime = (level: number): number => {
 
 
 ** bug ที่เจอตอนนี้ **
-- มีอาการ word flashing นิดหน่อยตอนโหลดคำศัพท์ใหม่เข้ามาเมื่อเลื่อนระดับ
-- ตรง text now type what you remember หลังจากส่งคำตอบไปแล้ว อยากให้เปลี่ยนเป็นแสดง feed back ของคำตอบแทน ว่าเราตอบถูกหรือไม่ถูก
-- หลังจาก game over ที่จะมีหน้าค้างไว้แปปนึงที่เป็น bg สีม่วงๆ เวลามันนับถอยหลังใหม่ (จริงๆ ควรหยุดเวลา หรือไม่ก็เซ็ตให้เป็น 0 ไปเลย)
-- เสียง completed ถูกเล่นสองครั้งเหมือนโหมดอื่นๆ ตอนแรกที่แก้ไปแล้ว 1. คือตอนให้ค้างหน้า gameover และตอน gameover overlay
+- มีอาการ word flashing นิดหน่อยตอนโหลดคำศัพท์ใหม่เข้ามาเมื่อเลื่อนระดับ (แก้แล้ว)
+- ตรง text now type what you remember หลังจากส่งคำตอบไปแล้ว อยากให้เปลี่ยนเป็นแสดง feed back ของคำตอบแทน ว่าเราตอบถูกหรือไม่ถูก (แก้แล้ว)
+- หลังจาก game over ที่จะมีหน้าค้างไว้แปปนึงที่เป็น bg สีม่วงๆ เวลามันนับถอยหลังใหม่ (จริงๆ ควรหยุดเวลา หรือไม่ก็เซ็ตให้เป็น 0 ไปเลย) (แก้แล้ว)
+- เสียง completed ถูกเล่นสองครั้งเหมือนโหมดอื่นๆ ตอนแรกที่แก้ไปแล้ว 1. คือตอนให้ค้างหน้า gameover และตอน gameover overlay (แก้แล้ว)
+
+- แสดง point display (คะแนนที่ทำได้ใน Challenge Mode) ไว้ตลอดเวลา ในหน้า gameplay เหมือน Echo Challenge Mode
+
+refs from Echo Challenge Mode
+{/* Points Display - for Challenge Mode */}
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="rounded-lg p-1 sm:p-2 mb-2 sm:mb-4 text-center"
+                    >
+                        <motion.p
+                            className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${getScoreColorByStreak(streakCount)}`}
+                            animate={streakCount >= 5 ? {
+                                scale: [1, 1.05, 1],
+                                textShadow: [
+                                    '0 0 10px rgba(250,204,21,0.5)',
+                                    '0 0 20px rgba(250,204,21,0.8)',
+                                    '0 0 10px rgba(250,204,21,0.5)'
+                                ]
+                            } : {}}
+                            transition={{
+                                duration: 2,
+                                repeat: streakCount >= 5 ? Infinity : 0,
+                                ease: "easeInOut"
+                            }}
+                        >
+                            {totalChallengeScore} pts.
+                        </motion.p>
+                    </motion.div>

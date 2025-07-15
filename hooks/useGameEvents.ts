@@ -167,9 +167,9 @@ export function useGameEvents({
             const isLastWord = currentWordIndex === words.length - 1;
 
             if (newLives <= 0 || (isLastWord && difficultyId !== 'endless' && difficultyId !== 'dda')) {
-                // Only play completed sound for non-echo modes
-                // Echo mode will play sound in GameOverOverlay
-                if (modeId !== 'echo') {
+                // Only play completed sound for typing and meaning-match modes
+                // Echo and Memory modes will play sound in GameOverOverlay
+                if (modeId !== 'echo' && modeId !== 'memory') {
                     playSound(completedAudioRef, 0.5);
                 }
                 setStatus('gameOver');

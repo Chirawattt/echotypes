@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBrain } from 'react-icons/fa';
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useGameStore } from '@/lib/stores/gameStore';
 
 interface MemoryModeProps {
     currentWord: string;
@@ -37,6 +38,9 @@ export default function MemoryMode({
     const [timeLeft, setTimeLeft] = useState(5.0);
     const [isTimerActive, setIsTimerActive] = useState(false);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    
+    // Get feedback states from game store
+    const { isCorrect, isWrong, status } = useGameStore();
 
     // Function to stop the timer (when answer is submitted)
     const stopTimer = useCallback(() => {
@@ -55,6 +59,18 @@ export default function MemoryMode({
             onTimerReady(stopTimer);
         }
     }, [onTimerReady, stopTimer]);
+
+    // Stop timer when game is over
+    useEffect(() => {
+        if (status === 'gameOver') {
+            setIsTimerActive(false);
+            setTimeLeft(0);
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
+            }
+        }
+    }, [status]);
 
 
     
@@ -197,10 +213,11 @@ export default function MemoryMode({
                 <AnimatePresence mode="wait">
                     {isWordVisible ? (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            key={`word-visible-${currentWordIndex}`}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.2, ease: "easeInOut" }}
+                            key={`word-visible-${currentWordIndex}-${currentWord}`}
                             className="text-center"
                         >
                             <p
@@ -218,16 +235,23 @@ export default function MemoryMode({
                         </motion.div>
                     ) : (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            key={`word-hidden-${currentWordIndex}`}
+                            transition={{ duration: 0.2, ease: "easeInOut" }}
+                            key={`word-hidden-${currentWordIndex}-${isCorrect}-${isWrong}`}
                             className="text-center"
                         >
                             <p
-                                className="text-purple-300 text-xl sm:text-2xl font-bold"
+                                className={`text-xl sm:text-2xl font-bold ${
+                                    isCorrect ? 'text-green-400' : 
+                                    isWrong ? 'text-red-400' : 
+                                    'text-purple-300'
+                                }`}
                                 style={{ fontFamily: "'Caveat Brush', cursive" }}
                             >
-                                ✨ Now type what you remember!
+                                {isCorrect ? '✅ Correct! Well done!' : 
+                                 isWrong ? '❌ Incorrect! Try again!' : 
+                                 '✨ Now type what you remember!'}
                             </p>
                             
                             {/* Challenge Mode Timer - Horizontal Progress Bar Style (same as Echo Mode) */}
