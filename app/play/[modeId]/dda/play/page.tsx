@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGameLogic } from '@/hooks/useGameLogic';
+import { useDeviceDetection } from '@/hooks/useDeviceDetection';
 import { globalCleanup } from '@/lib/cleanup';
 import { calculateViewTime } from '@/lib/memoryModeConfig';
 import CountdownToGame from '@/components/game/CountdownToGame';
@@ -11,21 +12,23 @@ import GameOver from '@/components/game/GameOver';
 import GameOverOverlay from '@/components/game/GameOverOverlay';
 import GameHeader from '@/components/game/GameHeader';
 import GameTimer from '@/components/game/GameTimer';
-import StreakDisplay from '@/components/game/StreakDisplay';
 import StreakGlowEffects from '@/components/game/StreakGlowEffects';
-import ScoreBreakdownToast from '@/components/game/ScoreBreakdownToast';
+// import ScoreBreakdownToast from '@/components/game/ScoreBreakdownToast';
 import GameModeRenderer from '@/components/game/GameModeRenderer';
 import GameInput from '@/components/game/GameInput';
-import GameEffects from '@/components/game/GameEffects';
+import VirtualKeyboard from '@/components/game/VirtualKeyboard';
+// import GameEffects from '@/components/game/GameEffects';
 import HeatLevelNotification from '@/components/game/HeatLevelNotification';
-import AnimatedBackground from '@/components/game/AnimatedBackground';
+// import AnimatedBackground from '@/components/game/AnimatedBackground';
 // import DdaDebug from '@/components/game/DdaDebug';
 
 export default function DdaGamePlayPage() {
-    const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
     const { modeId } = params as { modeId: string };
+
+    // Device detection for virtual keyboard
+    const { isMobile } = useDeviceDetection();
 
     // State to manage game over transition
     const [showGameOverOverlay, setShowGameOverOverlay] = useState(false);
@@ -39,6 +42,37 @@ export default function DdaGamePlayPage() {
     
     // Extract specific values for overdrive system
     const { heatLevel, correctWordsCount, isOverdriveTransitioning } = gameLogic;
+
+    // Virtual Keyboard Handler for Mobile Devices
+    const handleVirtualKeyPress = (button: string) => {
+        if (button === '{bksp}') {
+            // Logic to remove the last character from userInput state
+            const newValue = gameLogic.userInput.slice(0, -1);
+            const syntheticEvent = {
+                target: { value: newValue }
+            } as React.ChangeEvent<HTMLInputElement>;
+            gameLogic.handleUserInputChange(syntheticEvent);
+        } else if (button === '{enter}') {
+            // Logic to submit the answer
+            const syntheticEvent = {
+                preventDefault: () => {}
+            } as React.FormEvent;
+            gameLogic.handleFormSubmit(syntheticEvent);
+        } else if (button === '{space}') {
+            const newValue = gameLogic.userInput + ' ';
+            const syntheticEvent = {
+                target: { value: newValue }
+            } as React.ChangeEvent<HTMLInputElement>;
+            gameLogic.handleUserInputChange(syntheticEvent);
+        } else if (button !== '{shift}') {
+            // Append regular characters
+            const newValue = gameLogic.userInput + button;
+            const syntheticEvent = {
+                target: { value: newValue }
+            } as React.ChangeEvent<HTMLInputElement>;
+            gameLogic.handleUserInputChange(syntheticEvent);
+        }
+    };
 
     // Handle game over transition with delay
     useEffect(() => {
@@ -72,15 +106,6 @@ export default function DdaGamePlayPage() {
         }, 100);
     };
 
-    // Handle go back action
-    const handleGoBack = () => {
-        globalCleanup();
-        // Don't reset game when going back to prevent countdown sound
-        // gameLogic.resetGame();
-        gameLogic.setWords([]);
-        router.back();
-    };
-
     // Cleanup when component unmounts
     useEffect(() => {
         return () => {
@@ -104,12 +129,12 @@ export default function DdaGamePlayPage() {
                         className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center"
                     >
                         {/* Animated Background */}
-                        <AnimatedBackground />
-                        <GameEffects 
+                        {/* <AnimatedBackground /> */}
+                        {/* <GameEffects 
                             isCorrect={gameLogic.isCorrect}
                             isWrong={gameLogic.isWrong}
                             score={gameLogic.score}
-                        />
+                        /> */}
                         
                         {/* Dim overlay during game over delay */}
                         <motion.div 
@@ -120,9 +145,6 @@ export default function DdaGamePlayPage() {
                         
                         {/* Game content with final state */}
                         <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-20 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl">
-                            {/* Streak Display */}
-                            <StreakDisplay />
-
                             {/* Game Mode Renderer showing final state */}
                             <GameModeRenderer
                                 modeId={modeId}
@@ -219,14 +241,13 @@ export default function DdaGamePlayPage() {
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
 
             {/* Animated Background */}
-            <AnimatedBackground />
+            {/* <AnimatedBackground /> */}
 
             {/* Streak Glow Effects */}
             <StreakGlowEffects streakCount={gameLogic.streakCount} />
 
             {/* Game Header */}
             <GameHeader
-                onGoBack={handleGoBack}
                 difficultyId="dda"
                 modeId={modeId}
                 lives={gameLogic.lives}
@@ -243,9 +264,6 @@ export default function DdaGamePlayPage() {
 
             {/* Main Game Content */}
             <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-10 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl">
-
-                {/* Streak Display - Now positioned absolutely */}
-                <StreakDisplay />
 
                 {/* Game Mode Renderer */}
                 <GameModeRenderer
@@ -283,12 +301,12 @@ export default function DdaGamePlayPage() {
 
                 {/* Score Breakdown Toast - Only for non-typing modes */}
                 {/* Score Breakdown Toast - For all modes in challenge mode */}
-                <ScoreBreakdownToast
+                {/* <ScoreBreakdownToast
                     gameStyle={gameStyle}
                     lastScoreCalculation={gameLogic.lastScoreCalculation}
                     showScoreBreakdown={gameLogic.showScoreBreakdown}
                     modeId={modeId}
-                />
+                /> */}
 
                 {/* Game Input */}
                 <GameInput
@@ -309,17 +327,22 @@ export default function DdaGamePlayPage() {
                 />
 
                 {/* Game Effects */}
-                <GameEffects
+                {/* <GameEffects
                     isCorrect={gameLogic.isCorrect}
                     isWrong={gameLogic.isWrong}
                     score={gameLogic.score}
-                />
+                /> */}
                 
                 {/* Heat Level Notification for Typing Challenge */}
                 {modeId === 'typing' && gameStyle === 'challenge' && (
                     <HeatLevelNotification 
                         heatLevel={heatLevel}
                     />
+                )}
+
+                {/* Virtual Keyboard for Mobile Devices */}
+                {isMobile && (
+                    <VirtualKeyboard onKeyPress={handleVirtualKeyPress} />
                 )}
             </section>
         </main>

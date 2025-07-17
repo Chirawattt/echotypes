@@ -63,7 +63,7 @@ export default function Home() {
       </div>
 
       {/* Centered Content */}
-      <div className="flex-grow flex flex-col items-center justify-center pt-16 px-4 relative z-10 ">
+      <div className="flex-grow flex flex-col items-center justify-center pt-8 px-4 relative z-10 ">
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}

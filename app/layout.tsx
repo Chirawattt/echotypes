@@ -51,7 +51,7 @@ export default function RootLayout({
       <body className={cn(
         inter.variable, 
         caveatBrush.variable, 
-        "bg-[#101010] text-white font-sans"
+        " bg-[#101010] text-white font-sans"
       )}>
         <Header />
         <main className="relative min-h-screen">

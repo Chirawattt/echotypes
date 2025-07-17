@@ -11,7 +11,6 @@ interface UseGameEventsProps {
     correctAudioRef: React.RefObject<HTMLAudioElement | null>;
     incorrectAudioRef: React.RefObject<HTMLAudioElement | null>;
     completedAudioRef: React.RefObject<HTMLAudioElement | null>;
-    keypressAudioRef: React.RefObject<HTMLAudioElement | null>;
     handleDdaUpdate: (isCorrect: boolean, onComplete?: () => void) => { levelChanged: boolean; newDifficultyLevel: number };
     calculateAndAddScore: (isCorrect: boolean, echoTimeLeft: number, memoryTimeLeft: number, meaningMatchTimeLeft: number, currentWord?: string) => void;
     stopEchoTimer: () => void;
@@ -29,7 +28,6 @@ export function useGameEvents({
     correctAudioRef,
     incorrectAudioRef,
     completedAudioRef,
-    keypressAudioRef,
     handleDdaUpdate,
     calculateAndAddScore,
     stopEchoTimer,
@@ -62,11 +60,10 @@ export function useGameEvents({
 
     // Handle user input change
     const handleUserInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        playSound(keypressAudioRef, 0.4);
         setUserInput(e.target.value);
         if (isWrong) setIsWrong(false);
         if (isCorrect) setIsCorrect(false);
-    }, [playSound, keypressAudioRef, setUserInput, isWrong, isCorrect, setIsWrong, setIsCorrect]);
+    }, [setUserInput, isWrong, isCorrect, setIsWrong, setIsCorrect]);
 
     // Handle form submit
     const handleFormSubmit = useCallback((

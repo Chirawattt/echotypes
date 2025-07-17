@@ -248,7 +248,7 @@ export default function EchoMode({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="rounded-lg p-1 sm:p-2 mb-2 sm:mb-4 text-center"
+                        className="p-1 sm:p-2 text-center"
                     >
                         <motion.p
                             className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${getScoreColorByStreak(streakCount)}`}

@@ -1,8 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBrain } from 'react-icons/fa';
-import { useEffect, useRef, useState, useCallback } from 'react';
+
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { useGameStore } from '@/lib/stores/gameStore';
 
 interface MemoryModeProps {
@@ -30,8 +30,6 @@ export default function MemoryMode({
     onTimeUp,
     onTimeLeftChange,
     onTimerReady,
-    ddaLevel,
-    viewingTime,
     streakCount,
     totalScore
 }: MemoryModeProps) {
@@ -40,7 +38,16 @@ export default function MemoryMode({
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     
     // Get feedback states from game store
-    const { isCorrect, isWrong, status } = useGameStore();
+    const { isCorrect, isWrong, status, totalChallengeScore } = useGameStore();
+
+    // Function to get score color based on streak level
+    const getScoreColorByStreak = (streak: number) => {
+        if (streak >= 20) return 'text-yellow-300 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]'; // Unstoppable!
+        if (streak >= 10) return 'text-orange-300 drop-shadow-[0_0_12px_rgba(251,146,60,0.7)]'; // In The Zone!
+        if (streak >= 5) return 'text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.6)]'; // On a Roll!
+        if (streak >= 2) return 'text-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.5)]'; // Warming Up!
+        return 'text-green-400 drop-shadow-[0_0_4px_rgba(34,197,94,0.4)]'; // Default
+    };
 
     // Function to stop the timer (when answer is submitted)
     const stopTimer = useCallback(() => {
@@ -75,7 +82,7 @@ export default function MemoryMode({
 
     
     // Reset timer when word changes or when word becomes invisible (typing phase starts)
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!isWordVisible && gameStyle === 'challenge') {
             // Start timer when typing phase begins
             setTimeLeft(5.0);
@@ -125,7 +132,10 @@ export default function MemoryMode({
     // Separate useEffect for reporting time left to prevent setState during render
     useEffect(() => {
         if (onTimeLeftChange) {
-            onTimeLeftChange(timeLeft);
+            // Use requestAnimationFrame to defer the callback to prevent setState during render
+            requestAnimationFrame(() => {
+                onTimeLeftChange(timeLeft);
+            });
         }
     }, [timeLeft, onTimeLeftChange]);
 
@@ -139,76 +149,46 @@ export default function MemoryMode({
         };
     }, []);
     return (
-        <motion.div
-            key={`${currentWordIndex}-memory`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center text-center mb-3 max-w-5xl"
-        >
-            {/* Debug Information Card */}
+        <>
+            {/* Points Display - for Challenge Mode - Outside container to prevent re-render */}
             {gameStyle === 'challenge' && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute -top-50 right-5 mb-4 w-full max-w-2xl p-3 rounded-lg backdrop-blur-sm bg-purple-900/20 border border-purple-500/30"
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    className="rounded-lg p-1 sm:p-2 mb-2 sm:mb-4 text-center"
                 >
-                    <div className="text-xs text-purple-300 mb-2 font-bold">🔧 Memory Challenge Debug Info</div>
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">DDA Level:</span>
-                            <span className="font-bold text-purple-200">
-                                {ddaLevel || 'N/A'} {ddaLevel && `(${ddaLevel === 1 ? 'A1' : ddaLevel === 2 ? 'A2' : ddaLevel === 3 ? 'B1' : ddaLevel === 4 ? 'B2' : ddaLevel === 5 ? 'C1' : ddaLevel === 6 ? 'C2' : 'Unknown'})`}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">Viewing Time:</span>
-                            <span className="font-bold text-purple-200">
-                                {viewingTime ? `${viewingTime.toFixed(2)}s` : `N/A ${ddaLevel ? `(DDA:${ddaLevel})` : '(No DDA)'}`}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">Word Index:</span>
-                            <span className="font-bold text-purple-200">
-                                {currentWordIndex + 1}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">Phase:</span>
-                            <span className="font-bold text-purple-200">
-                                {isWordVisible ? '👁️ Memorize' : '⌨️ Type'}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">Streak:</span>
-                            <span className="font-bold text-green-300">
-                                {streakCount || 0}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">Total Score:</span>
-                            <span className="font-bold text-yellow-300">
-                                {totalScore || 0} pts
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">Timer Active:</span>
-                            <span className={`font-bold ${isTimerActive ? 'text-red-300' : 'text-gray-400'}`}>
-                                {isTimerActive ? '🔴 ON' : '⚫ OFF'}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-purple-400">Time Left:</span>
-                            <span className={`font-bold ${timeLeft <= 2 ? 'text-red-300' : 'text-purple-200'}`}>
-                                {timeLeft.toFixed(1)}s
-                            </span>
-                        </div>
-                    </div>
+                    <motion.p
+                        className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${getScoreColorByStreak(streakCount || 0)}`}
+                        animate={streakCount && streakCount >= 5 ? {
+                            scale: [1, 1.05, 1],
+                            textShadow: [
+                                '0 0 10px rgba(250,204,21,0.5)',
+                                '0 0 20px rgba(250,204,21,0.8)',
+                                '0 0 10px rgba(250,204,21,0.5)'
+                            ]
+                        } : {}}
+                        transition={{
+                            duration: 2,
+                            repeat: streakCount && streakCount >= 5 ? Infinity : 0,
+                            ease: "easeInOut"
+                        }}
+                    >
+                        {totalScore || totalChallengeScore} pts.
+                    </motion.p>
                 </motion.div>
             )}
 
-            <div className="mb-3">
-                <FaBrain className="text-3xl sm:text-4xl lg:text-5xl text-purple-400 mx-auto mb-2" />
-            </div>
+            <motion.div
+                key={`${currentWordIndex}-memory`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex flex-col items-center text-center mb-3 max-w-5xl"
+            >
+                
+
+ 
+
             <div className="min-h-[80px] sm:min-h-[100px] flex flex-col justify-center">
                 <AnimatePresence mode="wait">
                     {isWordVisible ? (
@@ -369,6 +349,7 @@ export default function MemoryMode({
             >
                 {promptText} 💭
             </motion.p>
-        </motion.div>
+            </motion.div>
+        </>
     );
 }

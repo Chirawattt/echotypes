@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { globalCleanup } from '@/lib/cleanup';
@@ -11,17 +11,15 @@ import GameOver from '@/components/game/GameOver';
 import GameOverOverlay from '@/components/game/GameOverOverlay';
 import GameHeader from '@/components/game/GameHeader';
 import GameTimer from '@/components/game/GameTimer';
-import StreakDisplay from '@/components/game/StreakDisplay';
-import StreakGlowEffects from '@/components/game/StreakGlowEffects';
-import ScoreBreakdownToast from '@/components/game/ScoreBreakdownToast';
+// import ScoreBreakdownToast from '@/components/game/ScoreBreakdownToast';
 import GameModeRenderer from '@/components/game/GameModeRenderer';
 import GameInput from '@/components/game/GameInput';
-import GameEffects from '@/components/game/GameEffects';
+// import GameEffects from '@/components/game/GameEffects';
 import HeatLevelNotification from '@/components/game/HeatLevelNotification';
 // import DdaDebug from '@/components/game/DdaDebug';
+// import StreakGlowEffects from '@/components/game/StreakGlowEffects';
 
 export default function GamePlayPage() {
-    const router = useRouter();
     const params = useParams();
     const { modeId, difficultyId } = params as { modeId: string, difficultyId: string };
 
@@ -65,15 +63,6 @@ export default function GamePlayPage() {
         }, 100);
     };
 
-    // Handle go back action
-    const handleGoBack = () => {
-        globalCleanup();
-        // Don't reset game when going back to prevent countdown sound
-        // gameLogic.resetGame();
-        gameLogic.setWords([]);
-        router.back();
-    };
-
     // Cleanup when component unmounts
     useEffect(() => {
         return () => {
@@ -98,11 +87,11 @@ export default function GamePlayPage() {
                         exit={{ opacity: 0 }}
                         className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center"
                     >
-                        <GameEffects 
+                        {/* <GameEffects 
                             isCorrect={gameLogic.isCorrect}
                             isWrong={gameLogic.isWrong}
                             score={gameLogic.score}
-                        />
+                        /> */}
                         
                         {/* Dim overlay during game over delay */}
                         <motion.div 
@@ -113,9 +102,6 @@ export default function GamePlayPage() {
                         
                         {/* Game content with final state */}
                         <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-20 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl">
-                            {/* Streak Display */}
-                            <StreakDisplay />
-
                             {/* Game Mode Renderer showing final state */}
                             <GameModeRenderer
                                 modeId={modeId}
@@ -219,11 +205,10 @@ export default function GamePlayPage() {
             /> */}
 
             {/* Streak Glow Effects */}
-            <StreakGlowEffects streakCount={gameLogic.streakCount} />
+            {/* <StreakGlowEffects streakCount={gameLogic.streakCount} /> */}
 
             {/* Game Header */}
             <GameHeader
-                onGoBack={handleGoBack}
                 difficultyId={difficultyId}
                 modeId={modeId}
                 lives={gameLogic.lives}
@@ -240,9 +225,6 @@ export default function GamePlayPage() {
 
             {/* Main Game Content */}
             <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-10 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl ">
-
-                {/* Streak Display - Now positioned absolutely */}
-                <StreakDisplay />
 
                 {/* Game Mode Renderer */}
                 <GameModeRenderer
@@ -278,12 +260,12 @@ export default function GamePlayPage() {
                 />
 
                 {/* Score Breakdown Toast - For all modes in challenge mode */}
-                <ScoreBreakdownToast
+                {/* <ScoreBreakdownToast
                     gameStyle={gameStyle}
                     lastScoreCalculation={gameLogic.lastScoreCalculation}
                     showScoreBreakdown={gameLogic.showScoreBreakdown}
                     modeId={modeId}
-                />
+                /> */}
 
                 {/* Game Input */}
                 <GameInput
@@ -304,11 +286,11 @@ export default function GamePlayPage() {
                 />
 
                 {/* Game Effects */}
-                <GameEffects
+                {/* <GameEffects
                     isCorrect={gameLogic.isCorrect}
                     isWrong={gameLogic.isWrong}
                     score={gameLogic.score}
-                />
+                /> */}
                 
                 {/* Heat Level Notification for Typing Challenge */}
                 {modeId === 'typing' && gameStyle === 'challenge' && (

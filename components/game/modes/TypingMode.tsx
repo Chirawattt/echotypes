@@ -230,15 +230,7 @@ export default function TypingMode({
                 className="flex flex-col items-center text-center"
             >
                 <div className="mb-3">
-                    <FaKeyboard className="text-3xl sm:text-4xl lg:text-5xl text-green-400 mx-auto mb-2" />
-                </div>
-                <div className="mb-3">
-                    <p
-                        className="text-green-300 text-sm sm:text-base lg:text-lg mb-2 font-medium"
-                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                    >
-                        {gameStyle === 'challenge' ? '⚡ Survive as long as you can!' : '⚡ Type as fast as you can!'}
-                    </p>
+                    
                     <p
                         className="text-white text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold"
                         style={{ fontFamily: "'Caveat Brush', cursive" }}

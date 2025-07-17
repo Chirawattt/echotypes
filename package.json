@@ -18,6 +18,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "react-simple-keyboard": "^3.8.96",
     "tailwind-merge": "^3.3.0",
     "zustand": "^5.0.6"
   },

@@ -92,7 +92,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         correctAudioRef: audio.correctAudioRef,
         incorrectAudioRef: audio.incorrectAudioRef,
         completedAudioRef: audio.completedAudioRef,
-        keypressAudioRef: audio.keypressAudioRef,
         handleDdaUpdate: dda.handleDdaUpdate,
         calculateAndAddScore: scoreUtils.calculateAndAddScore,
         stopEchoTimer: timers.stopEchoTimer,
@@ -338,10 +337,13 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
     // อัปเดต total words played เมื่อมีการเปลี่ยนคำ (ไม่นับครั้งแรกที่เกมเริ่ม)
     useEffect(() => {
-        if (currentWordIndex > 0) {
+        // ถ้าหากในระหว่างเล่นมีการเปลี่ยนarray เป็นคำศัพท์ใหม่ให้เพิ่ม total words played +1 เหมือนกัน
+        // เพื่อให้แน่ใจว่า total words played จะถูกนับอย่างถูกต้อง
+        if (words.length > 0 && words[currentWordIndex]?.word) {
             setTotalWordsPlayed(prev => prev + 1);
         }
-    }, [currentWordIndex]);
+
+    }, [currentWordIndex, setTotalWordsPlayed, words]);
 
     // รีเซ็ต total words played เมื่อเริ่มเกมใหม่หรือ restart
     useEffect(() => {

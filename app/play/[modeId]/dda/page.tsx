@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb, FaArrowLeft, FaPlay, FaTimes, FaGamepad, FaTrophy, FaGraduationCap, FaFire } from "react-icons/fa";
+import { FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb,  FaPlay, FaTimes, FaGamepad, FaTrophy, FaGraduationCap, FaFire } from "react-icons/fa";
 import React from "react";
 
 // Interface สำหรับข้อมูลโหมด
@@ -185,9 +185,6 @@ export default function DDAPreGamePage() {
     const modeInfo = getModeInfo(modeId);
     const howToPlaySteps = getHowToPlaySteps(modeId);
 
-    const handleGoBack = () => {
-        router.back();
-    };
 
     const handleStartGame = () => {
         router.push(`/play/${modeId}/dda/play?style=${selectedGameStyle}`);
@@ -215,28 +212,6 @@ export default function DDAPreGamePage() {
     return (
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
 
-            {/* Back Button */}
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="w-full max-w-xl lg:max-w-7xl px-4 mt-6 relative z-10"
-            >
-                <motion.button
-                    onClick={handleGoBack}
-                    className="flex items-center space-x-2 text-white/70 hover:text-white transition-colors duration-300 group py-3 px-4 -mx-4 rounded-lg hover:bg-white/5"
-                    whileHover={{ x: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <FaArrowLeft className="text-lg group-hover:text-red-400 transition-colors duration-300" />
-                    <span
-                        className="text-lg font-medium group-hover:text-red-400 transition-colors duration-300"
-                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                    >
-                        Back
-                    </span>
-                </motion.button>
-            </motion.div>
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 relative z-10">
@@ -245,11 +220,11 @@ export default function DDAPreGamePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="w-full max-w-2xl mb-12"
+                    className="w-full max-w-2xl mb-5"
                 >
                     {/* Title */}
                     <h1
-                        className="text-5xl text-center bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent mb-8 font-bold py-1"
+                        className="text-5xl text-center bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent mb-5 font-bold py-1"
                         style={{ fontFamily: "'Caveat Brush', cursive" }}
                     >
                         Ready to Play?
@@ -284,7 +259,7 @@ export default function DDAPreGamePage() {
                         </div>
 
                         {/* How to Play Button */}
-                        <div className="flex justify-center mt-6">
+                        <div className="flex justify-center mt-3">
                             <motion.button
                                 onClick={() => {
                                     setShowHowToPlay(true);
@@ -309,7 +284,7 @@ export default function DDAPreGamePage() {
                     className="w-full max-w-4xl"
                 >
                     <h3
-                        className="text-3xl text-center text-white mb-8 font-bold"
+                        className="text-3xl text-center text-white mb-6 font-bold"
                         style={{ fontFamily: "'Caveat Brush', cursive" }}
                     >
                         Choose Your Style

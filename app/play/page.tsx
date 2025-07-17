@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb, FaArrowLeft } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb } from "react-icons/fa";
 
 
 // Define a type for our game modes
@@ -92,77 +92,11 @@ export default function ModeSelectPage() {
         }
     }
 
-    const handleGoBack = () => {
-        router.back();
-    }
-
     const isFirstMode = currentModeIndex === 0;
     const isLastMode = currentModeIndex === gameModes.length - 1;
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-6 sm:pt-10 px-2 sm:px-4 overflow-hidden relative">
-            {/* Animated Background Elements - Similar to Home page */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    animate={{
-                        rotate: 360,
-                        scale: [1, 1.1, 1]
-                    }}
-                    transition={{
-                        duration: 20,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute -top-10 sm:-top-20 -right-10 sm:-right-20 w-20 sm:w-40 h-20 sm:h-40 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-xl"
-                />
-                <motion.div
-                    animate={{
-                        rotate: -360,
-                        scale: [1.1, 1, 1.1]
-                    }}
-                    transition={{
-                        duration: 25,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    className="absolute -bottom-10 sm:-bottom-20 -left-10 sm:-left-20 w-30 sm:w-60 h-30 sm:h-60 bg-gradient-to-br from-red-500/10 to-orange-500/10 rounded-full blur-xl"
-                />
-                <motion.div
-                    animate={{
-                        y: [-20, 20, -20],
-                        x: [-10, 10, -10]
-                    }}
-                    transition={{
-                        duration: 15,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                    }}
-                    className="absolute top-1/3 right-1/4 w-16 sm:w-32 h-16 sm:h-32 bg-gradient-to-br from-green-500/5 to-teal-500/5 rounded-full blur-lg"
-                />
-            </div>
-
-            {/* Back Button */}
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="w-full max-w-xl lg:max-w-7xl px-2 sm:px-4 mt-3 sm:mt-6 relative z-10"
-            >
-                <motion.button
-                    onClick={handleGoBack}
-                    className="flex items-center space-x-2 text-white/70 hover:text-white transition-colors duration-300 group py-2 sm:py-3 px-3 sm:px-4 -mx-3 sm:-mx-4 rounded-lg hover:bg-white/5"
-                    whileHover={{ x: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <FaArrowLeft className="text-base sm:text-lg group-hover:text-red-400 transition-colors duration-300" />
-                    <span
-                        className="text-base sm:text-lg font-medium group-hover:text-red-400 transition-colors duration-300"
-                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                    >
-                        Back
-                    </span>
-                </motion.button>
-            </motion.div>
+        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-12 sm:pt-16 px-2 sm:px-4 overflow-hidden relative">
 
             {/* Mode Selecting Title */}
             <motion.div
@@ -206,7 +140,7 @@ export default function ModeSelectPage() {
             >
                 {/* Mode Name */}
                 <motion.h3
-                    className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent font-bold py-2"
+                    className="text-4xl sm:text-5xl mb-1 bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent font-bold py-2"
                     style={{ fontFamily: selectedMode.fontFamily }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -256,12 +190,11 @@ export default function ModeSelectPage() {
                         className="flex flex-col items-center text-center"
                     >
                         <motion.div
-                            className={`relative backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border shadow-2xl ${
-                                selectedMode.id === 'echo' ? 'bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border-blue-400/30' :
-                                selectedMode.id === 'typing' ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/10 border-green-400/30' :
-                                selectedMode.id === 'memory' ? 'bg-gradient-to-br from-purple-500/20 to-violet-500/10 border-purple-400/30' :
-                                'bg-gradient-to-br from-yellow-500/20 to-amber-500/10 border-yellow-400/30'
-                            }`}
+                            className={`relative backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border shadow-2xl ${selectedMode.id === 'echo' ? 'bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border-blue-400/30' :
+                                    selectedMode.id === 'typing' ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/10 border-green-400/30' :
+                                        selectedMode.id === 'memory' ? 'bg-gradient-to-br from-purple-500/20 to-violet-500/10 border-purple-400/30' :
+                                            'bg-gradient-to-br from-yellow-500/20 to-amber-500/10 border-yellow-400/30'
+                                }`}
                             whileHover={{ scale: 1.05, y: -10 }}
                             transition={{ duration: 0.3 }}
                             animate={{
@@ -287,20 +220,8 @@ export default function ModeSelectPage() {
                             {/* Mode-specific glowing background effect */}
                             <div className={`absolute inset-0 bg-gradient-to-r ${selectedMode.bgGradient || 'from-red-500/10 via-orange-500/10 to-red-500/10'} rounded-2xl sm:rounded-3xl blur-xl opacity-50`} />
 
-                            <motion.div
-                                animate={{
-                                    rotate: [0, 5, -5, 0],
-                                    scale: [1, 1.05, 1]
-                                }}
-                                transition={{
-                                    duration: 4,
-                                    repeat: Infinity,
-                                    ease: "easeInOut"
-                                }}
-                                className="relative z-10"
-                            >
-                                <selectedMode.icon className={`text-6xl sm:text-8xl md:text-[100px] lg:text-[120px] xl:text-[140px] bg-gradient-to-br ${selectedMode.iconGradient || 'from-red-400 to-orange-400'} bg-clip-text drop-shadow-2xl`} />
-                            </motion.div>
+                            <selectedMode.icon className={`text-6xl sm:text-8xl md:text-[100px] lg:text-[120px] xl:text-[140px] bg-gradient-to-br ${selectedMode.iconGradient || 'from-red-400 to-orange-400'} bg-clip-text drop-shadow-2xl`} />
+                            
                         </motion.div>
                     </motion.div>
 
@@ -368,7 +289,7 @@ export default function ModeSelectPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="mt-4 sm:mt-6 lg:mt-8 xl:mt-12 mb-6 sm:mb-10 lg:mb-20 flex justify-center w-full max-w-4xl relative z-10 px-2 sm:px-4"
+                className="mt-4 mb-12 sm:mb-6 flex justify-center w-full max-w-4xl relative z-10 px-2 sm:px-4"
             >
                 <motion.div
                     whileHover={{ scale: 1.05 }}

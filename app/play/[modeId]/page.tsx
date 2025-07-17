@@ -3,7 +3,7 @@
 import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { FaClock, FaArrowLeft, FaChevronDown, FaInfinity, FaGraduationCap } from "react-icons/fa";
+import { FaClock,  FaChevronDown, FaInfinity, FaGraduationCap } from "react-icons/fa";
 import { getDifficultyInfo } from "@/lib/words-new";
 
 // Define a type for difficulty levels
@@ -109,9 +109,6 @@ export default function DifficultySelectedPage() {
         router.push(`/play/${modeId}/${difficultyId}/pre-game`);
     };
 
-    const handleGoBack = () => {
-        router.back();
-    };
 
     const toggleStandardLevels = () => {
         setShowStandardLevels(!showStandardLevels);
@@ -120,28 +117,7 @@ export default function DifficultySelectedPage() {
     return (
         <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
 
-            {/* Back Button */}
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="w-full max-w-xl lg:max-w-7xl px-4 mt-6 relative z-10"
-            >
-                <motion.button
-                    onClick={handleGoBack}
-                    className="flex items-center space-x-2 text-white/70 hover:text-white transition-colors duration-300 group py-3 px-4 -mx-4 rounded-lg hover:bg-white/5"
-                    whileHover={{ x: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <FaArrowLeft className="text-lg group-hover:text-red-400 transition-colors duration-300" />
-                    <span
-                        className="text-lg font-medium group-hover:text-red-400 transition-colors duration-300"
-                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                    >
-                        Back
-                    </span>
-                </motion.button>
-            </motion.div>
+            
 
             {/* Title Section */}
             <motion.div
