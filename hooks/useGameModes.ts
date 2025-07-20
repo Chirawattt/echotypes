@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useGameStore } from '@/lib/stores/gameStore';
-import { Word } from '@/lib/words/types';
+import { Word } from '@/lib/types';
 import { getViewTimeMs } from '@/lib/memoryModeConfig';
 
 interface UseGameModesProps {

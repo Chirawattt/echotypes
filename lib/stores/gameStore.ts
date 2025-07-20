@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { Word } from '@/lib/words/types';
+import { Word } from '@/lib/types';
 import { ScoreCalculation } from '@/lib/scoring';
 import { ddaConfig } from '@/lib/ddaConfig';
 
-export type GameStatus = 'countdown' | 'playing' | 'gameOver';
+export type GameStatus = 'loading' | 'countdown' | 'playing' | 'gameOver';
 
 // DDA Types
 export interface DdaState {
@@ -138,7 +138,7 @@ const TYPING_MODE_DURATION = 60;
 
 export const useGameStore = create<GameState>((set, get) => ({
     // Initial state
-    status: 'countdown',
+    status: 'loading',
     countdown: 0,
     words: [],
     currentWordIndex: 0,
@@ -213,7 +213,9 @@ export const useGameStore = create<GameState>((set, get) => ({
         timeLeft: typeof timeLeft === 'function' ? timeLeft(state.timeLeft) : timeLeft
     })),
     setStartTime: (startTime) => set({ startTime }),
-    setTimeSpent: (timeSpent) => set({ timeSpent }),
+    setTimeSpent: (timeSpent) => {
+        return set({ timeSpent });
+    },
     setCurrentTime: (currentTime) => set({ currentTime }),
     setHighScore: (highScore) => set({ highScore }),
     setWpm: (wpm) => set({ wpm }),
@@ -320,12 +322,14 @@ export const useGameStore = create<GameState>((set, get) => ({
         incorrectWords: [...state.incorrectWords, word]
     })),
 
-    resetGame: () => set({
-        status: 'countdown',
-        countdown: 3,
-        currentWordIndex: 0,
-        userInput: '',
-        score: 0,
+    resetGame: () => {
+
+        return set({
+            status: 'loading',
+            countdown: 3,
+            currentWordIndex: 0,
+            userInput: '',
+            score: 0,
         lives: 3,
         isWrong: false,
         isCorrect: false,
@@ -339,21 +343,24 @@ export const useGameStore = create<GameState>((set, get) => ({
         promptText: '',
         incorrectWords: [],
         streakCount: 0,
+        bestStreak: 0,
         totalChallengeScore: 0,
         lastScoreCalculation: null,
         // Reset DDA state
         currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
         performanceScore: 0,
         // Note: bestStreak is preserved across game resets
-    }),
+        });
+    },
 
-    initializeGame: (words: Word[]) => set({
-        words,
-        status: 'countdown',
-        countdown: 3,
-        currentWordIndex: 0,
-        userInput: '',
-        score: 0,
+    initializeGame: (words: Word[]) => {
+        return set({
+            words,
+            status: 'countdown',
+            countdown: 3,
+            currentWordIndex: 0,
+            userInput: '',
+            score: 0,
         lives: 3,
         isWrong: false,
         isCorrect: false,
@@ -367,13 +374,14 @@ export const useGameStore = create<GameState>((set, get) => ({
         promptText: '',
         incorrectWords: [],
         streakCount: 0,
+        bestStreak: 0, // Reset best streak for new game
         totalChallengeScore: 0,
         lastScoreCalculation: null,
         // Reset DDA state
         currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
         performanceScore: 0,
-    // Note: bestStreak is preserved across game initializations
-    }),
+        });
+    },
 
     // Mode-specific statistics functions
     updateModeStats: (mode: 'echo' | 'memory' | 'typing', stats: Partial<ModeStats>) => set((state) => ({

@@ -6,7 +6,6 @@ import { getUserScores, type LeaderboardEntry, type GameScore } from '@/lib/data
 
 interface LeaderboardProps {
   gameMode: 'echo' | 'memory' | 'typing';
-  difficulty: 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'c2' | 'dda';
   gameStyle: 'practice' | 'challenge';
   limit?: number;
 }
@@ -15,13 +14,12 @@ interface LeaderboardResponse {
   leaderboard: LeaderboardEntry[];
   filters: {
     gameMode: string;
-    difficulty: string;
     gameStyle: string;
     limit: number;
   };
 }
 
-export default function Leaderboard({ gameMode, difficulty, gameStyle, limit = 10 }: LeaderboardProps) {
+export default function Leaderboard({ gameMode, gameStyle, limit = 10 }: LeaderboardProps) {
   const { data: session } = useSession();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [userScore, setUserScore] = useState<GameScore | null>(null);

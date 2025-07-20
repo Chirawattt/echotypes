@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaChevronLeft, FaChevronRight, FaVolumeUp, FaBook, FaInfoCircle } from 'react-icons/fa';
 import { IncorrectWord } from '@/lib/stores/gameStore';
-import { Word } from '@/lib/words/types';
+import { Word } from '@/lib/types';
 
 interface IncorrectWordsModalProps {
     isOpen: boolean;

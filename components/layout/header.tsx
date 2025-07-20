@@ -34,6 +34,12 @@ export default function Header() {
     if (pathname === '/') {
         return null;
     }
+    
+    // Do not render back button on the home page and on the sign-in page
+    if (pathname === '/auth/signin') {
+        return null;
+    }
+
 
     const handleBackClick = () => {
         // Clean up all audio, timers, speech synthesis, and state

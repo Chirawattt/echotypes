@@ -1,4 +1,4 @@
-// Shared types for all word modules
+// Shared types for word data
 export interface Word {
     word: string;
     type?: string;

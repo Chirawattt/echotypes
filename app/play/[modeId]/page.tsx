@@ -82,7 +82,8 @@ export default function DifficultySelectedPage() {
     }, [modeId]);
 
     const handleSelectDifficulty = (difficultyId: string) => {
-        router.push(`/play/${modeId}/${difficultyId}/pre-game`);
+        // Route to DDA page since regular difficulty routes no longer exist
+        router.push(`/play/${modeId}/dda`);
     };
 
 

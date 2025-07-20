@@ -2,7 +2,6 @@ import { supabase } from './supabase';
 
 export interface GameScoreData {
   gameMode: 'echo' | 'memory' | 'typing';
-  difficulty: 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'c2' | 'dda';
   gameStyle: 'practice' | 'challenge';
   score: number;
   highestStreak: number;
@@ -17,7 +16,6 @@ export interface GameScore {
   id: number;
   user_id: string;
   game_mode: string;
-  difficulty: string;
   game_style: string;
   score: number;
   highest_streak: number;
@@ -33,7 +31,6 @@ export interface GameScore {
 export interface LeaderboardEntry {
   player_name: string;
   game_mode: string;
-  difficulty: string;
   game_style: string;
   score: number;
   highest_streak: number;
@@ -87,13 +84,11 @@ export async function submitGameScore(scoreData: GameScoreData): Promise<{
  */
 export async function getUserScores(filters?: {
   gameMode?: string;
-  difficulty?: string;
   gameStyle?: string;
 }): Promise<GameScore[]> {
   try {
     const params = new URLSearchParams();
     if (filters?.gameMode) params.append('gameMode', filters.gameMode);
-    if (filters?.difficulty) params.append('difficulty', filters.difficulty);
     if (filters?.gameStyle) params.append('gameStyle', filters.gameStyle);
 
     const response = await fetch(`/api/scores?${params.toString()}`);
@@ -111,11 +106,10 @@ export async function getUserScores(filters?: {
 }
 
 /**
- * Get leaderboard data for a specific game mode and difficulty
+ * Get leaderboard data for a specific game mode
  */
 export async function getLeaderboard(
   gameMode: string,
-  difficulty: string,
   gameStyle: string,
   limit: number = 10
 ): Promise<LeaderboardEntry[]> {
@@ -124,7 +118,6 @@ export async function getLeaderboard(
       .from('public_leaderboard')
       .select('*')
       .eq('game_mode', gameMode)
-      .eq('difficulty', difficulty)
       .eq('game_style', gameStyle)
       .limit(limit);
 
@@ -142,11 +135,10 @@ export async function getLeaderboard(
  */
 export async function getPersonalBest(
   gameMode: string,
-  difficulty: string,
   gameStyle: string
 ): Promise<GameScore | null> {
   try {
-    const scores = await getUserScores({ gameMode, difficulty, gameStyle });
+    const scores = await getUserScores({ gameMode, gameStyle });
     return scores[0] || null; // Already sorted by score DESC
   } catch (error) {
     console.error('Error fetching personal best:', error);

@@ -5,37 +5,48 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/lib/stores/gameStore";
 import { Button } from "@/components/ui/button";
-import { Word } from "@/lib/words/types";
+import { Word } from "@/lib/types";
 import IncorrectWordsModal from "./IncorrectWordsModal";
 
-export default function GameOver({ modeId, words, difficultyId, handleRestartGame, gameStyle, totalChallengeScore }: {
+export default function GameOver({ modeId, words, handleRestartGame, gameStyle, totalChallengeScore, sessionBestStreak, bestWpmAllStyles, bestStreakAllStyles, timeSpent }: {
     modeId: string;
     words: Word[];
     difficultyId: string;
     handleRestartGame: () => void;
     gameStyle?: 'practice' | 'challenge';
     totalChallengeScore?: number;
+    sessionBestStreak?: number;
+    databaseBestStreak?: number;
+    bestWpmAllStyles?: number;
+    bestStreakAllStyles?: number;
+    timeSpent?: { minutes: number; seconds: number };
 }) {
 
     const router = useRouter();
-    const { timeSpent, wpm, score, highScore, incorrectWords, getModeStats } = useGameStore();
+    const { wpm, score, highScore, incorrectWords, getModeStats } = useGameStore();
     const [showIncorrectWordsModal, setShowIncorrectWordsModal] = useState(false);
     // Remove useAudio and sound playing from GameOver - moved to GameOverOverlay
 
-    // Get mode-specific statistics
+    // Get mode-specific statistics (still needed for personal best in some modes)
     const currentModeStats = getModeStats(modeId as 'echo' | 'memory' | 'typing');
-    const modeSpecificBestStreak = currentModeStats.bestStreak;
+    
+    // Use best streak across all styles for all modes
+    const databaseBestStreak = bestStreakAllStyles ?? 0;
+    const thisRoundBestStreak = sessionBestStreak ?? 0;
+    
+    // Display the higher value between session best streak and database best streak
+    const allTimeBestStreak = Math.max(thisRoundBestStreak, databaseBestStreak);
+    
+    // Use timeSpent prop or fallback to 0:0 if not provided
+    const displayTimeSpent = timeSpent ?? { minutes: 0, seconds: 0 };
 
     // Use challenge score if in challenge mode, otherwise use regular score
     const displayScore = gameStyle === 'challenge' ? (totalChallengeScore || 0) : score;
     const scoreLabel = gameStyle === 'challenge' ? 'CHALLENGE SCORE' : 'SCORE';
     const scoreUnit = gameStyle === 'challenge' ? 'pts' : '';
 
-    // For high score, we need to handle challenge mode differently
-    const displayHighScore = gameStyle === 'challenge' ? 
-        (typeof localStorage !== 'undefined' ? 
-            parseInt(localStorage.getItem(`challengeHighScore_${modeId}_${difficultyId}`) || '0') : 0) : 
-        highScore;
+    // Use database-fetched high score for both practice and challenge modes
+    const displayHighScore = highScore;
 
     return (
         <motion.main 
@@ -85,12 +96,12 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                             <FaClock className="text-4xl sm:text-5xl lg:text-6xl text-blue-400 mb-3" />
                             <div className="flex items-center gap-2 mb-2">
                                 <div className="text-center">
-                                    <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-400">{String(timeSpent.minutes).padStart(2, '0')}</div>
+                                    <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-400">{String(displayTimeSpent.minutes).padStart(2, '0')}</div>
                                     <div className="text-sm text-blue-300/70">min</div>
                                 </div>
                                 <div className="text-2xl sm:text-3xl lg:text-4xl text-blue-400 font-bold">:</div>
                                 <div className="text-center">
-                                    <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-400">{String(timeSpent.seconds).padStart(2, '0')}</div>
+                                    <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-400">{String(displayTimeSpent.seconds).padStart(2, '0')}</div>
                                     <div className="text-sm text-blue-300/70">sec</div>
                                 </div>
                             </div>
@@ -100,18 +111,15 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                 </div>
 
                 {/* Detailed Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
                     
-                    {/* Highest Streak - Show mode-specific streak */}
+                    {/* This Round Best Streak */}
                     <div className="flex flex-col items-center bg-gradient-to-b from-orange-500/20 to-orange-600/10 rounded-2xl p-4 sm:p-6 border border-orange-500/30">
                         <div className="text-3xl mb-2">🔥</div>
-                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-orange-400 font-bold">{modeSpecificBestStreak}</div>
-                        <span className="text-orange-300 text-sm sm:text-base tracking-wider text-center">HIGHEST STREAK</span>
+                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-orange-400 font-bold">{thisRoundBestStreak}</div>
+                        <span className="text-orange-300 text-sm sm:text-base tracking-wider text-center">THIS ROUND</span>
                         <div className="text-xs text-orange-200/70 mt-1 text-center">
-                            {modeId === 'echo' ? 'Best Echo streak' :
-                             modeId === 'memory' ? 'Best Memory streak' :
-                             modeId === 'typing' ? 'Best Typing streak' :
-                             'Max consecutive hits'} in {modeId} mode
+                            Best streak this game
                         </div>
                     </div>
 
@@ -154,7 +162,7 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                         <FaTrophy className="text-3xl sm:text-4xl text-amber-400 mb-2" />
                         <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-amber-400 font-bold">
                             {gameStyle === 'challenge' ? displayHighScore : 
-                             (modeId === 'typing' ? (currentModeStats.bestWPM || 0) : currentModeStats.highScore)}
+                             (modeId === 'typing' ? (bestWpmAllStyles || 0) : currentModeStats.highScore)}
                             {gameStyle === 'challenge' && <span className="text-xl text-amber-300 ml-1">pts</span>}
                             {modeId === 'typing' && gameStyle !== 'challenge' && <span className="text-xl text-amber-300 ml-1">WPM</span>}
                         </div>
@@ -163,6 +171,19 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                             {gameStyle === 'challenge' ? 'Best challenge score' : 
                              modeId === 'typing' ? `Best WPM in ${modeId} mode` : 
                              `Best score in ${modeId} mode`}
+                        </div>
+                    </div>
+
+                    {/* All-Time Best Streak for this mode+style */}
+                    <div className="flex flex-col items-center bg-gradient-to-b from-purple-500/20 to-purple-600/10 rounded-2xl p-4 sm:p-6 border border-purple-500/30">
+                        <div className="text-3xl mb-2">👑</div>
+                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-purple-400 font-bold">{allTimeBestStreak}</div>
+                        <span className="text-purple-300 text-sm sm:text-base tracking-wider text-center">BEST STREAK</span>
+                        <div className="text-xs text-purple-200/70 mt-1 text-center">
+                            {allTimeBestStreak === thisRoundBestStreak && thisRoundBestStreak > databaseBestStreak ? 
+                                `New record in ${modeId} mode! 🎉` : 
+                                `Best in ${modeId} mode`
+                            }
                         </div>
                     </div>
                 </div>
@@ -180,7 +201,7 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                                     `You completed ${score} correct answers • `
                                 }
                                 Accuracy: {score > 0 ? Math.round((score / (score + incorrectWords.length)) * 100) : 0}% • 
-                                {modeSpecificBestStreak > 0 && ` Max streak: ${modeSpecificBestStreak} consecutive hits`}
+                                {thisRoundBestStreak > 0 && ` Max streak: ${thisRoundBestStreak} consecutive hits`}
                             </div>
                         </div>
                     </div>
@@ -189,18 +210,7 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                 {/* Additional Stats for Non-Typing Modes */}
                 {modeId !== 'typing' && (
                     <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {/* Total Words/Questions */}
-                        <div className="flex items-center justify-center bg-gradient-to-r from-neutral-500/10 to-neutral-600/10 rounded-xl p-4 border border-neutral-500/20">
-                            <div className="text-center">
-                                <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
-                                    {words.length}
-                                </div>
-                                <div className="text-sm text-neutral-400">
-                                    {modeId === 'echo' ? 'Total Echo Challenges' : 
-                                     modeId === 'memory' ? 'Total Memory Challenges' : 'Total Questions'}
-                                </div>
-                            </div>
-                        </div>
+
 
                         {/* WPM for Non-Typing Modes (if applicable) */}
                         {wpm > 0 && (

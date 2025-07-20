@@ -2,10 +2,44 @@
 
 import { FaPlay, FaKeyboard, FaBrain, FaVolumeUp, FaLightbulb } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [userRegistered, setUserRegistered] = useState<boolean | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (status === 'loading' || isRedirecting) return;
+    
+    if (!session) {
+      setIsRedirecting(true);
+      router.push('/auth/signin');
+      return;
+    }
+
+    checkUserRegistration();
+  }, [session, status, isRedirecting]);
+
+  const checkUserRegistration = async () => {
+    try {
+      const response = await fetch('/api/auth/register');
+      const result = await response.json();
+      setUserRegistered(result.registered);
+      
+      if (!result.registered) {
+        setIsRedirecting(true);
+        router.push('/auth/signup');
+      }
+    } catch (error) {
+      console.error('Error checking user registration:', error);
+      setIsRedirecting(true);
+      router.push('/auth/signup');
+    }
+  };
 
   const handleStartGame = () => {
     // Navigate to the game page or another page
@@ -19,6 +53,20 @@ export default function Home() {
     { icon: FaVolumeUp, label: "Echo", color: "text-blue-400" },
     { icon: FaLightbulb, label: "Meaning", color: "text-amber-400" }
   ];
+
+  // Show loading while checking authentication and registration
+  if (status === 'loading' || userRegistered === null) {
+    return (
+      <div className="min-h-screen flex bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+            Loading...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white overflow-hidden relative">

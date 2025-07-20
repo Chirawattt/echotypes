@@ -1,20 +1,55 @@
-// DDA Words Helper Functions
+// DDA Words Helper Functions - Updated for database integration
 // ฟังก์ชันช่วยสำหรับการดึงคำศัพท์ผ่านระบบ DDA
 
-import { Word } from './words/types';
-import { getWords, getGameSessionWords } from './words-new';
+import { Word } from './types';
+import { getGameSessionWords } from './words-new';
 import { mapLevelToFileName } from './difficultyHelpers';
 
-// ฟังก์ชันดึงคำศัพท์ตามระดับ DDA
-export const getDdaWords = (difficultyLevel: number): Word[] => {
+// ฟังก์ชันดึงคำศัพท์ตามระดับ DDA (async version for database)
+export const getDdaWords = async (difficultyLevel: number): Promise<Word[]> => {
     const fileName = mapLevelToFileName(difficultyLevel);
-    return getWords(fileName);
+    return await getGameSessionWords(fileName, 50); // Fetch more words for DDA
 };
 
-// ฟังก์ชันดึงคำศัพท์แบบสุ่มตามระดับ DDA
+// Simple word cache for DDA system to enable synchronous access
+const ddaWordCache: { [level: string]: Word[] } = {};
+
+// Pre-populate DDA word cache from database
+export const preloadDdaWords = async (): Promise<void> => {
+    
+    // Preload all CEFR levels for DDA use
+    const levels = ['a1', 'a2', 'b1', 'b2', 'c1', 'c2'];
+    
+    for (const level of levels) {
+        try {
+            const words = await getGameSessionWords(level, 50); // Get more words for variety
+            ddaWordCache[level] = words;
+        } catch (error) {
+            console.error(`❌ Failed to cache words for level ${level}:`, error);
+            ddaWordCache[level] = [];
+        }
+    }
+    
+};
+
+// ฟังก์ชันดึงคำศัพท์แบบสุ่มตามระดับ DDA - Uses cached words for synchronous access
 export const getDdaGameSessionWords = (difficultyLevel: number): Word[] => {
     const fileName = mapLevelToFileName(difficultyLevel);
-    return getGameSessionWords(fileName);
+    
+    
+    // Get words from cache
+    const cachedWords = ddaWordCache[fileName] || [];
+    
+    if (cachedWords.length === 0) {
+        console.warn(`⚠️ No cached words available for level ${fileName}. Cache may not be loaded.`);
+        return [];
+    }
+    
+    // Shuffle and return 20 words for the session
+    const shuffled = [...cachedWords].sort(() => Math.random() - 0.5);
+    const sessionWords = shuffled.slice(0, 20);
+    
+    return sessionWords;
 };
 
 // ฟังก์ชันดึงคำศัพท์แบบ "Smoothing" - ผสมระดับความยาก

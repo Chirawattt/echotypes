@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -11,12 +10,7 @@ export default function SignIn() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
-  useEffect(() => {
-    // Auto-redirect to Google sign in if no error
-    if (!error) {
-      signIn('google');
-    }
-  }, [error]);
+  // Removed auto-redirect - user must click the button manually
 
   const handleSignIn = () => {
     signIn('google');

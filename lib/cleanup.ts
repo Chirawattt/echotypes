@@ -13,6 +13,7 @@
  */
 
 import React from 'react';
+import { useGameStore } from './stores/gameStore';
 
 // Store for tracking audio refs that need to be cleaned up
 const audioRefs: Set<React.RefObject<HTMLAudioElement | null>> = new Set();
@@ -68,6 +69,10 @@ export const clearTrackedInterval = (id: number): void => {
 };
 
 export const globalCleanup = () => {
+    
+    // NOTE: Removed game state reset to prevent double countdown issues
+    // Game state should only be reset when explicitly restarting a game
+    
     // Cancel any ongoing speech synthesis
     if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel();
@@ -75,7 +80,7 @@ export const globalCleanup = () => {
 
     // Stop all audio elements including countdown audio
     const audioElements = document.querySelectorAll('audio');
-    audioElements.forEach(audio => {
+    audioElements.forEach((audio) => {
         if (!audio.paused) {
             audio.pause();
             audio.currentTime = 0;
@@ -128,6 +133,22 @@ export const globalCleanup = () => {
     // Clear any animation frames
     const animationId = window.requestAnimationFrame(() => {});
     window.cancelAnimationFrame(animationId);
+    
+};
+
+// Separate function for game resets (when user explicitly restarts)
+export const gameCleanupAndReset = () => {
+    
+    // First do the regular cleanup
+    globalCleanup();
+    
+    // Then reset game state for restart
+    try {
+        const gameStore = useGameStore.getState();
+        gameStore.resetGame();
+    } catch (error) {
+        console.warn('⚠️ Could not reset game state for restart:', error);
+    }
 };
 
 export const stopAllAudio = () => {

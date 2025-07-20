@@ -150,13 +150,30 @@ export default function DDAPreGamePage() {
     const [showHowToPlay, setShowHowToPlay] = useState(false);
     const [selectedGameStyle, setSelectedGameStyle] = useState<'practice' | 'challenge'>('challenge');
     const [currentStep, setCurrentStep] = useState(0);
+    
+    // Time selection for typing practice mode
+    const [showTimeSelectionModal, setShowTimeSelectionModal] = useState(false);
 
     const modeInfo = getModeInfo(modeId);
     const howToPlaySteps = getHowToPlaySteps(modeId);
 
 
     const handleStartGame = () => {
-        router.push(`/play/${modeId}/dda/play?style=${selectedGameStyle}`);
+        // Show time selection modal for typing practice mode
+        if (modeId === 'typing' && selectedGameStyle === 'practice') {
+            setShowTimeSelectionModal(true);
+        } else {
+            // For other modes or challenge mode, go directly to game
+            router.push(`/play/${modeId}/dda/play?style=${selectedGameStyle}`);
+        }
+    };
+
+    const handleTimeSelected = (time: number | null) => {
+        setShowTimeSelectionModal(false);
+        
+        // Navigate with selected time as URL parameter
+        const timeParam = time ? `&time=${time}` : '';
+        router.push(`/play/${modeId}/dda/play?style=${selectedGameStyle}${timeParam}`);
     };
 
     const handleCloseHowToPlay = () => {
@@ -513,6 +530,85 @@ export default function DDAPreGamePage() {
                                     {currentStep === howToPlaySteps.length - 1 ? 'เสร็จสิ้น' : 'ถัดไป'}
                                 </button>
                             </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Time Selection Modal for Typing Practice Mode */}
+            <AnimatePresence>
+                {showTimeSelectionModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+                        onClick={() => setShowTimeSelectionModal(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                            className="bg-gradient-to-br from-[#1A1A1A] to-[#2A2A2A] rounded-3xl p-8 border border-white/20 max-w-md w-full shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h2 
+                                className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent"
+                                style={{ fontFamily: "'Caveat Brush', cursive" }}
+                            >
+                                Select Practice Time
+                            </h2>
+                            <p 
+                                className="text-lg text-center text-neutral-300 mb-8"
+                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                            >
+                                เลือกระยะเวลาที่คุณต้องการฝึกพิมพ์
+                            </p>
+                            
+                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                {[30, 60, 120, 300].map((seconds) => (
+                                    <motion.button
+                                        key={seconds}
+                                        onClick={() => handleTimeSelected(seconds)}
+                                        className="relative group cursor-pointer bg-gradient-to-br from-white/8 to-white/4 hover:from-green-500/20 hover:to-blue-500/20 border border-white/15 hover:border-green-400/30 rounded-2xl p-6 transition-all duration-300 flex flex-col items-center shadow-lg"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <span 
+                                            className="text-3xl font-bold text-white mb-1"
+                                            style={{ fontFamily: "'Caveat Brush', cursive" }}
+                                        >
+                                            {seconds >= 60 ? `${seconds / 60}` : seconds}
+                                        </span>
+                                        <span 
+                                            className="text-sm text-neutral-300 group-hover:text-green-300 transition-colors duration-300"
+                                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                        >
+                                            {seconds >= 60 ? (seconds === 60 ? 'นาที' : 'นาที') : 'วินาที'}
+                                        </span>
+                                    </motion.button>
+                                ))}
+                            </div>
+                            
+                            <motion.button
+                                onClick={() => handleTimeSelected(null)}
+                                className="w-full relative group cursor-pointer bg-gradient-to-br from-amber-500/15 to-orange-500/10 hover:from-amber-500/25 hover:to-orange-500/20 border border-amber-500/25 hover:border-amber-400/40 rounded-2xl p-6 transition-all duration-300 shadow-lg"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                <span 
+                                    className="text-xl font-bold text-amber-300 group-hover:text-amber-200 transition-colors duration-300"
+                                    style={{ fontFamily: "'Caveat Brush', cursive" }}
+                                >
+                                    🎯 Unlimited Time
+                                </span>
+                                <p 
+                                    className="text-sm text-amber-200/70 group-hover:text-amber-200/90 mt-1 transition-colors duration-300"
+                                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                >
+                                    ฝึกได้ไม่จำกัดเวลา
+                                </p>
+                            </motion.button>
                         </motion.div>
                     </motion.div>
                 )}

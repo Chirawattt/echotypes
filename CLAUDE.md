@@ -83,10 +83,12 @@ The game logic is modularized into specialized hooks in the `hooks/` directory:
 
 ### Word Management
 
-Words are organized by CEFR levels in `lib/words/`:
-- Each level (a1.json, a2.json, etc.) contains vocabulary appropriate for that level
+Words are now stored in Supabase database and fetched dynamically:
+- Words table contains vocabulary organized by CEFR levels (A1-C2)
 - Words include English text, type (noun/verb/etc.), and meanings
-- DDA system (`lib/ddaWords.ts`) dynamically selects words based on player performance
+- API endpoint `/api/words` handles word fetching with level filtering
+- DDA system (`lib/ddaWords.ts`) uses caching for performance
+- `lib/wordsService.ts` provides service functions for database operations
 
 ### Scoring System
 
@@ -141,3 +143,88 @@ Currently no automated tests are configured. Testing should focus on:
 - Score calculation correctness
 - DDA system behavior
 - Cross-browser audio/speech compatibility
+
+## Recent Development Session (2025-01-20)
+
+### ✅ Completed Tasks
+
+1. **Database Integration Complete**
+   - Migrated all word data from local JSON files to Supabase database
+   - Created `/api/words` endpoint for dynamic word fetching
+   - Implemented word caching system for DDA compatibility
+   - Removed `/lib/words/` directory (reduced bundle size significantly)
+
+2. **Score System Fixes**
+   - Fixed personal best scores displaying 0 instead of database values
+   - Resolved cross-mode data contamination between game modes
+   - Fixed cumulative data issues in database (words_correct, words_incorrect, time_spent)
+   - Implemented proper isolation between practice and challenge modes
+   - Enhanced best streak display to show highest across all styles per mode
+
+3. **Time Selection Feature**
+   - Successfully implemented time selection for typing practice mode (30s, 60s, 2m, 5m, unlimited)
+   - Fixed bug where custom time selections (30s, 2m) were defaulting to 60s
+   - Root cause was `initializeGame()` resetting `timeLeft` after custom time was set
+   - Solution: Set custom time AFTER `initializeGame()` completes
+
+4. **Game Flow Improvements**
+   - Fixed double countdown issues by removing game state reset from globalCleanup
+   - Added proper loading states before countdown to prevent timing issues
+   - Fixed navigation sound issues when clicking back/home buttons
+   - Implemented loading screen component for word loading phase
+
+5. **Code Quality**
+   - Resolved all critical ESLint errors across the codebase
+   - Removed all debug logs related to time selection feature
+   - Moved Word type interface to `/lib/types.ts` for better organization
+   - Enhanced error handling and race condition prevention
+
+### 🔧 Current System Status
+
+- ✅ All game modes (Echo, Memory, Typing) working correctly
+- ✅ Practice and Challenge modes fully functional
+- ✅ DDA (Dynamic Difficulty Adjustment) system operational
+- ✅ Database integration complete and stable
+- ✅ Time selection for typing practice mode working
+- ✅ Score tracking and personal bests accurate
+- ✅ Mobile virtual keyboard support
+- ✅ No critical bugs or ESLint errors
+
+### 📋 Next Steps for Tomorrow
+
+1. **User Experience Enhancements**
+   - Consider adding sound effects for time selection
+   - Implement haptic feedback for mobile devices
+   - Add visual indicators for selected time in typing practice
+
+2. **Performance Optimization**
+   - Monitor database query performance under load
+   - Consider implementing service worker for offline word caching
+   - Optimize bundle size further if needed
+
+3. **Feature Additions**
+   - Add leaderboard functionality
+   - Implement achievement system
+   - Consider adding word definitions in game
+   - Add export functionality for user progress
+
+4. **Testing & Quality Assurance**
+   - Test time selection on different devices/browsers
+   - Verify database performance with multiple concurrent users
+   - Cross-browser testing for audio/speech features
+   - Mobile device testing for virtual keyboard
+
+5. **Documentation**
+   - Update API documentation for new endpoints
+   - Create user manual for time selection feature
+   - Document database schema changes
+
+### 🐛 Known Issues
+
+None currently - all major issues have been resolved.
+
+### 🎯 Priority Focus Areas
+
+1. **High**: Monitor system stability with database integration
+2. **Medium**: User experience improvements and additional features
+3. **Low**: Performance optimizations and advanced features

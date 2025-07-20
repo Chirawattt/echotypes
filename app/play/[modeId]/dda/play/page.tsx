@@ -7,6 +7,7 @@ import { useGameLogic } from '@/hooks/useGameLogic';
 import { useDeviceDetection } from '@/hooks/useDeviceDetection';
 import { globalCleanup } from '@/lib/cleanup';
 import { calculateViewTime } from '@/lib/memoryModeConfig';
+import LoadingWords from '@/components/game/LoadingWords';
 import CountdownToGame from '@/components/game/CountdownToGame';
 import GameOver from '@/components/game/GameOver';
 import GameOverOverlay from '@/components/game/GameOverOverlay';
@@ -32,9 +33,17 @@ export default function DdaGamePlayPage() {
 
     // Get game style from URL search params
     const gameStyle = (searchParams.get('style') as 'practice' | 'challenge') || 'practice';
+    
+    // Get selected time from URL params for typing practice mode
+    const selectedTime = searchParams.get('time') ? parseInt(searchParams.get('time')!) : null;
 
     // Use custom hook for all game logic with DDA difficulty
-    const gameLogic = useGameLogic({ modeId, difficultyId: 'dda', gameStyle });
+    const gameLogic = useGameLogic({ 
+        modeId, 
+        difficultyId: 'dda', 
+        gameStyle,
+        selectedTime: selectedTime 
+    });
     
     // Extract specific values for overdrive system
     const { heatLevel, correctWordsCount, isOverdriveTransitioning } = gameLogic;
@@ -109,7 +118,12 @@ export default function DdaGamePlayPage() {
         };
     }, []);
 
+
     // Early returns for special states
+    if (gameLogic.status === 'loading') {
+        return <LoadingWords />;
+    }
+
     if (gameLogic.status === 'countdown') {
         return <CountdownToGame />;
     }
@@ -217,6 +231,11 @@ export default function DdaGamePlayPage() {
                         handleRestartGame={gameLogic.handleRestartGame}
                         gameStyle={gameStyle}
                         totalChallengeScore={gameLogic.totalChallengeScore}
+                        sessionBestStreak={gameLogic.bestStreak}
+                        databaseBestStreak={gameLogic.databaseBestStreak}
+                        bestWpmAllStyles={gameLogic.bestWpmAllStyles}
+                        bestStreakAllStyles={gameLogic.bestStreakAllStyles}
+                        timeSpent={gameLogic.timeSpent}
                     />
                 )}
             </AnimatePresence>
@@ -337,6 +356,7 @@ export default function DdaGamePlayPage() {
                     <VirtualKeyboard onKeyPress={handleVirtualKeyPress} />
                 )}
             </section>
+
         </main>
     );
 }
