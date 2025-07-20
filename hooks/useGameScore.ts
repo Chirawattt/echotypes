@@ -29,7 +29,6 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         isCorrect: boolean,
         echoTimeLeft: number,
         memoryTimeLeft: number,
-        meaningMatchTimeLeft: number,
         currentWord?: string
     ) => {
         if (gameStyle !== 'challenge' || !isCorrect) {
@@ -61,9 +60,6 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         } else if (modeId === 'memory') {
             const timeUsed = 5.0 - memoryTimeLeft;
             scoreCalculation = calculateTotalScore(timeUsed, difficultyId, streakCount, true);
-        } else if (modeId === 'meaning-match') {
-            const timeUsed = 5.0 - meaningMatchTimeLeft;
-            scoreCalculation = calculateTotalScore(timeUsed, difficultyId, streakCount, true);
         } else {
             const timeUsed = 5.0;
             scoreCalculation = calculateTotalScore(timeUsed, difficultyId, streakCount, true);
@@ -94,9 +90,6 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         if (modeId === 'echo') {
             const scoreCalculation = calculateEchoModeScore(0, difficultyId, streakCount, false, usedSpeakAgain);
             console.log(`Time up! No score added. Calculation: ${scoreCalculation.finalScore}`);
-        } else if (modeId === 'meaning-match') {
-            const scoreCalculation = calculateTotalScore(5.0, difficultyId, streakCount, false);
-            console.log(`Meaning Match time up! No score added. Calculation: ${scoreCalculation.finalScore}`);
         }
     }, [gameStyle, modeId, difficultyId, streakCount, usedSpeakAgain]);
 

@@ -20,7 +20,6 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
     const [isEchoCountingDown, setIsEchoCountingDown] = useState(false);
     const [echoTimeLeft, setEchoTimeLeft] = useState(5.0);
     const [memoryTimeLeft, setMemoryTimeLeft] = useState(5.0);
-    const [meaningMatchTimeLeft, setMeaningMatchTimeLeft] = useState(5.0);
 
     // Timer refs
     const echoStopTimerRef = useRef<(() => void) | null>(null);
@@ -41,10 +40,6 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
 
     const handleMemoryTimeLeftChange = useCallback((timeLeft: number) => {
         setMemoryTimeLeft(timeLeft);
-    }, []);
-
-    const handleMeaningMatchTimeLeftChange = useCallback((timeLeft: number) => {
-        setMeaningMatchTimeLeft(timeLeft);
     }, []);
 
     // Stop Echo timer
@@ -105,7 +100,6 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
         isEchoCountingDown,
         echoTimeLeft,
         memoryTimeLeft,
-        meaningMatchTimeLeft,
         
         // Refs
         echoStopTimerRef,
@@ -114,12 +108,10 @@ export function useGameTimers({ modeId, gameStyle }: UseGameTimersProps) {
         setIsEchoCountingDown,
         setEchoTimeLeft,
         setMemoryTimeLeft,
-        setMeaningMatchTimeLeft,
         handleEchoTimerReady,
         handleMemoryTimerReady,
         handleEchoTimeLeftChange,
         handleMemoryTimeLeftChange,
-        handleMeaningMatchTimeLeftChange,
         stopEchoTimer,
         stopMemoryTimer
     };

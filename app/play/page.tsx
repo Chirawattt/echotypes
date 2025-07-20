@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain } from "react-icons/fa";
 
 
 // Define a type for our game modes
@@ -53,17 +53,6 @@ const gameModes: GameMode[] = [
         bgGradient: "from-purple-500/10 via-violet-500/10 to-purple-500/10",
         iconGradient: "from-purple-400 to-violet-400",
         glowColor: "purple-500/20",
-    },
-    {
-        id: "meaning-match",
-        name: "Meaning Match",
-        icon: FaLightbulb,
-        descriptionThai: "อ่านความหมายแล้วตอบคำศัพท์",
-        descriptionEng: "Read the defunition and type the correct vocabulary word.",
-        fontFamily: "'Caveat Brush', cursive",
-        bgGradient: "from-yellow-500/10 via-amber-500/10 to-yellow-500/10",
-        iconGradient: "from-yellow-400 to-amber-400",
-        glowColor: "yellow-500/20",
     }
 ]
 
@@ -82,14 +71,8 @@ export default function ModeSelectPage() {
     }
 
     const handleStartSelectedMode = () => {
-        // For the first 3 modes (echo, typing, memory), go directly to pre-game
-        // For meaning-match, go to difficulty selection
-        if (selectedMode.id === 'meaning-match') {
-            router.push(`/play/${selectedMode.id}`);
-        } else {
-            // For DDA-enabled modes, go directly to pre-game with default difficulty
-            router.push(`/play/${selectedMode.id}/dda`);
-        }
+        // For all modes, go directly to pre-game with DDA difficulty
+        router.push(`/play/${selectedMode.id}/dda`);
     }
 
     const isFirstMode = currentModeIndex === 0;

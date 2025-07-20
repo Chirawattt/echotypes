@@ -23,6 +23,17 @@ export interface IncorrectWord {
     incorrect: string;
 }
 
+// Mode-specific statistics
+export interface ModeStats {
+    highScore: number;
+    bestStreak: number;
+    totalGamesPlayed: number;
+    totalWordsCorrect: number;
+    totalWordsMissed: number;
+    bestWPM?: number; // Only for typing mode
+    bestTime?: { minutes: number; seconds: number }; // Only for non-typing modes
+}
+
 interface GameState {
     // Game status and basic state
     status: GameStatus;
@@ -53,9 +64,16 @@ interface GameState {
     // Game data
     incorrectWords: IncorrectWord[];
 
-    // Streak system
+    // Streak system (current session)
     streakCount: number;
     bestStreak: number;
+
+    // Mode-specific statistics (persistent)
+    modeStats: {
+        echo: ModeStats;
+        memory: ModeStats;
+        typing: ModeStats;
+    };
 
     // Challenge Mode Scoring
     totalChallengeScore: number;
@@ -91,6 +109,10 @@ interface GameState {
     setBestStreak: (count: number) => void;
     incrementStreak: () => void;
     resetStreak: () => void;
+
+    // Mode-specific statistics actions
+    updateModeStats: (mode: 'echo' | 'memory' | 'typing', stats: Partial<ModeStats>) => void;
+    getModeStats: (mode: 'echo' | 'memory' | 'typing') => ModeStats;
 
     // Challenge Mode Scoring actions
     setTotalChallengeScore: (score: number | ((prev: number) => number)) => void;
@@ -137,6 +159,35 @@ export const useGameStore = create<GameState>((set, get) => ({
     incorrectWords: [],
     streakCount: 0,
     bestStreak: 0,
+    
+    // Mode-specific statistics with initial values
+    modeStats: {
+        echo: {
+            highScore: 0,
+            bestStreak: 0,
+            totalGamesPlayed: 0,
+            totalWordsCorrect: 0,
+            totalWordsMissed: 0,
+            bestTime: { minutes: 0, seconds: 0 }
+        },
+        memory: {
+            highScore: 0,
+            bestStreak: 0,
+            totalGamesPlayed: 0,
+            totalWordsCorrect: 0,
+            totalWordsMissed: 0,
+            bestTime: { minutes: 0, seconds: 0 }
+        },
+        typing: {
+            highScore: 0,
+            bestStreak: 0,
+            totalGamesPlayed: 0,
+            totalWordsCorrect: 0,
+            totalWordsMissed: 0,
+            bestWPM: 0
+        }
+    },
+    
     totalChallengeScore: 0,
     lastScoreCalculation: null,
     // DDA Initial state
@@ -321,6 +372,22 @@ export const useGameStore = create<GameState>((set, get) => ({
         // Reset DDA state
         currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
         performanceScore: 0,
-        // Note: bestStreak is preserved across game initializations
+    // Note: bestStreak is preserved across game initializations
     }),
+
+    // Mode-specific statistics functions
+    updateModeStats: (mode: 'echo' | 'memory' | 'typing', stats: Partial<ModeStats>) => set((state) => ({
+        modeStats: {
+            ...state.modeStats,
+            [mode]: {
+                ...state.modeStats[mode],
+                ...stats
+            }
+        }
+    })),
+
+    getModeStats: (mode: 'echo' | 'memory' | 'typing') => {
+        const state = get();
+        return state.modeStats[mode];
+    },
 }));

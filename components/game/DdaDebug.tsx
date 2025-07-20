@@ -19,11 +19,10 @@ export default function DdaDebug({
     modeId, 
     isVisible = true 
 }: DdaDebugProps) {
-    // Only show in development mode and for challenge mode (except meaning-match)
+    // Only show in development mode and for challenge mode
     const shouldShow = process.env.NODE_ENV === 'development' && 
                       isVisible && 
-                      gameStyle === 'challenge' && 
-                      modeId !== 'meaning-match';
+                      gameStyle === 'challenge';
 
     if (!shouldShow) return null;
 

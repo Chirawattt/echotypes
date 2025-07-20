@@ -1,6 +1,5 @@
 import EchoMode from '@/components/game/modes/EchoMode';
 import TypingMode from '@/components/game/modes/TypingMode';
-import MeaningMatchMode from '@/components/game/modes/MeaningMatchMode';
 import MemoryMode from '@/components/game/modes/MemoryMode';
 import { HeatLevel } from '@/hooks/useOverdriveSystem';
 
@@ -30,9 +29,6 @@ interface GameModeRendererProps {
     onMemoryTimeUp?: () => void;
     onMemoryTimeLeftChange?: (timeLeft: number) => void;
     onMemoryTimerReady?: (stopTimer: () => void) => void;
-    // Meaning match mode specific
-    onMeaningMatchTimeUp?: () => void;
-    onMeaningMatchTimeLeftChange?: (timeLeft: number) => void;
     // Nitro energy props for Typing Challenge
     energy?: number;
     maxEnergy?: number;
@@ -68,8 +64,6 @@ export default function GameModeRenderer({
     onMemoryTimeUp,
     onMemoryTimeLeftChange,
     onMemoryTimerReady,
-    onMeaningMatchTimeUp,
-    onMeaningMatchTimeLeftChange,
     energy,
     maxEnergy,
     isLowEnergy,
@@ -84,10 +78,6 @@ export default function GameModeRenderer({
     const currentWord = (!words[currentWordIndex]) 
         ? '' 
         : words[currentWordIndex]?.word;
-    
-    const currentWordMeaning = (!words[currentWordIndex]) 
-        ? '' 
-        : words[currentWordIndex]?.meaning || '';
 
     if (modeId === 'echo') {
         return (
@@ -122,18 +112,6 @@ export default function GameModeRenderer({
                 correctWordsCount={correctWordsCount}
                 totalChallengeScore={totalChallengeScore}
                 streakCount={streakCount}
-            />
-        );
-    }
-
-    if (modeId === 'meaning-match') {
-        return (
-            <MeaningMatchMode
-                currentWordMeaning={currentWordMeaning}
-                currentWordIndex={currentWordIndex}
-                gameStyle={gameStyle}
-                onTimeUp={onMeaningMatchTimeUp || onTimeUp}
-                onTimeLeftChange={onMeaningMatchTimeLeftChange || onTimeLeftChange}
             />
         );
     }

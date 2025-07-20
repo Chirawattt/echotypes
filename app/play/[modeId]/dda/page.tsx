@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaVolumeUp, FaKeyboard, FaBrain, FaLightbulb,  FaPlay, FaTimes, FaGamepad, FaTrophy, FaGraduationCap, FaFire } from "react-icons/fa";
+import { FaVolumeUp, FaKeyboard, FaBrain, FaPlay, FaTimes, FaGamepad, FaTrophy, FaGraduationCap, FaFire } from "react-icons/fa";
 import React from "react";
 
 // Interface สำหรับข้อมูลโหมด
@@ -57,16 +57,6 @@ const getModeInfo = (modeId: string): ModeInfo => {
                 color: 'text-purple-400',
                 gradientFrom: 'from-purple-400',
                 gradientTo: 'to-purple-600'
-            };
-        case 'meaning-match':
-            return {
-                id: 'meaning-match',
-                name: 'Meaning Match',
-                icon: FaLightbulb,
-                description: 'อ่านความหมายแล้วตอบคำศัพท์',
-                color: 'text-orange-400',
-                gradientFrom: 'from-orange-400',
-                gradientTo: 'to-orange-600'
             };
         default:
             return {
@@ -145,27 +135,6 @@ const getHowToPlaySteps = (modeId: string): HowToPlayStep[] => {
                     title: "พิมพ์ตามที่จำได้",
                     description: "พิมพ์คำศัพท์ที่จำได้ลงในช่อง ใช้เวลาคิดให้ดีก่อนพิมพ์",
                     icon: FaKeyboard,
-                }
-            ];
-        case 'meaning-match':
-            return [
-                {
-                    stepNumber: "1",
-                    title: "อ่านความหมายอย่างละเอียด",
-                    description: "อ่านความหมายที่แสดงบนหน้าจอให้เข้าใจ ลองคิดถึงคำที่เกี่ยวข้อง",
-                    icon: FaLightbulb,
-                },
-                {
-                    stepNumber: "2",
-                    title: "ใช้ความรู้ในการเดาคำ",
-                    description: "จากความหมายที่อ่าน ใช้ความรู้คำศัพท์ในการคิดหาคำภาษาอังกฤษที่ตรงกัน",
-                    icon: FaBrain,
-                },
-                {
-                    stepNumber: "3",
-                    title: "เรียนรู้จากคำตอบ",
-                    description: "ไม่ว่าจะตอบถูกหรือผิด ระบบจะแสดงคำตอบที่ถูกต้องเพื่อเรียนรู้",
-                    icon: FaTrophy,
                 }
             ];
         default:

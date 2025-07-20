@@ -176,7 +176,7 @@ export default function Home() {
           className="mt-4"
         >
           <p className="text-sm text-neutral-500" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-            ฝึกฝนคำศัพท์ 4 รูปแบบ • A1-C2 Level • Endless Mode
+            ฝึกฝนคำศัพท์ 4 รูปแบบ • A1-C2 Level
           </p>
         </motion.div>
       </motion.div>

@@ -13,14 +13,10 @@ import GameOverOverlay from '@/components/game/GameOverOverlay';
 import GameHeader from '@/components/game/GameHeader';
 import GameTimer from '@/components/game/GameTimer';
 import StreakGlowEffects from '@/components/game/StreakGlowEffects';
-// import ScoreBreakdownToast from '@/components/game/ScoreBreakdownToast';
 import GameModeRenderer from '@/components/game/GameModeRenderer';
 import GameInput from '@/components/game/GameInput';
 import VirtualKeyboard from '@/components/game/VirtualKeyboard';
-// import GameEffects from '@/components/game/GameEffects';
 import HeatLevelNotification from '@/components/game/HeatLevelNotification';
-// import AnimatedBackground from '@/components/game/AnimatedBackground';
-// import DdaDebug from '@/components/game/DdaDebug';
 
 export default function DdaGamePlayPage() {
     const params = useParams();
@@ -164,8 +160,6 @@ export default function DdaGamePlayPage() {
                                 onMemoryTimeUp={gameLogic.handleMemoryTimeUp}
                                 onMemoryTimeLeftChange={gameLogic.handleMemoryTimeLeftChange}
                                 onMemoryTimerReady={gameLogic.handleMemoryTimerReady}
-                                onMeaningMatchTimeUp={gameLogic.handleMeaningMatchTimeUp}
-                                onMeaningMatchTimeLeftChange={gameLogic.handleMeaningMatchTimeLeftChange}
                                 setSpeakAgainUsed={gameLogic.handleSpeakAgainUsed}
                                 energy={gameLogic.energy}
                                 maxEnergy={gameLogic.maxEnergy}
@@ -284,8 +278,6 @@ export default function DdaGamePlayPage() {
                     onMemoryTimeUp={gameLogic.handleMemoryTimeUp}
                     onMemoryTimeLeftChange={gameLogic.handleMemoryTimeLeftChange}
                     onMemoryTimerReady={gameLogic.handleMemoryTimerReady}
-                    onMeaningMatchTimeUp={gameLogic.handleMeaningMatchTimeUp}
-                    onMeaningMatchTimeLeftChange={gameLogic.handleMeaningMatchTimeLeftChange}
                     setSpeakAgainUsed={gameLogic.handleSpeakAgainUsed}
                     energy={gameLogic.energy}
                     maxEnergy={gameLogic.maxEnergy}

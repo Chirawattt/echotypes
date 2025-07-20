@@ -3,7 +3,7 @@
 import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { FaClock,  FaChevronDown, FaInfinity, FaGraduationCap } from "react-icons/fa";
+import { FaClock, FaChevronDown, FaGraduationCap } from "react-icons/fa";
 import { getDifficultyInfo } from "@/lib/words-new";
 
 // Define a type for difficulty levels
@@ -16,7 +16,7 @@ interface DifficultyLevel {
     time?: { minutes: number; seconds: number };
 }
 
-// Separate A1-C2 levels from endless
+// A1-C2 difficulty levels
 const standardDifficultyLevels: Omit<DifficultyLevel, 'highScore' | 'time'>[] = [
     {
         id: "a1",
@@ -62,7 +62,6 @@ export default function DifficultySelectedPage() {
     const modeId = params.modeId as string;
     
     const [difficultyLevels, setDifficultyLevels] = useState<DifficultyLevel[]>([]);
-    const [endlessMode, setEndlessMode] = useState<DifficultyLevel | null>(null);
     const [showStandardLevels, setShowStandardLevels] = useState(false);
 
     useEffect(() => {
@@ -80,29 +79,6 @@ export default function DifficultySelectedPage() {
             return { ...level, highScore: 0 };
         });
         setDifficultyLevels(standardLevelsWithScores);
-
-        // Process endless mode
-        const endlessStoredData = localStorage.getItem(`highScoreData_${modeId}_endless`);
-        let endlessScore = 0;
-        let endlessTime;
-        if (endlessStoredData) {
-            try {
-                const data = JSON.parse(endlessStoredData);
-                endlessScore = data.score || 0;
-                endlessTime = data.time;
-            } catch (e) {
-                console.error('Failed to parse endless mode high score', e);
-            }
-        }
-        
-        setEndlessMode({
-            id: "endless",
-            name: "Endless Mode",
-            level: "Endless",
-            description: "ท้าทายตัวเองกับคำศัพท์จากทุกระดับ A1-C2 แบบไม่มีที่สิ้นสุด",
-            highScore: endlessScore,
-            time: endlessTime
-        });
     }, [modeId]);
 
     const handleSelectDifficulty = (difficultyId: string) => {
@@ -143,80 +119,11 @@ export default function DifficultySelectedPage() {
             {/* Main Options Container */}
             <div className="w-full max-w-4xl space-y-6 px-4 relative z-10">
                 
-                {/* Endless Mode Card */}
-                {endlessMode && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        onClick={() => handleSelectDifficulty('endless')}
-                        className="group cursor-pointer"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                    >
-                        <div className="relative p-8 rounded-3xl shadow-2xl transition-all duration-300 backdrop-blur-sm border bg-gradient-to-br from-purple-500/20 to-pink-500/15 border-purple-500/30 hover:from-purple-500/25 hover:to-pink-500/20 hover:shadow-purple-500/20">
-                            
-                            {/* Endless Badge */}
-                            <div className="absolute -top-3 left-8">
-                                <div className="bg-purple-600/90 text-purple-100 px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                                    <FaInfinity className="inline mr-2" />
-                                    Endless Challenge
-                                </div>
-                            </div>
-
-                            <div className="flex w-full justify-between items-center mt-4">
-                                {/* Left Side: Mode Info */}
-                                <div className="flex-1 pr-6">
-                                    <h3
-                                        className="text-5xl font-bold py-2 text-purple-300 mb-2"
-                                        style={{ fontFamily: "'Caveat Brush', cursive" }}
-                                    >
-                                        {endlessMode.name}
-                                    </h3>
-                                    <p className="text-lg text-purple-200/90 mb-4" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                        {endlessMode.description}
-                                    </p>
-                                    <div className="flex items-center space-x-2 text-purple-300">
-                                        <FaInfinity className="text-xl" />
-                                        <span className="text-sm font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                            Mixed A1-C2 Levels
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Right Side: Score Display */}
-                                <div className="text-right flex-shrink-0 bg-purple-500/20 rounded-2xl p-6 border border-purple-500/30">
-                                    <p className="text-sm text-purple-300/80 mb-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                        คะแนนสูงสุด
-                                    </p>
-                                    <p
-                                        className="text-4xl text-purple-200 font-bold mb-2"
-                                        style={{ fontFamily: "'Caveat Brush', cursive" }}
-                                    >
-                                        {endlessMode.highScore}
-                                    </p>
-                                    {endlessMode.time && (
-                                        <div
-                                            className="flex items-center justify-end text-sm text-purple-300/80"
-                                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                                        >
-                                            <FaClock className="mr-2 text-purple-400" />
-                                            <span>
-                                                {String(endlessMode.time.minutes).padStart(2, '0')}:{String(endlessMode.time.seconds).padStart(2, '0')}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-
                 {/* Standard Levels Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
                     className="space-y-4"
                 >
                     {/* Standard Levels Toggle Button */}

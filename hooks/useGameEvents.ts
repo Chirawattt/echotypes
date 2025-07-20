@@ -12,7 +12,7 @@ interface UseGameEventsProps {
     incorrectAudioRef: React.RefObject<HTMLAudioElement | null>;
     completedAudioRef: React.RefObject<HTMLAudioElement | null>;
     handleDdaUpdate: (isCorrect: boolean, onComplete?: () => void) => { levelChanged: boolean; newDifficultyLevel: number };
-    calculateAndAddScore: (isCorrect: boolean, echoTimeLeft: number, memoryTimeLeft: number, meaningMatchTimeLeft: number, currentWord?: string) => void;
+    calculateAndAddScore: (isCorrect: boolean, echoTimeLeft: number, memoryTimeLeft: number, currentWord?: string) => void;
     stopEchoTimer: () => void;
     stopMemoryTimer: () => void;
     // Nitro energy functions
@@ -69,8 +69,7 @@ export function useGameEvents({
     const handleFormSubmit = useCallback((
         e: React.FormEvent,
         echoTimeLeft: number,
-        memoryTimeLeft: number,
-        meaningMatchTimeLeft: number
+        memoryTimeLeft: number
     ) => {
         e.preventDefault();
         
@@ -85,18 +84,18 @@ export function useGameEvents({
 
         const isAnswerCorrect = userInput.trim().toLowerCase() === words[currentWordIndex]?.word.toLowerCase();
 
-        // Update DDA Performance (except for meaning-match mode)
+        // Update DDA Performance
         // This might trigger DDA transition which will block further actions
         const ddaResult = handleDdaUpdate(isAnswerCorrect);
 
         // Calculate challenge mode score if in challenge mode and answered correctly
-        calculateAndAddScore(isAnswerCorrect, echoTimeLeft, memoryTimeLeft, meaningMatchTimeLeft, words[currentWordIndex]?.word);
+        calculateAndAddScore(isAnswerCorrect, echoTimeLeft, memoryTimeLeft, words[currentWordIndex]?.word);
 
 
         // For typing mode, check if DDA level changed
         if (modeId === 'typing') {
             // For typing mode, check if DDA level changed
-            if (currentWordIndex === words.length - 1 && difficultyId !== 'endless' && difficultyId !== 'dda') {
+            if (currentWordIndex === words.length - 1 && difficultyId !== 'dda') {
                 setStatus('gameOver');
                 return;
             }
@@ -125,9 +124,9 @@ export function useGameEvents({
             }
 
             // Normal word progression (no DDA level change)
-            if ((difficultyId === 'endless' || difficultyId === 'dda') && currentWordIndex === words.length - 1) {
+            if (difficultyId === 'dda' && currentWordIndex === words.length - 1) {
                 let reshuffledWords;
-                if (difficultyId === 'dda' && (modeId as string) !== 'meaning-match') {
+                if (difficultyId === 'dda') {
                     // Use DDA words for both challenge and practice modes
                     reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
                 } else {
@@ -144,7 +143,7 @@ export function useGameEvents({
             return;
         }
 
-        // For non-typing modes (echo, memory, meaning-match), use transition pattern
+        // For non-typing modes (echo, memory), use transition pattern
 
         if (isAnswerCorrect) {
             playSound(correctAudioRef);
@@ -163,10 +162,10 @@ export function useGameEvents({
             const newLives = isAnswerCorrect ? lives : lives - 1;
             const isLastWord = currentWordIndex === words.length - 1;
 
-            if (newLives <= 0 || (isLastWord && difficultyId !== 'endless' && difficultyId !== 'dda')) {
-                // Only play completed sound for typing and meaning-match modes
+            if (newLives <= 0 || (isLastWord && difficultyId !== 'dda')) {
+                // Only play completed sound for typing mode
                 // Echo and Memory modes will play sound in GameOverOverlay
-                if (modeId !== 'echo' && modeId !== 'memory') {
+                if (modeId === 'typing') {
                     playSound(completedAudioRef, 0.5);
                 }
                 setStatus('gameOver');
@@ -174,9 +173,9 @@ export function useGameEvents({
             }
             
         
-            if ((difficultyId === 'endless' || difficultyId === 'dda') && isLastWord) {
+            if (difficultyId === 'dda' && isLastWord) {
                 let reshuffledWords;
-                if (difficultyId === 'dda' && (modeId as string) !== 'meaning-match') {
+                if (difficultyId === 'dda') {
                     // Use DDA words for both challenge and practice modes
                     reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
                 } else {

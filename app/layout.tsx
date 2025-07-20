@@ -3,6 +3,7 @@ import { Inter, Caveat_Brush } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/layout/header";
+import { AuthProvider } from "@/providers/AuthContext";
 
 // Configure fonts
 const inter = Inter({ 
@@ -53,10 +54,12 @@ export default function RootLayout({
         caveatBrush.variable, 
         " bg-[#101010] text-white font-sans"
       )}>
-        <Header />
-        <main className="relative min-h-screen">
-          {children}
-        </main>
+        <AuthProvider>
+          <Header />
+          <main className="relative min-h-screen">
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );

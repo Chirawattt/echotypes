@@ -35,16 +35,6 @@ export const getWords = (difficulty: string): Word[] => {
             return words.c1;
         case 'c2':
             return words.c2;
-        case 'endless':
-            // Combine all vocabulary from A1 to C2
-            return [
-                ...words.a1,
-                ...words.a2,
-                ...words.b1,
-                ...words.b2,
-                ...words.c1,
-                ...words.c2
-            ];
         default:
             return words.a1;
     }
@@ -72,7 +62,7 @@ export const getWordCount = (difficulty: string): number => {
 };
 
 export const getAllDifficulties = (): string[] => {
-    return ['a1', 'a2', 'b1', 'b2', 'c1', 'c2', 'endless'];
+    return ['a1', 'a2', 'b1', 'b2', 'c1', 'c2'];
 };
 
 export const getDifficultyInfo = (difficulty: string) => {
@@ -82,13 +72,12 @@ export const getDifficultyInfo = (difficulty: string) => {
         b1: words.b1.length,
         b2: words.b2.length,
         c1: words.c1.length,
-        c2: words.c2.length,
-        endless: words.a1.length + words.a2.length + words.b1.length + words.b2.length + words.c1.length + words.c2.length
+        c2: words.c2.length
     };
 
     return {
         difficulty,
         wordCount: counts[difficulty as keyof typeof counts] || 0,
-        isEndless: difficulty === 'endless'
+        isEndless: false
     };
 };

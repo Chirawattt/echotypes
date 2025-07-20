@@ -3,6 +3,8 @@ import { useGameStore } from '@/lib/stores/gameStore';
 import { getGameSessionWords } from '@/lib/words-new';
 import { getDdaGameSessionWords } from '@/lib/ddaWords';
 import { ddaConfig } from '@/lib/ddaConfig';
+import { submitGameScore, checkMilestones, type GameScoreData } from '@/lib/database';
+import { useSession } from 'next-auth/react';
 
 // Import our custom hooks
 import { useAudio } from './useAudio';
@@ -22,12 +24,13 @@ interface UseGameLogicProps {
 }
 
 export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicProps) {
+    const { data: session } = useSession();
     const {
         // State
         status, words, currentWordIndex, userInput, score: wordsTypedCount, lives,
         isWrong, isCorrect, isTransitioning, timeLeft, startTime,
         currentTime, highScore, isWordVisible, promptText, streakCount,
-        totalChallengeScore, lastScoreCalculation,
+        totalChallengeScore, lastScoreCalculation, incorrectWords,
 
         // Actions
         setStatus, setCountdown, setWords, setCurrentWordIndex, setUserInput,
@@ -35,7 +38,8 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         setStartTime, setTimeSpent, setCurrentTime, setHighScore,
         setWpm, setIsWordVisible, setPromptText,
         incrementWordIndex, decrementTimeLeft, addIncorrectWord, resetGame, initializeGame,
-        incrementStreak, resetStreak, addChallengeScore, resetChallengeScore
+        incrementStreak, resetStreak, addChallengeScore, resetChallengeScore,
+        updateModeStats, getModeStats
     } = useGameStore();
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +54,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
     // Initialize custom hooks
     const audio = useAudio();
     const speech = useSpeech();
-    const dda = useDDA({ gameStyle, modeId });
+    const dda = useDDA({ modeId });
     const timers = useGameTimers({ modeId, gameStyle });
     const scoreUtils = useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain });
     
@@ -108,14 +112,14 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         resetStreak();
         audio.playSound(audio.incorrectAudioRef, 0.8);
 
-        // Update DDA Performance for incorrect answer (except meaning-match mode)
+        // Update DDA Performance for incorrect answer
         dda.handleDdaUpdate(false);
 
         setTimeout(() => {
             const newLives = lives - 1;
             const isLastWord = currentWordIndex === words.length - 1;
 
-            if (newLives <= 0 || (isLastWord && difficultyId !== 'endless' && difficultyId !== 'dda')) {
+            if (newLives <= 0 || (isLastWord && difficultyId !== 'dda')) {
                 // Only play completed sound for non-echo modes
                 // Echo mode will play sound in GameOverOverlay
                 if (modeId !== 'echo') {
@@ -125,15 +129,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
                 return;
             }
 
-            // Handle endless mode and DDA mode - reshuffle words when reaching the end
-            if ((difficultyId === 'endless' || difficultyId === 'dda') && isLastWord) {
+            // Handle DDA mode - reshuffle words when reaching the end
+            if (difficultyId === 'dda' && isLastWord) {
                 // Use DDA for both challenge and practice modes when difficultyId is 'dda'
-                let reshuffledWords;
-                if (difficultyId === 'dda' && modeId !== 'meaning-match') {
-                    reshuffledWords = getDdaGameSessionWords(dda.currentDifficultyLevel);
-                } else {
-                    reshuffledWords = getGameSessionWords(difficultyId);
-                }
+                const reshuffledWords = getDdaGameSessionWords(dda.currentDifficultyLevel);
                 setWords(reshuffledWords);
                 setCurrentWordIndex(0);
             } else {
@@ -164,19 +163,11 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         }
     }, [modeId, gameStyle, handleTimeUpCommon]);
 
-    // Handle time up for Meaning Match mode challenge
-    const handleMeaningMatchTimeUp = useCallback(() => {
-        if (modeId === 'meaning-match' && gameStyle === 'challenge') {
-            scoreUtils.calculateScoreForTimeUp();
-            handleTimeUpCommon();
-        }
-    }, [modeId, gameStyle, scoreUtils, handleTimeUpCommon]);
-
     // Handle restart game
     const handleRestartGame = useCallback(() => {
         // Use DDA system for DDA difficulty mode, regular difficulty selection otherwise
         let sessionWords;
-        if (difficultyId === 'dda' && modeId !== 'meaning-match') {
+        if (difficultyId === 'dda') {
             // Reset DDA state first, then get words from initial level
             dda.resetDdaState();
             sessionWords = getDdaGameSessionWords(ddaConfig.INITIAL_DIFFICULTY_LEVEL); // Always start from A1
@@ -201,7 +192,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
             e,
             timers.echoTimeLeft,
             timers.memoryTimeLeft,
-            timers.meaningMatchTimeLeft
         );
     }, [events, timers]);
 
@@ -220,7 +210,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
         // Initialize game with appropriate words based on difficulty and mode
         let sessionWords;
-        if (difficultyId === 'dda' && modeId !== 'meaning-match') {
+        if (difficultyId === 'dda') {
             sessionWords = getDdaGameSessionWords(ddaConfig.INITIAL_DIFFICULTY_LEVEL);
         } else {
             sessionWords = getGameSessionWords(difficultyId);
@@ -237,7 +227,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         }
         
         // Initialize DDA system for DDA difficulty mode regardless of game style
-        if (difficultyId === 'dda' && modeId !== 'meaning-match') {
+        if (difficultyId === 'dda') {
             dda.resetDdaState();
             dda.initDifficultyLevelRef.current = ddaConfig.INITIAL_DIFFICULTY_LEVEL;
         }
@@ -289,7 +279,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modeId, difficultyId]); // Remove store functions to prevent infinite loop
 
-    // Game over logic
+    // Game over logic with database submission
     useEffect(() => {
         if (status === 'gameOver' && startTime) {
             const TYPING_MODE_DURATION = 60;
@@ -299,12 +289,16 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
 
             setTimeSpent(finalTime);
 
+            const timeSpentSeconds = finalTime.minutes * 60 + finalTime.seconds;
+            let currentWPM = 0;
+
             if (modeId === 'typing') {
                 const timeInMinutes = TYPING_MODE_DURATION / 60;
-                const wordsPerMinute = Math.round(wordsTypedCount / timeInMinutes);
-                setWpm(wordsPerMinute);
+                currentWPM = Math.round(wordsTypedCount / timeInMinutes);
+                setWpm(currentWPM);
             }
 
+            // Update local storage (backward compatibility)
             if (wordsTypedCount > highScore) {
                 setHighScore(wordsTypedCount);
                 localStorage.setItem(`highScoreData_${modeId}_${difficultyId}`, JSON.stringify({ score: wordsTypedCount, time: finalTime }));
@@ -317,9 +311,80 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
                     localStorage.setItem(challengeHighScoreKey, totalChallengeScore.toString());
                 }
             }
+
+            // Submit score to database if user is authenticated
+            if (session?.user) {
+                const scoreData: GameScoreData = {
+                    gameMode: modeId as 'echo' | 'memory' | 'typing',
+                    difficulty: difficultyId as 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'c2' | 'dda',
+                    gameStyle: gameStyle,
+                    score: wordsTypedCount,
+                    highestStreak: streakCount,
+                    wordsCorrect: wordsTypedCount,
+                    wordsIncorrect: incorrectWords.length,
+                    timeSpentSeconds: timeSpentSeconds,
+                    ...(modeId === 'typing' && { wpm: currentWPM }),
+                    ...(gameStyle === 'challenge' && { challengeTotalScore: totalChallengeScore }),
+                };
+
+                // Submit score asynchronously
+                submitGameScore(scoreData).then(async (result) => {
+                    if (result.success) {
+                        console.log('Score submitted successfully:', result.message);
+                        
+                        // Check for new milestones
+                        const milestones = await checkMilestones(scoreData);
+                        if (milestones.newMilestones.length > 0) {
+                            // You can show milestone notifications here
+                            console.log('New milestones achieved:', milestones.newMilestones);
+                        }
+                    } else {
+                        console.error('Failed to submit score:', result.message);
+                    }
+                }).catch((error) => {
+                    console.error('Error submitting score:', error);
+                });
+            }
+
+            // Update mode-specific statistics
+            const currentModeStats = getModeStats(modeId as 'echo' | 'memory' | 'typing');
+            const newStats: Partial<import('@/lib/stores/gameStore').ModeStats> = {
+                totalGamesPlayed: currentModeStats.totalGamesPlayed + 1,
+                totalWordsCorrect: currentModeStats.totalWordsCorrect + wordsTypedCount,
+                totalWordsMissed: currentModeStats.totalWordsMissed + incorrectWords.length,
+            };
+
+            // Update best streak if current is better
+            if (streakCount > currentModeStats.bestStreak) {
+                newStats.bestStreak = streakCount;
+            }
+
+            // Update mode-specific high scores
+            if (modeId === 'typing') {
+                if (currentWPM > (currentModeStats.bestWPM || 0)) {
+                    newStats.bestWPM = currentWPM;
+                }
+            } else {
+                // For non-typing modes, update high score and best time
+                if (wordsTypedCount > currentModeStats.highScore) {
+                    newStats.highScore = wordsTypedCount;
+                    newStats.bestTime = finalTime;
+                } else if (wordsTypedCount === currentModeStats.highScore) {
+                    // Same score but better time
+                    const currentBestTimeInSeconds = currentModeStats.bestTime ? 
+                        (currentModeStats.bestTime.minutes * 60 + currentModeStats.bestTime.seconds) : Infinity;
+                    const newTimeInSeconds = finalTime.minutes * 60 + finalTime.seconds;
+                    if (newTimeInSeconds < currentBestTimeInSeconds) {
+                        newStats.bestTime = finalTime;
+                    }
+                }
+            }
+
+            // Apply the updates
+            updateModeStats(modeId as 'echo' | 'memory' | 'typing', newStats);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status, startTime, wordsTypedCount, highScore, modeId, difficultyId, gameStyle, totalChallengeScore]); // Remove store functions to prevent infinite loop
+    }, [status, startTime, wordsTypedCount, highScore, modeId, difficultyId, gameStyle, totalChallengeScore, session]); // Remove store functions to prevent infinite loop
 
     // Focus input when Echo countdown starts (challenge mode)
     useEffect(() => {
@@ -365,7 +430,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         isEchoCountingDown: timers.isEchoCountingDown,
         echoTimeLeft: timers.echoTimeLeft,
         memoryTimeLeft: timers.memoryTimeLeft,
-        meaningMatchTimeLeft: timers.meaningMatchTimeLeft,
         
         // Score state
         showScoreBreakdown: scoreUtils.showScoreBreakdown,
@@ -396,15 +460,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle }: UseGameLogicPr
         setIsEchoCountingDown: timers.setIsEchoCountingDown,
         setEchoTimeLeft: timers.setEchoTimeLeft,
         setMemoryTimeLeft: timers.setMemoryTimeLeft,
-        setMeaningMatchTimeLeft: timers.setMeaningMatchTimeLeft,
         handleEchoTimeUp,
         handleMemoryTimeUp,
-        handleMeaningMatchTimeUp,
         handleEchoTimerReady: timers.handleEchoTimerReady,
         handleMemoryTimerReady: timers.handleMemoryTimerReady,
         handleEchoTimeLeftChange: timers.handleEchoTimeLeftChange,
         handleMemoryTimeLeftChange: timers.handleMemoryTimeLeftChange,
-        handleMeaningMatchTimeLeftChange: timers.handleMeaningMatchTimeLeftChange,
 
         // Store actions
         setStatus, setCountdown, setWords, setCurrentWordIndex, setUserInput,

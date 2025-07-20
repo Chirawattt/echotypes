@@ -1,0 +1,4082 @@
+[
+    {
+        "word": "abide",
+        "type": "v.",
+        "meaning": "ทนทาน, ยอมทน, ปฏิบัติตาม",
+        "level": "c2"
+    },
+    {
+        "word": "abound",
+        "type": "v.",
+        "meaning": "มีอยู่มากมาย",
+        "level": "c2"
+    },
+    {
+        "word": "accede",
+        "type": "v.",
+        "meaning": "ยอมรับ, เห็นด้วย, เข้าดำรงตำแหน่ง",
+        "level": "c2"
+    },
+    {
+        "word": "accolade",
+        "type": "n.",
+        "meaning": "เกียรติยศ, คำชมเชย",
+        "level": "c2"
+    },
+    {
+        "word": "accretion",
+        "type": "n.",
+        "meaning": "การเพิ่มขึ้นจากการสะสม",
+        "level": "c2"
+    },
+    {
+        "word": "acquiesce",
+        "type": "v.",
+        "meaning": "ยินยอม, เห็นพ้อง",
+        "level": "c2"
+    },
+    {
+        "word": "acrimony",
+        "type": "n.",
+        "meaning": "ความขุ่นเคือง, ความบาดหมาง",
+        "level": "c2"
+    },
+    {
+        "word": "acumen",
+        "type": "n.",
+        "meaning": "ความเฉียบแหลม, ความเข้าใจอย่างลึกซึ้ง",
+        "level": "c2"
+    },
+    {
+        "word": "adage",
+        "type": "n.",
+        "meaning": "สุภาษิต, คติพจน์",
+        "level": "c2"
+    },
+    {
+        "word": "adamant",
+        "type": "adj.",
+        "meaning": "แน่วแน่, ไม่ยอมอ่อนข้อ",
+        "level": "c2"
+    },
+    {
+        "word": "adjudicate",
+        "type": "v.",
+        "meaning": "ตัดสิน, ชี้ขาด",
+        "level": "c2"
+    },
+    {
+        "word": "admonish",
+        "type": "v.",
+        "meaning": "ตักเตือน, ตำหนิ",
+        "level": "c2"
+    },
+    {
+        "word": "adroit",
+        "type": "adj.",
+        "meaning": "คล่องแคล่ว, ชำนาญ",
+        "level": "c2"
+    },
+    {
+        "word": "adulation",
+        "type": "n.",
+        "meaning": "การยกย่องสรรเสริญเกินจริง",
+        "level": "c2"
+    },
+    {
+        "word": "adversarial",
+        "type": "adj.",
+        "meaning": "เป็นปฏิปักษ์, เป็นคู่แข่ง",
+        "level": "c2"
+    },
+    {
+        "word": "aesthetic",
+        "type": "n.",
+        "meaning": "สุนทรียศาสตร์",
+        "level": "c2"
+    },
+    {
+        "word": "affinity",
+        "type": "n.",
+        "meaning": "ความสัมพันธ์ใกล้ชิด, ความชอบ",
+        "level": "c2"
+    },
+    {
+        "word": "aggrandize",
+        "type": "v.",
+        "meaning": "เพิ่มอำนาจ/เกียรติยศ",
+        "level": "c2"
+    },
+    {
+        "word": "alacrity",
+        "type": "n.",
+        "meaning": "ความกระตือรือร้น, ความรวดเร็ว",
+        "level": "c2"
+    },
+    {
+        "word": "alleviate",
+        "type": "v.",
+        "meaning": "บรรเทา, ทำให้ลดน้อยลง",
+        "level": "c2"
+    },
+    {
+        "word": "allude",
+        "type": "v.",
+        "meaning": "อ้างถึงโดยอ้อม, พาดพิง",
+        "level": "c2"
+    },
+    {
+        "word": "altruism",
+        "type": "n.",
+        "meaning": "ความไม่เห็นแก่ตัว, การกระทำเพื่อผู้อื่น",
+        "level": "c2"
+    },
+    {
+        "word": "ameliorate",
+        "type": "v.",
+        "meaning": "ทำให้ดีขึ้น, ปรับปรุง",
+        "level": "c2"
+    },
+    {
+        "word": "amenable",
+        "type": "adj.",
+        "meaning": "ที่อ่อนน้อม, ที่ยอมรับได้",
+        "level": "c2"
+    },
+    {
+        "word": "anachronism",
+        "type": "n.",
+        "meaning": "ความผิดพลาดทางกาลเวลา (สิ่งที่ไม่เข้ากับยุคสมัย)",
+        "level": "c2"
+    },
+    {
+        "word": "anathema",
+        "type": "n.",
+        "meaning": "สิ่งที่ถูกสาปแช่ง, สิ่งที่ถูกเกลียดชัง",
+        "level": "c2"
+    },
+    {
+        "word": "anecdote",
+        "type": "n.",
+        "meaning": "เรื่องเล่าสั้นๆ, เกร็ดเล็กเกร็ดน้อย",
+        "level": "c2"
+    },
+    {
+        "word": "animus",
+        "type": "n.",
+        "meaning": "ความเป็นปรปักษ์, ความอาฆาต",
+        "level": "c2"
+    },
+    {
+        "word": "anomaly",
+        "type": "n.",
+        "meaning": "ความผิดปกติ, สิ่งที่ผิดแปลกไปจากปกติ",
+        "level": "c2"
+    },
+    {
+        "word": "antediluvian",
+        "type": "adj.",
+        "meaning": "โบราณมาก, ล้าสมัย",
+        "level": "c2"
+    },
+    {
+        "word": "antithesis",
+        "type": "n.",
+        "meaning": "สิ่งที่ตรงกันข้าม, ขั้วตรงข้าม",
+        "level": "c2"
+    },
+    {
+        "word": "apathy",
+        "type": "n.",
+        "meaning": "การไม่แยแส, ความเฉยเมย",
+        "level": "c2"
+    },
+    {
+        "word": "aplomb",
+        "type": "n.",
+        "meaning": "ความมั่นใจในตนเอง, ความสงบเสงี่ยม",
+        "level": "c2"
+    },
+    {
+        "word": "apocryphal",
+        "type": "adj.",
+        "meaning": "ที่ไม่มีหลักฐานยืนยัน, ที่น่าสงสัย",
+        "level": "c2"
+    },
+    {
+        "word": "apostate",
+        "type": "n.",
+        "meaning": "ผู้ละทิ้งศาสนา/ความเชื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "apposite",
+        "type": "adj.",
+        "meaning": "เหมาะสม, ตรงประเด็น",
+        "level": "c2"
+    },
+    {
+        "word": "apprehension",
+        "type": "n.",
+        "meaning": "ความวิตกกังวล, ความเข้าใจ",
+        "level": "c2"
+    },
+    {
+        "word": "approbation",
+        "type": "n.",
+        "meaning": "การเห็นด้วย, การอนุมัติ",
+        "level": "c2"
+    },
+    {
+        "word": "arbiter",
+        "type": "n.",
+        "meaning": "ผู้ชี้ขาด, ผู้ตัดสิน",
+        "level": "c2"
+    },
+    {
+        "word": "arcane",
+        "type": "adj.",
+        "meaning": "ลึกลับ, ยากที่จะเข้าใจ",
+        "level": "c2"
+    },
+    {
+        "word": "ardent",
+        "type": "adj.",
+        "meaning": "กระตือรือร้น, เร่าร้อน",
+        "level": "c2"
+    },
+    {
+        "word": "arduous",
+        "type": "adj.",
+        "meaning": "ยากลำบาก, ตรากตรำ",
+        "level": "c2"
+    },
+    {
+        "word": "arraign",
+        "type": "v.",
+        "meaning": "ฟ้องร้อง, กล่าวหา",
+        "level": "c2"
+    },
+    {
+        "word": "ascetic",
+        "type": "adj., n.",
+        "meaning": "สมถะ, ผู้บำเพ็ญตบะ",
+        "level": "c2"
+    },
+    {
+        "word": "ascribe",
+        "type": "v.",
+        "meaning": "ให้เหตุผล, อ้างว่าเป็นผลมาจาก",
+        "level": "c2"
+    },
+    {
+        "word": "askance",
+        "type": "adv.",
+        "meaning": "ด้วยความสงสัย/ไม่ไว้วางใจ",
+        "level": "c2"
+    },
+    {
+        "word": "asseverate",
+        "type": "v.",
+        "meaning": "ยืนยันอย่างหนักแน่น",
+        "level": "c2"
+    },
+    {
+        "word": "assiduous",
+        "type": "adj.",
+        "meaning": "ขยันหมั่นเพียร",
+        "level": "c2"
+    },
+    {
+        "word": "assuage",
+        "type": "v.",
+        "meaning": "บรรเทา, ทำให้สงบลง",
+        "level": "c2"
+    },
+    {
+        "word": "atrophy",
+        "type": "n., v.",
+        "meaning": "การฝ่อ, การเสื่อม",
+        "level": "c2"
+    },
+    {
+        "word": "attenuate",
+        "type": "v.",
+        "meaning": "ทำให้อ่อนลง, ทำให้บางลง",
+        "level": "c2"
+    },
+    {
+        "word": "audacious",
+        "type": "adj.",
+        "meaning": "กล้าหาญ, ทะเยอทะยาน",
+        "level": "c2"
+    },
+    {
+        "word": "august",
+        "type": "adj.",
+        "meaning": "สง่างาม, น่าเคารพ",
+        "level": "c2"
+    },
+    {
+        "word": "auspicious",
+        "type": "adj.",
+        "meaning": "เป็นมงคล",
+        "level": "c2"
+    },
+    {
+        "word": "austere",
+        "type": "adj.",
+        "meaning": "เคร่งครัด, เรียบง่าย",
+        "level": "c2"
+    },
+    {
+        "word": "avarice",
+        "type": "n.",
+        "meaning": "ความโลภ",
+        "level": "c2"
+    },
+    {
+        "word": "aver",
+        "type": "v.",
+        "meaning": "ยืนยัน, รับรอง",
+        "level": "c2"
+    },
+    {
+        "word": "axiom",
+        "type": "n.",
+        "meaning": "สัจพจน์, หลักการที่เป็นที่ยอมรับ",
+        "level": "c2"
+    },
+    {
+        "word": "bale",
+        "type": "n.",
+        "meaning": "ฟ่อน (ฟาง), ห่อใหญ่",
+        "level": "c2"
+    },
+    {
+        "word": "baleful",
+        "type": "adj.",
+        "meaning": "เป็นอันตราย, มุ่งร้าย",
+        "level": "c2"
+    },
+    {
+        "word": "balk",
+        "type": "v.",
+        "meaning": "หยุดชะงัก, ไม่ยอมทำตาม",
+        "level": "c2"
+    },
+    {
+        "word": "banal",
+        "type": "adj.",
+        "meaning": "ซ้ำซาก, น่าเบื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "bane",
+        "type": "n.",
+        "meaning": "หายนะ, สิ่งที่เป็นพิษ",
+        "level": "c2"
+    },
+    {
+        "word": "barb",
+        "type": "n.",
+        "meaning": "หนาม, คำพูดเสียดสี",
+        "level": "c2"
+    },
+    {
+        "word": "barrage",
+        "type": "n.",
+        "meaning": "การระดมยิง, การยิงคุ้มกัน",
+        "level": "c2"
+    },
+    {
+        "word": "bastion",
+        "type": "n.",
+        "meaning": "ป้อมปราการ, ที่มั่น",
+        "level": "c2"
+    },
+    {
+        "word": "beget",
+        "type": "v.",
+        "meaning": "ให้กำเนิด, ก่อให้เกิด",
+        "level": "c2"
+    },
+    {
+        "word": "beleaguer",
+        "type": "v.",
+        "meaning": "รบกวน, ล้อม",
+        "level": "c2"
+    },
+    {
+        "word": "belie",
+        "type": "v.",
+        "meaning": "ปกปิดความจริง, ขัดแย้งกับ",
+        "level": "c2"
+    },
+    {
+        "word": "bellicose",
+        "type": "adj.",
+        "meaning": "ชอบการทะเลาะวิวาท",
+        "level": "c2"
+    },
+    {
+        "word": "belligerent",
+        "type": "adj.",
+        "meaning": "ซึ่งทำสงคราม, เป็นปรปักษ์",
+        "level": "c2"
+    },
+    {
+        "word": "bemuse",
+        "type": "v.",
+        "meaning": "ทำให้งุนงง, ทำให้สับสน",
+        "level": "c2"
+    },
+    {
+        "word": "benign",
+        "type": "adj.",
+        "meaning": "ไม่เป็นอันตราย, ใจดี",
+        "level": "c2"
+    },
+    {
+        "word": "bequeath",
+        "type": "v.",
+        "meaning": "ยกมรดกให้",
+        "level": "c2"
+    },
+    {
+        "word": "bereft",
+        "type": "adj.",
+        "meaning": "ที่ปราศจาก, ที่สูญเสีย",
+        "level": "c2"
+    },
+    {
+        "word": "bifurcate",
+        "type": "v.",
+        "meaning": "แยกออกเป็นสองแฉก",
+        "level": "c2"
+    },
+    {
+        "word": "bilk",
+        "type": "v.",
+        "meaning": "โกงเงิน",
+        "level": "c2"
+    },
+    {
+        "word": "blandishment",
+        "type": "n.",
+        "meaning": "คำเยินยอ, การประจบประแจง",
+        "level": "c2"
+    },
+    {
+        "word": "blight",
+        "type": "n., v.",
+        "meaning": "โรคพืช, สิ่งที่ทำลาย, ทำลาย",
+        "level": "c2"
+    },
+    {
+        "word": "blithe",
+        "type": "adj.",
+        "meaning": "ร่าเริง, ไม่สนใจ",
+        "level": "c2"
+    },
+    {
+        "word": "bombastic",
+        "type": "adj.",
+        "meaning": "คุยโว, โอ้อวด",
+        "level": "c2"
+    },
+    {
+        "word": "boorish",
+        "type": "adj.",
+        "meaning": "หยาบคาย, ไร้มารยาท",
+        "level": "c2"
+    },
+    {
+        "word": "bovine",
+        "type": "adj.",
+        "meaning": "เหมือนวัว, เชื่องช้า",
+        "level": "c2"
+    },
+    {
+        "word": "brazen",
+        "type": "adj.",
+        "meaning": "ไร้ยางอาย, หน้าด้าน",
+        "level": "c2"
+    },
+    {
+        "word": "brevity",
+        "type": "n.",
+        "meaning": "ความกระชับ, ความสั้น",
+        "level": "c2"
+    },
+    {
+        "word": "bromide",
+        "type": "n.",
+        "meaning": "คำพูดซ้ำซาก, คำพูดที่น่าเบื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "bucolic",
+        "type": "adj.",
+        "meaning": "เกี่ยวกับชีวิตในชนบท",
+        "level": "c2"
+    },
+    {
+        "word": "burgeon",
+        "type": "v.",
+        "meaning": "เจริญงอกงามอย่างรวดเร็ว",
+        "level": "c2"
+    },
+    {
+        "word": "buttress",
+        "type": "n., v.",
+        "meaning": "กำแพงค้ำยัน, ค้ำจุน",
+        "level": "c2"
+    },
+    {
+        "word": "cabal",
+        "type": "n.",
+        "meaning": "คณะสมรู้ร่วมคิด",
+        "level": "c2"
+    },
+    {
+        "word": "cacophony",
+        "type": "n.",
+        "meaning": "เสียงไม่พึงประสงค์, เสียงอึกทึก",
+        "level": "c2"
+    },
+    {
+        "word": "cadence",
+        "type": "n.",
+        "meaning": "จังหวะ, ท่วงทำนอง",
+        "level": "c2"
+    },
+    {
+        "word": "cajole",
+        "type": "v.",
+        "meaning": "หว่านล้อม, โน้มน้าว",
+        "level": "c2"
+    },
+    {
+        "word": "callous",
+        "type": "adj.",
+        "meaning": "ใจแข็ง, ไร้ความรู้สึก",
+        "level": "c2"
+    },
+    {
+        "word": "calumny",
+        "type": "n.",
+        "meaning": "การหมิ่นประมาท, การใส่ร้าย",
+        "level": "c2"
+    },
+    {
+        "word": "canard",
+        "type": "n.",
+        "meaning": "ข่าวลือที่ไม่มีมูลความจริง",
+        "level": "c2"
+    },
+    {
+        "word": "candor",
+        "type": "n.",
+        "meaning": "ความจริงใจ, ความตรงไปตรงมา",
+        "level": "c2"
+    },
+    {
+        "word": "canvass",
+        "type": "v.",
+        "meaning": "สำรวจความคิดเห็น, หาเสียง",
+        "level": "c2"
+    },
+    {
+        "word": "capricious",
+        "type": "adj.",
+        "meaning": "เอาแต่ใจ, เปลี่ยนแปลงง่าย",
+        "level": "c2"
+    },
+    {
+        "word": "captious",
+        "type": "adj.",
+        "meaning": "ชอบจับผิด",
+        "level": "c2"
+    },
+    {
+        "word": "carouse",
+        "type": "v.",
+        "meaning": "ดื่มฉลองอย่างสนุกสนาน",
+        "level": "c2"
+    },
+    {
+        "word": "carte blanche",
+        "type": "n.",
+        "meaning": "อำนาจเต็มที่",
+        "level": "c2"
+    },
+    {
+        "word": "castigate",
+        "type": "v.",
+        "meaning": "ลงโทษอย่างรุนแรง, ตำหนิ",
+        "level": "c2"
+    },
+    {
+        "word": "catalyst",
+        "type": "n.",
+        "meaning": "ตัวเร่งปฏิกิริยา, สิ่งกระตุ้น",
+        "level": "c2"
+    },
+    {
+        "word": "catharsis",
+        "type": "n.",
+        "meaning": "การระบายอารมณ์",
+        "level": "c2"
+    },
+    {
+        "word": "caucus",
+        "type": "n.",
+        "meaning": "การประชุมพรรคการเมือง",
+        "level": "c2"
+    },
+    {
+        "word": "caustic",
+        "type": "adj.",
+        "meaning": "กัดกร่อน, เสียดสี",
+        "level": "c2"
+    },
+    {
+        "word": "cavalier",
+        "type": "adj.",
+        "meaning": "ไม่สนใจผู้อื่น, หยิ่งยโส",
+        "level": "c2"
+    },
+    {
+        "word": "cavil",
+        "type": "v.",
+        "meaning": "จู้จี้จุกจิก, หาเรื่องจับผิด",
+        "level": "c2"
+    },
+    {
+        "word": "celerity",
+        "type": "n.",
+        "meaning": "ความรวดเร็ว",
+        "level": "c2"
+    },
+    {
+        "word": "censorious",
+        "type": "adj.",
+        "meaning": "ชอบวิจารณ์, ชอบจับผิด",
+        "level": "c2"
+    },
+    {
+        "word": "chagrin",
+        "type": "n.",
+        "meaning": "ความรู้สึกอับอาย/ผิดหวัง",
+        "level": "c2"
+    },
+    {
+        "word": "charlatan",
+        "type": "n.",
+        "meaning": "คนหลอกลวง, หมอเถื่อน",
+        "level": "c2"
+    },
+    {
+        "word": "chicanery",
+        "type": "n.",
+        "meaning": "การใช้เล่ห์เหลี่ยม, การโกง",
+        "level": "c2"
+    },
+    {
+        "word": "chimerical",
+        "type": "adj.",
+        "meaning": "เพ้อฝัน, ไม่เป็นจริง",
+        "level": "c2"
+    },
+    {
+        "word": "choleric",
+        "type": "adj.",
+        "meaning": "เจ้าอารมณ์, โกรธง่าย",
+        "level": "c2"
+    },
+    {
+        "word": "churlish",
+        "type": "adj.",
+        "meaning": "หยาบคาย, ไร้มารยาท",
+        "level": "c2"
+    },
+    {
+        "word": "circuitous",
+        "type": "adj.",
+        "meaning": "อ้อม, ไม่ตรง",
+        "level": "c2"
+    },
+    {
+        "word": "circumlocution",
+        "type": "n.",
+        "meaning": "การพูดอ้อมค้อม",
+        "level": "c2"
+    },
+    {
+        "word": "circumscribe",
+        "type": "v.",
+        "meaning": "จำกัด, ล้อมรอบ",
+        "level": "c2"
+    },
+    {
+        "word": "circumvent",
+        "type": "v.",
+        "meaning": "หลีกเลี่ยง (ปัญหา/กฎ)",
+        "level": "c2"
+    },
+    {
+        "word": "clandestine",
+        "type": "adj.",
+        "meaning": "ลับๆ, แอบซ่อน",
+        "level": "c2"
+    },
+    {
+        "word": "cloying",
+        "type": "adj.",
+        "meaning": "ที่มากเกินไปจนเอียน, หวานเลี่ยน",
+        "level": "c2"
+    },
+    {
+        "word": "coalesce",
+        "type": "v.",
+        "meaning": "รวมกัน, หลอมรวม",
+        "level": "c2"
+    },
+    {
+        "word": "coax",
+        "type": "v.",
+        "meaning": "เกลี้ยกล่อม",
+        "level": "c2"
+    },
+    {
+        "word": "coda",
+        "type": "n.",
+        "meaning": "บทสรุป, ส่วนท้าย",
+        "level": "c2"
+    },
+    {
+        "word": "cogent",
+        "type": "adj.",
+        "meaning": "น่าเชื่อถือ, มีเหตุผล",
+        "level": "c2"
+    },
+    {
+        "word": "cognizant",
+        "type": "adj.",
+        "meaning": "ตระหนักรู้, รับรู้",
+        "level": "c2"
+    },
+    {
+        "word": "collate",
+        "type": "v.",
+        "meaning": "เรียงลำดับ, ตรวจสอบความถูกต้อง",
+        "level": "c2"
+    },
+    {
+        "word": "commensurate",
+        "type": "adj.",
+        "meaning": "ได้สัดส่วน, เท่าเทียมกัน",
+        "level": "c2"
+    },
+    {
+        "word": "compendium",
+        "type": "n.",
+        "meaning": "บทสรุป, คู่มือ",
+        "level": "c2"
+    },
+    {
+        "word": "complaisant",
+        "type": "adj.",
+        "meaning": "อ่อนน้อม, ชอบเอาใจ",
+        "level": "c2"
+    },
+    {
+        "word": "complementary",
+        "type": "adj.",
+        "meaning": "ซึ่งส่งเสริมกัน",
+        "level": "c2"
+    },
+    {
+        "word": "complicity",
+        "type": "n.",
+        "meaning": "การสมรู้ร่วมคิด",
+        "level": "c2"
+    },
+    {
+        "word": "compunction",
+        "type": "n.",
+        "meaning": "ความสำนึกผิด",
+        "level": "c2"
+    },
+    {
+        "word": "concatenation",
+        "type": "n.",
+        "meaning": "การเชื่อมโยงเป็นลูกโซ่",
+        "level": "c2"
+    },
+    {
+        "word": "conclave",
+        "type": "n.",
+        "meaning": "การประชุมลับ",
+        "level": "c2"
+    },
+    {
+        "word": "concomitant",
+        "type": "adj.",
+        "meaning": "ที่มาพร้อมกัน, ที่เกิดขึ้นควบคู่กัน",
+        "level": "c2"
+    },
+    {
+        "word": "concord",
+        "type": "n.",
+        "meaning": "ความกลมกลืน, ข้อตกลง",
+        "level": "c2"
+    },
+    {
+        "word": "conduit",
+        "type": "n.",
+        "meaning": "ท่อ, ช่องทาง",
+        "level": "c2"
+    },
+    {
+        "word": "conflate",
+        "type": "v.",
+        "meaning": "หลอมรวม, รวมกัน",
+        "level": "c2"
+    },
+    {
+        "word": "congenial",
+        "type": "adj.",
+        "meaning": "เป็นมิตร, เข้ากันได้ดี",
+        "level": "c2"
+    },
+    {
+        "word": "conjecture",
+        "type": "n., v.",
+        "meaning": "การคาดเดา, คาดเดา",
+        "level": "c2"
+    },
+    {
+        "word": "connive",
+        "type": "v.",
+        "meaning": "ร่วมมือ (ในการกระทำผิด), สมรู้ร่วมคิด",
+        "level": "c2"
+    },
+    {
+        "word": "connoisseur",
+        "type": "n.",
+        "meaning": "ผู้เชี่ยวชาญ (ด้านศิลปะ/อาหาร)",
+        "level": "c2"
+    },
+    {
+        "word": "connote",
+        "type": "v.",
+        "meaning": "บอกเป็นนัย",
+        "level": "c2"
+    },
+    {
+        "word": "conscribe",
+        "type": "v.",
+        "meaning": "เกณฑ์ทหาร",
+        "level": "c2"
+    },
+    {
+        "word": "consecrate",
+        "type": "v.",
+        "meaning": "ทำให้ศักดิ์สิทธิ์",
+        "level": "c2"
+    },
+    {
+        "word": "consign",
+        "type": "v.",
+        "meaning": "มอบหมาย, ส่งมอบ",
+        "level": "c2"
+    },
+    {
+        "word": "consternation",
+        "type": "n.",
+        "meaning": "ความตกใจกลัว, ความวิตกกังวล",
+        "level": "c2"
+    },
+    {
+        "word": "constituent",
+        "type": "n., adj.",
+        "meaning": "องค์ประกอบ, ผู้เลือกตั้ง",
+        "level": "c2"
+    },
+    {
+        "word": "construe",
+        "type": "v.",
+        "meaning": "ตีความ",
+        "level": "c2"
+    },
+    {
+        "word": "consummate",
+        "type": "adj., v.",
+        "meaning": "สมบูรณ์แบบ, ทำให้สมบูรณ์",
+        "level": "c2"
+    },
+    {
+        "word": "contemporaneous",
+        "type": "adj.",
+        "meaning": "เกิดขึ้นในเวลาเดียวกัน",
+        "level": "c2"
+    },
+    {
+        "word": "contentious",
+        "type": "adj.",
+        "meaning": "เป็นที่ถกเถียง, ชอบโต้แย้ง",
+        "level": "c2"
+    },
+    {
+        "word": "contravene",
+        "type": "v.",
+        "meaning": "ขัดแย้งกับ, ฝ่าฝืน",
+        "level": "c2"
+    },
+    {
+        "word": "contrite",
+        "type": "adj.",
+        "meaning": "สำนึกผิด",
+        "level": "c2"
+    },
+    {
+        "word": "contumacious",
+        "type": "adj.",
+        "meaning": "ดื้อรั้น, ไม่ยอมเชื่อฟัง",
+        "level": "c2"
+    },
+    {
+        "word": "conundrum",
+        "type": "n.",
+        "meaning": "ปริศนา, ปัญหาที่ยากจะแก้ไข",
+        "level": "c2"
+    },
+    {
+        "word": "converge",
+        "type": "v.",
+        "meaning": "บรรจบกัน, มุ่งเข้าหากัน",
+        "level": "c2"
+    },
+    {
+        "word": "convoluted",
+        "type": "adj.",
+        "meaning": "ซับซ้อน, ยุ่งเหยิง",
+        "level": "c2"
+    },
+    {
+        "word": "copious",
+        "type": "adj.",
+        "meaning": "มากมาย, อุดมสมบูรณ์",
+        "level": "c2"
+    },
+    {
+        "word": "corroborate",
+        "type": "v.",
+        "meaning": "ยืนยัน, สนับสนุน (หลักฐาน)",
+        "level": "c2"
+    },
+    {
+        "word": "cosmopolitan",
+        "type": "adj.",
+        "meaning": "ซึ่งประกอบด้วยหลายเชื้อชาติ, ทันสมัย",
+        "level": "c2"
+    },
+    {
+        "word": "coterie",
+        "type": "n.",
+        "meaning": "กลุ่มคนสนิท, พวกพ้อง",
+        "level": "c2"
+    },
+    {
+        "word": "countermand",
+        "type": "v.",
+        "meaning": "ยกเลิกคำสั่ง",
+        "level": "c2"
+    },
+    {
+        "word": "craven",
+        "type": "adj.",
+        "meaning": "ขี้ขลาด",
+        "level": "c2"
+    },
+    {
+        "word": "credulous",
+        "type": "adj.",
+        "meaning": "หูเบา, เชื่อง่าย",
+        "level": "c2"
+    },
+    {
+        "word": "culminate",
+        "type": "v.",
+        "meaning": "ถึงจุดสูงสุด, สิ้นสุดลง",
+        "level": "c2"
+    },
+    {
+        "word": "culpable",
+        "type": "adj.",
+        "meaning": "สมควรถูกตำหนิ, มีความผิด",
+        "level": "c2"
+    },
+    {
+        "word": "cursory",
+        "type": "adj.",
+        "meaning": "หยาบๆ, คร่าวๆ",
+        "level": "c2"
+    },
+    {
+        "word": "dearth",
+        "type": "n.",
+        "meaning": "ความขาดแคลน",
+        "level": "c2"
+    },
+    {
+        "word": "debacle",
+        "type": "n.",
+        "meaning": "ความล้มเหลวโดยสิ้นเชิง, หายนะ",
+        "level": "c2"
+    },
+    {
+        "word": "debilitate",
+        "type": "v.",
+        "meaning": "ทำให้อ่อนแอ",
+        "level": "c2"
+    },
+    {
+        "word": "debunk",
+        "type": "v.",
+        "meaning": "เปิดโปงความเท็จ",
+        "level": "c2"
+    },
+    {
+        "word": "decimate",
+        "type": "v.",
+        "meaning": "ทำลายส่วนใหญ่",
+        "level": "c2"
+    },
+    {
+        "word": "decorum",
+        "type": "n.",
+        "meaning": "มารยาท, ความเหมาะสม",
+        "level": "c2"
+    },
+    {
+        "word": "deference",
+        "type": "n.",
+        "meaning": "ความเคารพ, การยอมตาม",
+        "level": "c2"
+    },
+    {
+        "word": "deleterious",
+        "type": "adj.",
+        "meaning": "เป็นอันตราย",
+        "level": "c2"
+    },
+    {
+        "word": "delineate",
+        "type": "v.",
+        "meaning": "อธิบายอย่างละเอียด, วาดโครงร่าง",
+        "level": "c2"
+    },
+    {
+        "word": "demagogue",
+        "type": "n.",
+        "meaning": "นักการเมืองที่ปลุกระดมประชาชน",
+        "level": "c2"
+    },
+    {
+        "word": "denigrate",
+        "type": "v.",
+        "meaning": "ทำให้เสื่อมเสียชื่อเสียง",
+        "level": "c2"
+    },
+    {
+        "word": "denizen",
+        "type": "n.",
+        "meaning": "ผู้อยู่อาศัย",
+        "level": "c2"
+    },
+    {
+        "word": "deprecate",
+        "type": "v.",
+        "meaning": "คัดค้าน, ดูหมิ่น",
+        "level": "c2"
+    },
+    {
+        "word": "derelict",
+        "type": "adj., n.",
+        "meaning": "ถูกทอดทิ้ง, ทรัพย์สินที่ถูกทอดทิ้ง",
+        "level": "c2"
+    },
+    {
+        "word": "deride",
+        "type": "v.",
+        "meaning": "เยาะเย้ย, ดูถูก",
+        "level": "c2"
+    },
+    {
+        "word": "derogatory",
+        "type": "adj.",
+        "meaning": "ดูหมิ่น, ดูถูก",
+        "level": "c2"
+    },
+    {
+        "word": "desiccate",
+        "type": "v.",
+        "meaning": "ทำให้แห้ง, ดูดความชื้น",
+        "level": "c2"
+    },
+    {
+        "word": "desultory",
+        "type": "adj.",
+        "meaning": "ไม่มีจุดหมาย, สะเปะสะปะ",
+        "level": "c2"
+    },
+    {
+        "word": "detrimental",
+        "type": "adj.",
+        "meaning": "เป็นอันตราย",
+        "level": "c2"
+    },
+    {
+        "word": "devoid",
+        "type": "adj.",
+        "meaning": "ปราศจาก",
+        "level": "c2"
+    },
+    {
+        "word": "diaphanous",
+        "type": "adj.",
+        "meaning": "บางใส, โปร่งแสง",
+        "level": "c2"
+    },
+    {
+        "word": "diatribe",
+        "type": "n.",
+        "meaning": "การตำหนิอย่างรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "dichotomy",
+        "type": "n.",
+        "meaning": "การแบ่งออกเป็นสองส่วนที่ตรงข้ามกัน",
+        "level": "c2"
+    },
+    {
+        "word": "didactic",
+        "type": "adj.",
+        "meaning": "ที่มุ่งให้การสอน",
+        "level": "c2"
+    },
+    {
+        "word": "diffident",
+        "type": "adj.",
+        "meaning": "ไม่มั่นใจในตนเอง, ขี้อาย",
+        "level": "c2"
+    },
+    {
+        "word": "dilettante",
+        "type": "n.",
+        "meaning": "ผู้ที่ทำสิ่งต่างๆ อย่างผิวเผิน",
+        "level": "c2"
+    },
+    {
+        "word": "disabuse",
+        "type": "v.",
+        "meaning": "ทำให้เข้าใจถูกต้อง",
+        "level": "c2"
+    },
+    {
+        "word": "discomfit",
+        "type": "v.",
+        "meaning": "ทำให้รู้สึกอึดอัด/กระสับกระส่าย",
+        "level": "c2"
+    },
+    {
+        "word": "disparate",
+        "type": "adj.",
+        "meaning": "แตกต่างกันอย่างสิ้นเชิง",
+        "level": "c2"
+    },
+    {
+        "word": "disparage",
+        "type": "v.",
+        "meaning": "ดูถูก, ดูหมิ่น",
+        "level": "c2"
+    },
+    {
+        "word": "dispassionate",
+        "type": "adj.",
+        "meaning": "ปราศจากอคติ, ไม่ใช้อารมณ์",
+        "level": "c2"
+    },
+    {
+        "word": "dissident",
+        "type": "n., adj.",
+        "meaning": "ผู้เห็นต่าง",
+        "level": "c2"
+    },
+    {
+        "word": "dissipate",
+        "type": "v.",
+        "meaning": "ทำให้กระจัดกระจาย, ใช้จ่ายสุรุ่ยสุร่าย",
+        "level": "c2"
+    },
+    {
+        "word": "dissonance",
+        "type": "n.",
+        "meaning": "ความไม่เข้ากัน, ความขัดแย้ง",
+        "level": "c2"
+    },
+    {
+        "word": "distend",
+        "type": "v.",
+        "meaning": "ขยายตัว, บวม",
+        "level": "c2"
+    },
+    {
+        "word": "divest",
+        "type": "v.",
+        "meaning": "ถอนการลงทุน, ปลดเปลื้อง",
+        "level": "c2"
+    },
+    {
+        "word": "dogmatic",
+        "type": "adj.",
+        "meaning": "ดื้อรั้นในหลักคำสอน, หัวรั้น",
+        "level": "c2"
+    },
+    {
+        "word": "doleful",
+        "type": "adj.",
+        "meaning": "เศร้าโศก",
+        "level": "c2"
+    },
+    {
+        "word": "dormant",
+        "type": "adj.",
+        "meaning": "เฉื่อยชา, ไม่เคลื่อนไหว",
+        "level": "c2"
+    },
+    {
+        "word": "dubious",
+        "type": "adj.",
+        "meaning": "น่าสงสัย, ไม่น่าเชื่อถือ",
+        "level": "c2"
+    },
+    {
+        "word": "duplicity",
+        "type": "n.",
+        "meaning": "ความหลอกลวง, การแสดงสองหน้า",
+        "level": "c2"
+    },
+    {
+        "word": "ebullient",
+        "type": "adj.",
+        "meaning": "ร่าเริงมีชีวิตชีวา",
+        "level": "c2"
+    },
+    {
+        "word": "eclectic",
+        "type": "adj.",
+        "meaning": "ซึ่งเลือกสรรสิ่งที่ดีที่สุดจากแหล่งต่างๆ",
+        "level": "c2"
+    },
+    {
+        "word": "edifying",
+        "type": "adj.",
+        "meaning": "ซึ่งให้ความรู้/ศีลธรรม",
+        "level": "c2"
+    },
+    {
+        "word": "efface",
+        "type": "v.",
+        "meaning": "ลบออก, ทำให้จางหายไป",
+        "level": "c2"
+    },
+    {
+        "word": "effervescent",
+        "type": "adj.",
+        "meaning": "มีชีวิตชีวา, ร่าเริง",
+        "level": "c2"
+    },
+    {
+        "word": "efficacious",
+        "type": "adj.",
+        "meaning": "มีประสิทธิภาพ",
+        "level": "c2"
+    },
+    {
+        "word": "effrontery",
+        "type": "n.",
+        "meaning": "ความไร้ยางอาย",
+        "level": "c2"
+    },
+    {
+        "word": "egregious",
+        "type": "adj.",
+        "meaning": "เลวร้ายมาก, โดดเด่นในทางไม่ดี",
+        "level": "c2"
+    },
+    {
+        "word": "elegiac",
+        "type": "adj.",
+        "meaning": "เศร้าโศก (เกี่ยวกับความตาย/ความสูญเสีย)",
+        "level": "c2"
+    },
+    {
+        "word": "elicit",
+        "type": "v.",
+        "meaning": "ดึงข้อมูล, กระตุ้น",
+        "level": "c2"
+    },
+    {
+        "word": "elucidate",
+        "type": "v.",
+        "meaning": "อธิบายให้ชัดเจน",
+        "level": "c2"
+    },
+    {
+        "word": "emanate",
+        "type": "v.",
+        "meaning": "เปล่งออกมา, กำเนิดจาก",
+        "level": "c2"
+    },
+    {
+        "word": "emend",
+        "type": "v.",
+        "meaning": "แก้ไข (ข้อผิดพลาดในข้อความ)",
+        "level": "c2"
+    },
+    {
+        "word": "emissary",
+        "type": "n.",
+        "meaning": "ผู้ส่งสาร, ทูต",
+        "level": "c2"
+    },
+    {
+        "word": "emollient",
+        "type": "adj., n.",
+        "meaning": "ที่ทำให้ผิวนุ่ม, ครีมบำรุงผิว",
+        "level": "c2"
+    },
+    {
+        "word": "enervate",
+        "type": "v.",
+        "meaning": "ทำให้หมดกำลัง",
+        "level": "c2"
+    },
+    {
+        "word": "enfranchise",
+        "type": "v.",
+        "meaning": "ให้สิทธิ์ในการเลือกตั้ง",
+        "level": "c2"
+    },
+    {
+        "word": "engender",
+        "type": "v.",
+        "meaning": "ก่อให้เกิด, สร้างขึ้น",
+        "level": "c2"
+    },
+    {
+        "word": "ephemeral",
+        "type": "adj.",
+        "meaning": "ชั่วคราว, ไม่ยั่งยืน",
+        "level": "c2"
+    },
+    {
+        "word": "epigram",
+        "type": "n.",
+        "meaning": "บทกวีสั้นๆ คมคาย",
+        "level": "c2"
+    },
+    {
+        "word": "epitome",
+        "type": "n.",
+        "meaning": "แบบอย่างที่ดีเยี่ยม, สรุปย่อ",
+        "level": "c2"
+    },
+    {
+        "word": "equanimity",
+        "type": "n.",
+        "meaning": "ความสงบเยือกเย็น",
+        "level": "c2"
+    },
+    {
+        "word": "equivocal",
+        "type": "adj.",
+        "meaning": "กำกวม, ไม่ชัดเจน",
+        "level": "c2"
+    },
+    {
+        "word": "erudite",
+        "type": "adj.",
+        "meaning": "คงแก่เรียน, มีความรู้มาก",
+        "level": "c2"
+    },
+    {
+        "word": "eschew",
+        "type": "v.",
+        "meaning": "หลีกเลี่ยง",
+        "level": "c2"
+    },
+    {
+        "word": "esoteric",
+        "type": "adj.",
+        "meaning": "ลึกลับ, เข้าใจยาก (สำหรับคนวงใน)",
+        "level": "c2"
+    },
+    {
+        "word": "eulogy",
+        "type": "n.",
+        "meaning": "คำยกย่อง (โดยเฉพาะผู้ตาย)",
+        "level": "c2"
+    },
+    {
+        "word": "euphemism",
+        "type": "n.",
+        "meaning": "การใช้ถ้อยคำที่สุภาพแทนคำที่ไม่สุภาพ",
+        "level": "c2"
+    },
+    {
+        "word": "euphoria",
+        "type": "n.",
+        "meaning": "ความรู้สึกสุขสบายอย่างยิ่ง",
+        "level": "c2"
+    },
+    {
+        "word": "evanescent",
+        "type": "adj.",
+        "meaning": "จางหายไปง่าย, ไม่ยั่งยืน",
+        "level": "c2"
+    },
+    {
+        "word": "evince",
+        "type": "v.",
+        "meaning": "แสดงให้เห็นอย่างชัดเจน",
+        "level": "c2"
+    },
+    {
+        "word": "exacerbate",
+        "type": "v.",
+        "meaning": "ทำให้แย่ลง",
+        "level": "c2"
+    },
+    {
+        "word": "exasperate",
+        "type": "v.",
+        "meaning": "ทำให้โมโห, ทำให้หงุดหงิด",
+        "level": "c2"
+    },
+    {
+        "word": "excoriate",
+        "type": "v.",
+        "meaning": "วิพากษ์วิจารณ์อย่างรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "exculpate",
+        "type": "v.",
+        "meaning": "พิสูจน์ว่าบริสุทธิ์",
+        "level": "c2"
+    },
+    {
+        "word": "execrable",
+        "type": "adj.",
+        "meaning": "เลวร้ายมาก, น่ารังเกียจ",
+        "level": "c2"
+    },
+    {
+        "word": "exigent",
+        "type": "adj.",
+        "meaning": "เร่งด่วน, ต้องการความสนใจทันที",
+        "level": "c2"
+    },
+    {
+        "word": "exonerate",
+        "type": "v.",
+        "meaning": "พ้นจากข้อกล่าวหา, ทำให้พ้นผิด",
+        "level": "c2"
+    },
+    {
+        "word": "expatiate",
+        "type": "v.",
+        "meaning": "พูด/เขียนอย่างละเอียด",
+        "level": "c2"
+    },
+    {
+        "word": "expiate",
+        "type": "v.",
+        "meaning": "ชดใช้บาป",
+        "level": "c2"
+    },
+    {
+        "word": "expunge",
+        "type": "v.",
+        "meaning": "ลบออก, ขีดฆ่า",
+        "level": "c2"
+    },
+    {
+        "word": "extant",
+        "type": "adj.",
+        "meaning": "ที่ยังคงมีอยู่",
+        "level": "c2"
+    },
+    {
+        "word": "extol",
+        "type": "v.",
+        "meaning": "ยกย่องสรรเสริญ",
+        "level": "c2"
+    },
+    {
+        "word": "extrapolate",
+        "type": "v.",
+        "meaning": "อนุมานจากข้อมูลที่มีอยู่",
+        "level": "c2"
+    },
+    {
+        "word": "extricate",
+        "type": "v.",
+        "meaning": "ปลดปล่อย, ทำให้หลุดพ้น",
+        "level": "c2"
+    },
+    {
+        "word": "facetious",
+        "type": "adj.",
+        "meaning": "ตลกโปกฮา, ไม่จริงจัง",
+        "level": "c2"
+    },
+    {
+        "word": "fallacious",
+        "type": "adj.",
+        "meaning": "ผิดพลาด, หลอกลวง",
+        "level": "c2"
+    },
+    {
+        "word": "fatuous",
+        "type": "adj.",
+        "meaning": "โง่เขลา, ไร้สาระ",
+        "level": "c2"
+    },
+    {
+        "word": "fealty",
+        "type": "n.",
+        "meaning": "ความจงรักภักดี",
+        "level": "c2"
+    },
+    {
+        "word": "fecund",
+        "type": "adj.",
+        "meaning": "อุดมสมบูรณ์, มีลูกดก",
+        "level": "c2"
+    },
+    {
+        "word": "feign",
+        "type": "v.",
+        "meaning": "แกล้งทำ, เสแสร้ง",
+        "level": "c2"
+    },
+    {
+        "word": "felicitous",
+        "type": "adj.",
+        "meaning": "เหมาะสม, น่ายินดี",
+        "level": "c2"
+    },
+    {
+        "word": "fervid",
+        "type": "adj.",
+        "meaning": "กระตือรือร้นอย่างแรงกล้า",
+        "level": "c2"
+    },
+    {
+        "word": "fetid",
+        "type": "adj.",
+        "meaning": "มีกลิ่นเหม็นเน่า",
+        "level": "c2"
+    },
+    {
+        "word": "fiat",
+        "type": "n.",
+        "meaning": "คำสั่ง, กฤษฎีกา",
+        "level": "c2"
+    },
+    {
+        "word": "fiduciary",
+        "type": "adj., n.",
+        "meaning": "เกี่ยวกับความไว้วางใจ, ผู้ดูแลผลประโยชน์",
+        "level": "c2"
+    },
+    {
+        "word": "figurative",
+        "type": "adj.",
+        "meaning": "เป็นอุปมาอุปไมย",
+        "level": "c2"
+    },
+    {
+        "word": "flaccid",
+        "type": "adj.",
+        "meaning": "อ่อนปวกเปียก, หย่อนยาน",
+        "level": "c2"
+    },
+    {
+        "word": "flagellate",
+        "type": "v.",
+        "meaning": "เฆี่ยน, ตี",
+        "level": "c2"
+    },
+    {
+        "word": "florid",
+        "type": "adj.",
+        "meaning": "แดงก่ำ, หรูหราฟุ่มเฟือย",
+        "level": "c2"
+    },
+    {
+        "word": "flout",
+        "type": "v.",
+        "meaning": "ดูถูก, ไม่เคารพ (กฎ)",
+        "level": "c2"
+    },
+    {
+        "word": "foible",
+        "type": "n.",
+        "meaning": "ข้อเสียเล็กๆ น้อยๆ, จุดอ่อน",
+        "level": "c2"
+    },
+    {
+        "word": "foment",
+        "type": "v.",
+        "meaning": "ยุยง, ปลุกปั่น",
+        "level": "c2"
+    },
+    {
+        "word": "forbearance",
+        "type": "n.",
+        "meaning": "ความอดกลั้น",
+        "level": "c2"
+    },
+    {
+        "word": "forestall",
+        "type": "v.",
+        "meaning": "ป้องกันไว้ก่อน",
+        "level": "c2"
+    },
+    {
+        "word": "forlorn",
+        "type": "adj.",
+        "meaning": "โดดเดี่ยว, หดหู่",
+        "level": "c2"
+    },
+    {
+        "word": "forsake",
+        "type": "v.",
+        "meaning": "ละทิ้ง, ทอดทิ้ง",
+        "level": "c2"
+    },
+    {
+        "word": "fortuitous",
+        "type": "adj.",
+        "meaning": "โดยบังเอิญ, โชคดี",
+        "level": "c2"
+    },
+    {
+        "word": "fractious",
+        "type": "adj.",
+        "meaning": "เจ้าอารมณ์, ควบคุมยาก",
+        "level": "c2"
+    },
+    {
+        "word": "frenetic",
+        "type": "adj.",
+        "meaning": "บ้าคลั่ง, กระสับกระส่าย",
+        "level": "c2"
+    },
+    {
+        "word": "fulminate",
+        "type": "v.",
+        "meaning": "ประณามอย่างรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "fustian",
+        "type": "n., adj.",
+        "meaning": "ผ้ากำมะหยี่, คำพูดโอ้อวด",
+        "level": "c2"
+    },
+    {
+        "word": "gainsay",
+        "type": "v.",
+        "meaning": "ปฏิเสธ, โต้แย้ง",
+        "level": "c2"
+    },
+    {
+        "word": "garner",
+        "type": "v.",
+        "meaning": "รวบรวม, เก็บเกี่ยว",
+        "level": "c2"
+    },
+    {
+        "word": "garrulous",
+        "type": "adj.",
+        "meaning": "ช่างพูด, พูดมาก",
+        "level": "c2"
+    },
+    {
+        "word": "genial",
+        "type": "adj.",
+        "meaning": "เป็นมิตร, ใจดี",
+        "level": "c2"
+    },
+    {
+        "word": "gerrymander",
+        "type": "v.",
+        "meaning": "แบ่งเขตเลือกตั้งเพื่อผลประโยชน์ทางการเมือง",
+        "level": "c2"
+    },
+    {
+        "word": "gregarious",
+        "type": "adj.",
+        "meaning": "ชอบเข้าสังคม",
+        "level": "c2"
+    },
+    {
+        "word": "guile",
+        "type": "n.",
+        "meaning": "เล่ห์เหลี่ยม, ความเจ้าเล่ห์",
+        "level": "c2"
+    },
+    {
+        "word": "hackneyed",
+        "type": "adj.",
+        "meaning": "ซ้ำซาก, ใช้จนเบื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "hallowed",
+        "type": "adj.",
+        "meaning": "ศักดิ์สิทธิ์",
+        "level": "c2"
+    },
+    {
+        "word": "harangue",
+        "type": "n., v.",
+        "meaning": "การปราศรัยที่ดุดัน, ปราศรัยดุดัน",
+        "level": "c2"
+    },
+    {
+        "word": "hegemony",
+        "type": "n.",
+        "meaning": "อำนาจนำ, การครอบงำ",
+        "level": "c2"
+    },
+    {
+        "word": "hermetic",
+        "type": "adj.",
+        "meaning": "ปิดสนิท, ลึกลับ",
+        "level": "c2"
+    },
+    {
+        "word": "heterodox",
+        "type": "adj.",
+        "meaning": "นอกรีต, นอกแบบแผน",
+        "level": "c2"
+    },
+    {
+        "word": "histrionic",
+        "type": "adj.",
+        "meaning": "โอ้อวด, ชอบแสดง (เกินจริง)",
+        "level": "c2"
+    },
+    {
+        "word": "hoary",
+        "type": "adj.",
+        "meaning": "เก่าแก่, ผมหงอก",
+        "level": "c2"
+    },
+    {
+        "word": "homily",
+        "type": "n.",
+        "meaning": "คำเทศนา, การสั่งสอน",
+        "level": "c2"
+    },
+    {
+        "word": "homogeneous",
+        "type": "adj.",
+        "meaning": "เป็นเนื้อเดียวกัน",
+        "level": "c2"
+    },
+    {
+        "word": "hyperbole",
+        "type": "n.",
+        "meaning": "การกล่าวเกินจริง",
+        "level": "c2"
+    },
+    {
+        "word": "iconoclast",
+        "type": "n.",
+        "meaning": "ผู้ทำลายรูปเคารพ, ผู้ที่ต่อต้านความเชื่อดั้งเดิม",
+        "level": "c2"
+    },
+    {
+        "word": "ignominious",
+        "type": "adj.",
+        "meaning": "น่าอับอาย",
+        "level": "c2"
+    },
+    {
+        "word": "imbroglio",
+        "type": "n.",
+        "meaning": "สถานการณ์ที่ซับซ้อนและยุ่งเหยิง",
+        "level": "c2"
+    },
+    {
+        "word": "impecunious",
+        "type": "adj.",
+        "meaning": "ยากจน",
+        "level": "c2"
+    },
+    {
+        "word": "imperious",
+        "type": "adj.",
+        "meaning": "เผด็จการ, ชอบออกคำสั่ง",
+        "level": "c2"
+    },
+    {
+        "word": "impertinent",
+        "type": "adj.",
+        "meaning": "ไม่สุภาพ, ไม่เคารพ",
+        "level": "c2"
+    },
+    {
+        "word": "impervious",
+        "type": "adj.",
+        "meaning": "ไม่สามารถผ่านเข้าไปได้, ไม่ได้รับผลกระทบ",
+        "level": "c2"
+    },
+    {
+        "word": "impetuous",
+        "type": "adj.",
+        "meaning": "หุนหันพลันแล่น, ใจร้อน",
+        "level": "c2"
+    },
+    {
+        "word": "impinge",
+        "type": "v.",
+        "meaning": "กระทบกระเทือน, ละเมิด",
+        "level": "c2"
+    },
+    {
+        "word": "implacable",
+        "type": "adj.",
+        "meaning": "ไม่สามารถประนีประนอมได้, ไม่ยอมอ่อนข้อ",
+        "level": "c2"
+    },
+    {
+        "word": "imponderable",
+        "type": "adj., n.",
+        "meaning": "ที่ประเมินค่าไม่ได้, สิ่งที่ประเมินค่าไม่ได้",
+        "level": "c2"
+    },
+    {
+        "word": "importune",
+        "type": "v.",
+        "meaning": "รบเร้า, ขอร้องซ้ำๆ",
+        "level": "c2"
+    },
+    {
+        "word": "imprecation",
+        "type": "n.",
+        "meaning": "คำสาปแช่ง",
+        "level": "c2"
+    },
+    {
+        "word": "impudent",
+        "type": "adj.",
+        "meaning": "ไร้ยางอาย, ทะลึ่ง",
+        "level": "c2"
+    },
+    {
+        "word": "impugn",
+        "type": "v.",
+        "meaning": "โต้แย้ง, ตั้งข้อสงสัย",
+        "level": "c2"
+    },
+    {
+        "word": "impute",
+        "type": "v.",
+        "meaning": "กล่าวหา, โทษว่าเป็นความผิด",
+        "level": "c2"
+    },
+    {
+        "word": "inchoate",
+        "type": "adj.",
+        "meaning": "ที่เพิ่งเริ่มต้น, ที่ยังไม่สมบูรณ์",
+        "level": "c2"
+    },
+    {
+        "word": "incipient",
+        "type": "adj.",
+        "meaning": "ที่เริ่มปรากฏ, แรกเริ่ม",
+        "level": "c2"
+    },
+    {
+        "word": "incongruous",
+        "type": "adj.",
+        "meaning": "ไม่เข้ากัน, ไม่สอดคล้องกัน",
+        "level": "c2"
+    },
+    {
+        "word": "inculcate",
+        "type": "v.",
+        "meaning": "ปลูกฝัง, สอน",
+        "level": "c2"
+    },
+    {
+        "word": "inculpate",
+        "type": "v.",
+        "meaning": "กล่าวหา, ทำให้รู้สึกผิด",
+        "level": "c2"
+    },
+    {
+        "word": "indefatigable",
+        "type": "adj.",
+        "meaning": "ไม่รู้จักเหน็ดเหนื่อย",
+        "level": "c2"
+    },
+    {
+        "word": "indigenous",
+        "type": "adj.",
+        "meaning": "พื้นเมือง, ดั้งเดิม",
+        "level": "c2"
+    },
+    {
+        "word": "indolent",
+        "type": "adj.",
+        "meaning": "เกียจคร้าน, เฉื่อยชา",
+        "level": "c2"
+    },
+    {
+        "word": "ineffable",
+        "type": "adj.",
+        "meaning": "ที่ไม่อาจบรรยายได้",
+        "level": "c2"
+    },
+    {
+        "word": "ineluctable",
+        "type": "adj.",
+        "meaning": "หลีกเลี่ยงไม่ได้",
+        "level": "c2"
+    },
+    {
+        "word": "inept",
+        "type": "adj.",
+        "meaning": "ไร้ความสามารถ, งุ่มง่าม",
+        "level": "c2"
+    },
+    {
+        "word": "inert",
+        "type": "adj.",
+        "meaning": "เฉื่อยชา, ไม่เคลื่อนไหว",
+        "level": "c2"
+    },
+    {
+        "word": "inexorable",
+        "type": "adj.",
+        "meaning": "ไม่หยุดยั้ง, ไม่ยอมเปลี่ยนแปลง",
+        "level": "c2"
+    },
+    {
+        "word": "infallible",
+        "type": "adj.",
+        "meaning": "ไม่ผิดพลาด",
+        "level": "c2"
+    },
+    {
+        "word": "infantile",
+        "type": "adj.",
+        "meaning": "เหมือนเด็กทารก, ไร้เดียงสา",
+        "level": "c2"
+    },
+    {
+        "word": "infernal",
+        "type": "adj.",
+        "meaning": "เกี่ยวกับนรก, น่ารังเกียจ",
+        "level": "c2"
+    },
+    {
+        "word": "infiltrate",
+        "type": "v.",
+        "meaning": "แทรกซึม",
+        "level": "c2"
+    },
+    {
+        "word": "infirmity",
+        "type": "n.",
+        "meaning": "ความอ่อนแอ, ความเจ็บป่วย",
+        "level": "c2"
+    },
+    {
+        "word": "inflated",
+        "type": "adj.",
+        "meaning": "พองตัว, สูงเกินจริง",
+        "level": "c2"
+    },
+    {
+        "word": "inimical",
+        "type": "adj.",
+        "meaning": "เป็นอันตราย, เป็นศัตรู",
+        "level": "c2"
+    },
+    {
+        "word": "iniquitous",
+        "type": "adj.",
+        "meaning": "อยุติธรรม, ชั่วร้าย",
+        "level": "c2"
+    },
+    {
+        "word": "innocuous",
+        "type": "adj.",
+        "meaning": "ไม่เป็นอันตราย",
+        "level": "c2"
+    },
+    {
+        "word": "inscrutable",
+        "type": "adj.",
+        "meaning": "เข้าใจยาก, ลึกลับ",
+        "level": "c2"
+    },
+    {
+        "word": "insidious",
+        "type": "adj.",
+        "meaning": "เจ้าเล่ห์, มีเล่ห์เหลี่ยม",
+        "level": "c2"
+    },
+    {
+        "word": "insinuate",
+        "type": "v.",
+        "meaning": "บอกเป็นนัยในทางลบ",
+        "level": "c2"
+    },
+    {
+        "word": "insipid",
+        "type": "adj.",
+        "meaning": "จืดชืด, ไม่มีรสชาติ",
+        "level": "c2"
+    },
+    {
+        "word": "insouciant",
+        "type": "adj.",
+        "meaning": "ไม่กังวล, ไม่แยแส",
+        "level": "c2"
+    },
+    {
+        "word": "insular",
+        "type": "adj.",
+        "meaning": "แคบ, โดดเดี่ยว",
+        "level": "c2"
+    },
+    {
+        "word": "insurgent",
+        "type": "n., adj.",
+        "meaning": "ผู้ก่อการกบฏ",
+        "level": "c2"
+    },
+    {
+        "word": "interdict",
+        "type": "v., n.",
+        "meaning": "ห้าม, การห้าม",
+        "level": "c2"
+    },
+    {
+        "word": "internecine",
+        "type": "adj.",
+        "meaning": "ซึ่งทำลายล้างซึ่งกันและกัน",
+        "level": "c2"
+    },
+    {
+        "word": "interpose",
+        "type": "v.",
+        "meaning": "แทรกแซง, ขัดขวาง",
+        "level": "c2"
+    },
+    {
+        "word": "intransigent",
+        "type": "adj.",
+        "meaning": "ไม่ยอมประนีประนอม",
+        "level": "c2"
+    },
+    {
+        "word": "intrepid",
+        "type": "adj.",
+        "meaning": "กล้าหาญ, ไม่เกรงกลัว",
+        "level": "c2"
+    },
+    {
+        "word": "inured",
+        "type": "adj.",
+        "meaning": "เคยชินกับความยากลำบาก",
+        "level": "c2"
+    },
+    {
+        "word": "invective",
+        "type": "n.",
+        "meaning": "คำด่าทอ, คำประณาม",
+        "level": "c2"
+    },
+    {
+        "word": "inveigh",
+        "type": "v.",
+        "meaning": "ประท้วงอย่างรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "inveigle",
+        "type": "v.",
+        "meaning": "หลอกล่อ, ชักจูงด้วยเล่ห์เหลี่ยม",
+        "level": "c2"
+    },
+    {
+        "word": "inveterate",
+        "type": "adj.",
+        "meaning": "ฝังรากลึก, ติดเป็นนิสัย",
+        "level": "c2"
+    },
+    {
+        "word": "invidious",
+        "type": "adj.",
+        "meaning": "น่าอิจฉา, ก่อให้เกิดความอิจฉา",
+        "level": "c2"
+    },
+    {
+        "word": "irascible",
+        "type": "adj.",
+        "meaning": "เจ้าอารมณ์, โกรธง่าย",
+        "level": "c2"
+    },
+    {
+        "word": "irresolute",
+        "type": "adj.",
+        "meaning": "ลังเล, ไม่แน่วแน่",
+        "level": "c2"
+    },
+    {
+        "word": "itinerant",
+        "type": "adj., n.",
+        "meaning": "ซึ่งเดินทางไปมา, ผู้เดินทาง",
+        "level": "c2"
+    },
+    {
+        "word": "jaundiced",
+        "type": "adj.",
+        "meaning": "มีอคติ, อิจฉา",
+        "level": "c2"
+    },
+    {
+        "word": "jejune",
+        "type": "adj.",
+        "meaning": "จืดชืด, ไม่น่าสนใจ",
+        "level": "c2"
+    },
+    {
+        "word": "jettison",
+        "type": "v.",
+        "meaning": "ทิ้ง (สิ่งที่ไม่จำเป็น), โยนทิ้ง",
+        "level": "c2"
+    },
+    {
+        "word": "jocose",
+        "type": "adj.",
+        "meaning": "ตลกขบขัน",
+        "level": "c2"
+    },
+    {
+        "word": "juggernaut",
+        "type": "n.",
+        "meaning": "กองกำลังที่ไม่อาจหยุดยั้งได้",
+        "level": "c2"
+    },
+    {
+        "word": "juxtapose",
+        "type": "v.",
+        "meaning": "วางเคียงข้างกันเพื่อเปรียบเทียบ",
+        "level": "c2"
+    },
+    {
+        "word": "kudos",
+        "type": "n.",
+        "meaning": "เกียรติยศ, คำชมเชย",
+        "level": "c2"
+    },
+    {
+        "word": "lachrymose",
+        "type": "adj.",
+        "meaning": "ชอบร้องไห้, น่าเศร้า",
+        "level": "c2"
+    },
+    {
+        "word": "laconic",
+        "type": "adj.",
+        "meaning": "พูดน้อย, กระชับ",
+        "level": "c2"
+    },
+    {
+        "word": "languid",
+        "type": "adj.",
+        "meaning": "อ่อนแรง, เซื่องซึม",
+        "level": "c2"
+    },
+    {
+        "word": "largesse",
+        "type": "n.",
+        "meaning": "ความใจกว้าง, เงินบริจาค",
+        "level": "c2"
+    },
+    {
+        "word": "latent",
+        "type": "adj.",
+        "meaning": "แฝงอยู่, ซ่อนเร้น",
+        "level": "c2"
+    },
+    {
+        "word": "laud",
+        "type": "v.",
+        "meaning": "ยกย่องสรรเสริญ",
+        "level": "c2"
+    },
+    {
+        "word": "laudable",
+        "type": "adj.",
+        "meaning": "น่าสรรเสริญ",
+        "level": "c2"
+    },
+    {
+        "word": "legerdemain",
+        "type": "n.",
+        "meaning": "กลอุบาย, ความคล่องแคล่ว",
+        "level": "c2"
+    },
+    {
+        "word": "lethargy",
+        "type": "n.",
+        "meaning": "ความเฉื่อยชา, การขาดพลังงาน",
+        "level": "c2"
+    },
+    {
+        "word": "levity",
+        "type": "n.",
+        "meaning": "ความคะนอง, ความไม่จริงจัง",
+        "level": "c2"
+    },
+    {
+        "word": "libertine",
+        "type": "n.",
+        "meaning": "ผู้ที่มีชีวิตอิสระทางศีลธรรม (ในทางไม่ดี)",
+        "level": "c2"
+    },
+    {
+        "word": "limpid",
+        "type": "adj.",
+        "meaning": "ใสสะอาด, ชัดเจน",
+        "level": "c2"
+    },
+    {
+        "word": "litany",
+        "type": "n.",
+        "meaning": "บทสวด, รายการที่ยาวและน่าเบื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "lithe",
+        "type": "adj.",
+        "meaning": "อ่อนช้อย, คล่องแคล่ว",
+        "level": "c2"
+    },
+    {
+        "word": "livid",
+        "type": "adj.",
+        "meaning": "โกรธจัด, ซีดเผือด",
+        "level": "c2"
+    },
+    {
+        "word": "lugubrious",
+        "type": "adj.",
+        "meaning": "เศร้าโศก, หม่นหมอง",
+        "level": "c2"
+    },
+    {
+        "word": "luminous",
+        "type": "adj.",
+        "meaning": "สว่างจ้า, เปล่งแสง",
+        "level": "c2"
+    },
+    {
+        "word": "machination",
+        "type": "n.",
+        "meaning": "แผนการชั่วร้าย, การวางอุบาย",
+        "level": "c2"
+    },
+    {
+        "word": "macroscopic",
+        "type": "adj.",
+        "meaning": "มองเห็นได้ด้วยตาเปล่า",
+        "level": "c2"
+    },
+    {
+        "word": "magnanimous",
+        "type": "adj.",
+        "meaning": "ใจกว้าง, มีน้ำใจ",
+        "level": "c2"
+    },
+    {
+        "word": "maim",
+        "type": "v.",
+        "meaning": "ทำให้พิการ",
+        "level": "c2"
+    },
+    {
+        "word": "malaise",
+        "type": "n.",
+        "meaning": "ความรู้สึกไม่สบาย, ความไม่สบายใจ",
+        "level": "c2"
+    },
+    {
+        "word": "malapropism",
+        "type": "n.",
+        "meaning": "การใช้คำผิดความหมายโดยไม่ตั้งใจ (มักสร้างเสียงหัวเราะ)",
+        "level": "c2"
+    },
+    {
+        "word": "malfeasance",
+        "type": "n.",
+        "meaning": "การประพฤติมิชอบ (โดยเจ้าหน้าที่ของรัฐ)",
+        "level": "c2"
+    },
+    {
+        "word": "malinger",
+        "type": "v.",
+        "meaning": "แกล้งป่วยเพื่อหลีกเลี่ยงงาน",
+        "level": "c2"
+    },
+    {
+        "word": "malleable",
+        "type": "adj.",
+        "meaning": "ตีขึ้นรูปได้, ปรับเปลี่ยนได้",
+        "level": "c2"
+    },
+    {
+        "word": "mandate",
+        "type": "v.",
+        "meaning": "มอบอำนาจ, สั่ง",
+        "level": "c2"
+    },
+    {
+        "word": "manifold",
+        "type": "adj.",
+        "meaning": "มากมาย, หลากหลาย",
+        "level": "c2"
+    },
+    {
+        "word": "maudlin",
+        "type": "adj.",
+        "meaning": "อ่อนไหวเกินไป, สะอื้น",
+        "level": "c2"
+    },
+    {
+        "word": "maverick",
+        "type": "n.",
+        "meaning": "คนนอกคอก, ผู้ไม่ยอมตามใคร",
+        "level": "c2"
+    },
+    {
+        "word": "maxim",
+        "type": "n.",
+        "meaning": "คติพจน์, สุภาษิต",
+        "level": "c2"
+    },
+    {
+        "word": "meander",
+        "type": "v.",
+        "meaning": "คดเคี้ยว, เตร็ดเตร่",
+        "level": "c2"
+    },
+    {
+        "word": "melancholy",
+        "type": "n., adj.",
+        "meaning": "ความโศกเศร้า, เศร้าโศก",
+        "level": "c2"
+    },
+    {
+        "word": "mellifluous",
+        "type": "adj.",
+        "meaning": "ไพเราะ (เสียง), หวานหู",
+        "level": "c2"
+    },
+    {
+        "word": "mendacious",
+        "type": "adj.",
+        "meaning": "โกหก, ไม่ซื่อสัตย์",
+        "level": "c2"
+    },
+    {
+        "word": "meretricious",
+        "type": "adj.",
+        "meaning": "ฉูดฉาดแต่ไร้ค่า, ลวงตา",
+        "level": "c2"
+    },
+    {
+        "word": "metamorphosis",
+        "type": "n.",
+        "meaning": "การเปลี่ยนแปลงรูปร่าง/ลักษณะ",
+        "level": "c2"
+    },
+    {
+        "word": "meticulous",
+        "type": "adj.",
+        "meaning": "พิถีพิถัน, ละเอียดถี่ถ้วน",
+        "level": "c2"
+    },
+    {
+        "word": "minatory",
+        "type": "adj.",
+        "meaning": "คุกคาม",
+        "level": "c2"
+    },
+    {
+        "word": "minutiae",
+        "type": "n.",
+        "meaning": "รายละเอียดเล็กๆ น้อยๆ",
+        "level": "c2"
+    },
+    {
+        "word": "misanthrope",
+        "type": "n.",
+        "meaning": "ผู้เกลียดชังมนุษย์",
+        "level": "c2"
+    },
+    {
+        "word": "miscreant",
+        "type": "n.",
+        "meaning": "คนชั่วร้าย, อาชญากร",
+        "level": "c2"
+    },
+    {
+        "word": "misnomer",
+        "type": "n.",
+        "meaning": "ชื่อที่ไม่เหมาะสม",
+        "level": "c2"
+    },
+    {
+        "word": "modicum",
+        "type": "n.",
+        "meaning": "จำนวนเล็กน้อย",
+        "level": "c2"
+    },
+    {
+        "word": "mollify",
+        "type": "v.",
+        "meaning": "ทำให้ใจเย็นลง, ปลอบโยน",
+        "level": "c2"
+    },
+    {
+        "word": "monolithic",
+        "type": "adj.",
+        "meaning": "เป็นเนื้อเดียวกัน, ใหญ่โตและแข็งแกร่ง",
+        "level": "c2"
+    },
+    {
+        "word": "moribund",
+        "type": "adj.",
+        "meaning": "ที่กำลังจะตาย, ที่ใกล้จะสิ้นสุด",
+        "level": "c2"
+    },
+    {
+        "word": "morose",
+        "type": "adj.",
+        "meaning": "หงุดหงิด, ซึมเซา",
+        "level": "c2"
+    },
+    {
+        "word": "multifarious",
+        "type": "adj.",
+        "meaning": "หลากหลาย, มากมาย",
+        "level": "c2"
+    },
+    {
+        "word": "munificent",
+        "type": "adj.",
+        "meaning": "ใจกว้าง, ให้ด้วยความเต็มใจ",
+        "level": "c2"
+    },
+    {
+        "word": "myriad",
+        "type": "n., adj.",
+        "meaning": "จำนวนมากมายนับไม่ถ้วน",
+        "level": "c2"
+    },
+    {
+        "word": "nadir",
+        "type": "n.",
+        "meaning": "จุดต่ำสุด",
+        "level": "c2"
+    },
+    {
+        "word": "nascent",
+        "type": "adj.",
+        "meaning": "ที่เพิ่งเริ่มต้นพัฒนา",
+        "level": "c2"
+    },
+    {
+        "word": "nefarious",
+        "type": "adj.",
+        "meaning": "ชั่วร้าย, อัปยศ",
+        "level": "c2"
+    },
+    {
+        "word": "neophyte",
+        "type": "n.",
+        "meaning": "ผู้เริ่มต้น, ผู้มาใหม่",
+        "level": "c2"
+    },
+    {
+        "word": "nexus",
+        "type": "n.",
+        "meaning": "จุดเชื่อมโยง, ศูนย์กลาง",
+        "level": "c2"
+    },
+    {
+        "word": "noisome",
+        "type": "adj.",
+        "meaning": "มีกลิ่นเหม็น, เป็นอันตราย",
+        "level": "c2"
+    },
+    {
+        "word": "nonchalant",
+        "type": "adj.",
+        "meaning": "ไม่แยแส, ไม่สะทกสะท้าน",
+        "level": "c2"
+    },
+    {
+        "word": "nonplus",
+        "type": "v.",
+        "meaning": "ทำให้สับสนงุนงงจนทำอะไรไม่ถูก",
+        "level": "c2"
+    },
+    {
+        "word": "noxious",
+        "type": "adj.",
+        "meaning": "เป็นพิษ, เป็นอันตราย",
+        "level": "c2"
+    },
+    {
+        "word": "obdurate",
+        "type": "adj.",
+        "meaning": "ดื้อรั้น, ใจแข็ง",
+        "level": "c2"
+    },
+    {
+        "word": "obfuscate",
+        "type": "v.",
+        "meaning": "ทำให้สับสน, ทำให้คลุมเครือ",
+        "level": "c2"
+    },
+    {
+        "word": "oblique",
+        "type": "adj.",
+        "meaning": "เฉียง, ไม่ตรงไปตรงมา",
+        "level": "c2"
+    },
+    {
+        "word": "obsequious",
+        "type": "adj.",
+        "meaning": "ประจบสอพลอ",
+        "level": "c2"
+    },
+    {
+        "word": "obstreperous",
+        "type": "adj.",
+        "meaning": "ส่งเสียงดัง, ควบคุมยาก",
+        "level": "c2"
+    },
+    {
+        "word": "obviate",
+        "type": "v.",
+        "meaning": "ขจัด, ทำให้ไม่จำเป็น",
+        "level": "c2"
+    },
+    {
+        "word": "occlude",
+        "type": "v.",
+        "meaning": "ปิดกั้น, อุดตัน",
+        "level": "c2"
+    },
+    {
+        "word": "officious",
+        "type": "adj.",
+        "meaning": "ชอบจุ้นจ้าน, ชอบสอดแทรก",
+        "level": "c2"
+    },
+    {
+        "word": "oligarchy",
+        "type": "n.",
+        "meaning": "คณาธิปไตย (การปกครองโดยคนกลุ่มน้อย)",
+        "level": "c2"
+    },
+    {
+        "word": "omniscient",
+        "type": "adj.",
+        "meaning": "รอบรู้ทุกสิ่ง",
+        "level": "c2"
+    },
+    {
+        "word": "onerous",
+        "type": "adj.",
+        "meaning": "หนักหน่วง, เป็นภาระ",
+        "level": "c2"
+    },
+    {
+        "word": "onus",
+        "type": "n.",
+        "meaning": "ภาระหน้าที่, ความรับผิดชอบ",
+        "level": "c2"
+    },
+    {
+        "word": "opulent",
+        "type": "adj.",
+        "meaning": "มั่งคั่ง, หรูหรา",
+        "level": "c2"
+    },
+    {
+        "word": "oracular",
+        "type": "adj.",
+        "meaning": "คลุมเครือ, เป็นปริศนา (เหมือนคำทำนาย)",
+        "level": "c2"
+    },
+    {
+        "word": "oscillate",
+        "type": "v.",
+        "meaning": "แกว่งไปมา, สั่น",
+        "level": "c2"
+    },
+    {
+        "word": "ostensible",
+        "type": "adj.",
+        "meaning": "ที่อ้างว่าเป็น, ดูเหมือนว่า",
+        "level": "c2"
+    },
+    {
+        "word": "ostracize",
+        "type": "v.",
+        "meaning": "ขับไล่ออกจากสังคม",
+        "level": "c2"
+    },
+    {
+        "word": "overt",
+        "type": "adj.",
+        "meaning": "เปิดเผย, ชัดเจน",
+        "level": "c2"
+    },
+    {
+        "word": "palatable",
+        "type": "adj.",
+        "meaning": "อร่อย, เป็นที่ยอมรับได้",
+        "level": "c2"
+    },
+    {
+        "word": "palliative",
+        "type": "adj., n.",
+        "meaning": "บรรเทา (อาการ/ปัญหา), ยาบรรเทา",
+        "level": "c2"
+    },
+    {
+        "word": "palpable",
+        "type": "adj.",
+        "meaning": "ชัดเจน, สัมผัสได้",
+        "level": "c2"
+    },
+    {
+        "word": "panacea",
+        "type": "n.",
+        "meaning": "ยาครอบจักรวาล, วิธีแก้ปัญหาทั้งหมด",
+        "level": "c2"
+    },
+    {
+        "word": "paradigm",
+        "type": "n.",
+        "meaning": "แบบอย่าง, กระบวนทัศน์",
+        "level": "c2"
+    },
+    {
+        "word": "paradoxical",
+        "type": "adj.",
+        "meaning": "ที่ขัดแย้งในตัวเอง",
+        "level": "c2"
+    },
+    {
+        "word": "paragon",
+        "type": "n.",
+        "meaning": "แบบอย่างที่สมบูรณ์แบบ",
+        "level": "c2"
+    },
+    {
+        "word": "pariah",
+        "type": "n.",
+        "meaning": "คนนอกคอก, คนที่ถูกสังคมรังเกียจ",
+        "level": "c2"
+    },
+    {
+        "word": "parochial",
+        "type": "adj.",
+        "meaning": "ใจแคบ, เกี่ยวกับโบสถ์ท้องถิ่น",
+        "level": "c2"
+    },
+    {
+        "word": "parsimonious",
+        "type": "adj.",
+        "meaning": "ตระหนี่, มัธยัสถ์เกินไป",
+        "level": "c2"
+    },
+    {
+        "word": "partisan",
+        "type": "adj., n.",
+        "meaning": "ที่เข้าข้างฝ่ายใดฝ่ายหนึ่ง, ผู้สนับสนุน",
+        "level": "c2"
+    },
+    {
+        "word": "paucity",
+        "type": "n.",
+        "meaning": "ความขาดแคลน",
+        "level": "c2"
+    },
+    {
+        "word": "peccadillo",
+        "type": "n.",
+        "meaning": "ความผิดเล็กๆ น้อยๆ",
+        "level": "c2"
+    },
+    {
+        "word": "pecuniary",
+        "type": "adj.",
+        "meaning": "เกี่ยวกับการเงิน",
+        "level": "c2"
+    },
+    {
+        "word": "pedantic",
+        "type": "adj.",
+        "meaning": "จู้จี้จุกจิก (เกี่ยวกับกฎ/รายละเอียด)",
+        "level": "c2"
+    },
+    {
+        "word": "pejorative",
+        "type": "adj.",
+        "meaning": "ดูหมิ่น, เหยียดหยาม",
+        "level": "c2"
+    },
+    {
+        "word": "penchant",
+        "type": "n.",
+        "meaning": "ความชอบ, แนวโน้ม",
+        "level": "c2"
+    },
+    {
+        "word": "penitent",
+        "type": "adj., n.",
+        "meaning": "สำนึกผิด, ผู้สำนึกผิด",
+        "level": "c2"
+    },
+    {
+        "word": "penury",
+        "type": "n.",
+        "meaning": "ความยากจนข้นแค้น",
+        "level": "c2"
+    },
+    {
+        "word": "perfidious",
+        "type": "adj.",
+        "meaning": "ไม่ซื่อสัตย์, ทรยศ",
+        "level": "c2"
+    },
+    {
+        "word": "perfunctory",
+        "type": "adj.",
+        "meaning": "ทำลวกๆ, ทำอย่างไม่ใส่ใจ",
+        "level": "c2"
+    },
+    {
+        "word": "perilous",
+        "type": "adj.",
+        "meaning": "อันตราย",
+        "level": "c2"
+    },
+    {
+        "word": "peripatetic",
+        "type": "adj.",
+        "meaning": "ซึ่งเดินทางไปมา, ซึ่งเดินทาง",
+        "level": "c2"
+    },
+    {
+        "word": "perjury",
+        "type": "n.",
+        "meaning": "การให้การเท็จ",
+        "level": "c2"
+    },
+    {
+        "word": "permeate",
+        "type": "v.",
+        "meaning": "ซึมซาบ, แพร่กระจาย",
+        "level": "c2"
+    },
+    {
+        "word": "pernicious",
+        "type": "adj.",
+        "meaning": "เป็นอันตรายอย่างร้ายแรง, ร้ายกาจ",
+        "level": "c2"
+    },
+    {
+        "word": "perpetuate",
+        "type": "v.",
+        "meaning": "ทำให้คงอยู่ตลอดไป",
+        "level": "c2"
+    },
+    {
+        "word": "perspicacious",
+        "type": "adj.",
+        "meaning": "เฉียบแหลม, มีไหวพริบ",
+        "level": "c2"
+    },
+    {
+        "word": "pertinacious",
+        "type": "adj.",
+        "meaning": "ดื้อรั้น, ยืนกราน",
+        "level": "c2"
+    },
+    {
+        "word": "peruse",
+        "type": "v.",
+        "meaning": "อ่านอย่างละเอียด",
+        "level": "c2"
+    },
+    {
+        "word": "pervade",
+        "type": "v.",
+        "meaning": "แผ่ซ่าน, แพร่กระจายไปทั่ว",
+        "level": "c2"
+    },
+    {
+        "word": "petulant",
+        "type": "adj.",
+        "meaning": "เจ้าอารมณ์, หงุดหงิดง่าย",
+        "level": "c2"
+    },
+    {
+        "word": "philistine",
+        "type": "n.",
+        "meaning": "ผู้ที่ไม่สนใจศิลปะ/วัฒนธรรม",
+        "level": "c2"
+    },
+    {
+        "word": "phlegmatic",
+        "type": "adj.",
+        "meaning": "ใจเย็น, ไม่ตื่นเต้นง่าย",
+        "level": "c2"
+    },
+    {
+        "word": "picaresque",
+        "type": "adj.",
+        "meaning": "เกี่ยวกับตัวละครที่มีการผจญภัยแบบโกงๆ",
+        "level": "c2"
+    },
+    {
+        "word": "pied",
+        "type": "adj.",
+        "meaning": "มีหลายสี",
+        "level": "c2"
+    },
+    {
+        "word": "piety",
+        "type": "n.",
+        "meaning": "ความศรัทธา, ความเลื่อมใส",
+        "level": "c2"
+    },
+    {
+        "word": "pillage",
+        "type": "v.",
+        "meaning": "ปล้นสะดม",
+        "level": "c2"
+    },
+    {
+        "word": "pique",
+        "type": "n., v.",
+        "meaning": "ความขุ่นเคือง, ทำให้ขุ่นเคือง",
+        "level": "c2"
+    },
+    {
+        "word": "placate",
+        "type": "v.",
+        "meaning": "ทำให้ใจเย็นลง, ปลอบประโลม",
+        "level": "c2"
+    },
+    {
+        "word": "placid",
+        "type": "adj.",
+        "meaning": "สงบ, เงียบสงบ",
+        "level": "c2"
+    },
+    {
+        "word": "platitude",
+        "type": "n.",
+        "meaning": "คำพูดซ้ำซาก, คำพูดธรรมดาๆ",
+        "level": "c2"
+    },
+    {
+        "word": "plethora",
+        "type": "n.",
+        "meaning": "ความมากมายเกินไป",
+        "level": "c2"
+    },
+    {
+        "word": "plummet",
+        "type": "v.",
+        "meaning": "ดิ่งลงอย่างรวดเร็ว",
+        "level": "c2"
+    },
+    {
+        "word": "poignant",
+        "type": "adj.",
+        "meaning": "สะเทือนใจ, ซาบซึ้ง",
+        "level": "c2"
+    },
+    {
+        "word": "polemic",
+        "type": "n.",
+        "meaning": "การโต้แย้งอย่างรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "polyglot",
+        "type": "n., adj.",
+        "meaning": "ผู้พูดได้หลายภาษา, หลายภาษา",
+        "level": "c2"
+    },
+    {
+        "word": "ponderous",
+        "type": "adj.",
+        "meaning": "อุ้ยอ้าย, หนักอึ้ง, น่าเบื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "portent",
+        "type": "n.",
+        "meaning": "ลางบอกเหตุ",
+        "level": "c2"
+    },
+    {
+        "word": "postulate",
+        "type": "v., n.",
+        "meaning": "สมมติ, ข้อสมมติฐาน",
+        "level": "c2"
+    },
+    {
+        "word": "potable",
+        "type": "adj.",
+        "meaning": "ดื่มได้",
+        "level": "c2"
+    },
+    {
+        "word": "pragmatic",
+        "type": "adj.",
+        "meaning": "ปฏิบัติได้จริง",
+        "level": "c2"
+    },
+    {
+        "word": "precarious",
+        "type": "adj.",
+        "meaning": "ไม่มั่นคง, อันตราย",
+        "level": "c2"
+    },
+    {
+        "word": "preclude",
+        "type": "v.",
+        "meaning": "ป้องกัน, ขัดขวาง",
+        "level": "c2"
+    },
+    {
+        "word": "precocious",
+        "type": "adj.",
+        "meaning": "แก่แดด, ฉลาดเกินวัย",
+        "level": "c2"
+    },
+    {
+        "word": "precursor",
+        "type": "n.",
+        "meaning": "ผู้บุกเบิก, สิ่งที่มาก่อน",
+        "level": "c2"
+    },
+    {
+        "word": "predilection",
+        "type": "n.",
+        "meaning": "ความชอบเป็นพิเศษ",
+        "level": "c2"
+    },
+    {
+        "word": "premonition",
+        "type": "n.",
+        "meaning": "ลางสังหรณ์",
+        "level": "c2"
+    },
+    {
+        "word": "prescient",
+        "type": "adj.",
+        "meaning": "หยั่งรู้, มองการณ์ไกล",
+        "level": "c2"
+    },
+    {
+        "word": "prevaricate",
+        "type": "v.",
+        "meaning": "พูดอ้อมค้อม, บ่ายเบี่ยง",
+        "level": "c2"
+    },
+    {
+        "word": "primordial",
+        "type": "adj.",
+        "meaning": "ดั้งเดิม, แรกเริ่ม",
+        "level": "c2"
+    },
+    {
+        "word": "pristine",
+        "type": "adj.",
+        "meaning": "บริสุทธิ์, ยังไม่ได้ถูกแตะต้อง",
+        "level": "c2"
+    },
+    {
+        "word": "profligate",
+        "type": "adj., n.",
+        "meaning": "ใช้จ่ายสุรุ่ยสุร่าย, คนสุรุ่ยสุร่าย",
+        "level": "c2"
+    },
+    {
+        "word": "progeny",
+        "type": "n.",
+        "meaning": "ลูกหลาน, ผลผลิต",
+        "level": "c2"
+    },
+    {
+        "word": "proliferate",
+        "type": "v.",
+        "meaning": "แพร่หลายอย่างรวดเร็ว",
+        "level": "c2"
+    },
+    {
+        "word": "promulgate",
+        "type": "v.",
+        "meaning": "ประกาศใช้, เผยแพร่",
+        "level": "c2"
+    },
+    {
+        "word": "propensity",
+        "type": "n.",
+        "meaning": "แนวโน้ม, ความโน้มเอียง",
+        "level": "c2"
+    },
+    {
+        "word": "propitiate",
+        "type": "v.",
+        "meaning": "เอาใจ, ทำให้สงบ",
+        "level": "c2"
+    },
+    {
+        "word": "propriety",
+        "type": "n.",
+        "meaning": "ความเหมาะสม, มารยาท",
+        "level": "c2"
+    },
+    {
+        "word": "prosaic",
+        "type": "adj.",
+        "meaning": "ธรรมดา, น่าเบื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "proscribe",
+        "type": "v.",
+        "meaning": "สั่งห้าม, เนรเทศ",
+        "level": "c2"
+    },
+    {
+        "word": "protagonist",
+        "type": "n.",
+        "meaning": "ตัวเอก",
+        "level": "c2"
+    },
+    {
+        "word": "protean",
+        "type": "adj.",
+        "meaning": "สามารถปรับเปลี่ยนได้หลายรูปแบบ",
+        "level": "c2"
+    },
+    {
+        "word": "protract",
+        "type": "v.",
+        "meaning": "ยืดเวลาออกไป",
+        "level": "c2"
+    },
+    {
+        "word": "provident",
+        "type": "adj.",
+        "meaning": "รอบคอบ, ประหยัด",
+        "level": "c2"
+    },
+    {
+        "word": "provisional",
+        "type": "adj.",
+        "meaning": "ชั่วคราว",
+        "level": "c2"
+    },
+    {
+        "word": "proximity",
+        "type": "n.",
+        "meaning": "ความใกล้ชิด",
+        "level": "c2"
+    },
+    {
+        "word": "prudent",
+        "type": "adj.",
+        "meaning": "รอบคอบ, สุขุม",
+        "level": "c2"
+    },
+    {
+        "word": "puerile",
+        "type": "adj.",
+        "meaning": "เหมือนเด็ก, ไร้สาระ",
+        "level": "c2"
+    },
+    {
+        "word": "pugnacious",
+        "type": "adj.",
+        "meaning": "ชอบต่อสู้, ชอบทะเลาะ",
+        "level": "c2"
+    },
+    {
+        "word": "pulchritude",
+        "type": "n.",
+        "meaning": "ความสวยงาม",
+        "level": "c2"
+    },
+    {
+        "word": "punctilious",
+        "type": "adj.",
+        "meaning": "พิถีพิถัน, ละเอียดถี่ถ้วน",
+        "level": "c2"
+    },
+    {
+        "word": "pundit",
+        "type": "n.",
+        "meaning": "ผู้เชี่ยวชาญ, นักวิจารณ์",
+        "level": "c2"
+    },
+    {
+        "word": "pungent",
+        "type": "adj.",
+        "meaning": "มีกลิ่นฉุน, เผ็ดร้อน",
+        "level": "c2"
+    },
+    {
+        "word": "purloin",
+        "type": "v.",
+        "meaning": "ขโมย",
+        "level": "c2"
+    },
+    {
+        "word": "pusillanimous",
+        "type": "adj.",
+        "meaning": "ขี้ขลาด",
+        "level": "c2"
+    },
+    {
+        "word": "quandary",
+        "type": "n.",
+        "meaning": "ภาวะกลืนไม่เข้าคายไม่ออก, ความลำบากใจ",
+        "level": "c2"
+    },
+    {
+        "word": "quell",
+        "type": "v.",
+        "meaning": "ปราบปราม, ทำให้สงบ",
+        "level": "c2"
+    },
+    {
+        "word": "querulous",
+        "type": "adj.",
+        "meaning": "ขี้บ่น, ชอบบ่น",
+        "level": "c2"
+    },
+    {
+        "word": "quixotic",
+        "type": "adj.",
+        "meaning": "เพ้อฝัน, ไม่สมจริง",
+        "level": "c2"
+    },
+    {
+        "word": "quotidian",
+        "type": "adj.",
+        "meaning": "ธรรมดา, เกิดขึ้นทุกวัน",
+        "level": "c2"
+    },
+    {
+        "word": "rancid",
+        "type": "adj.",
+        "meaning": "เหม็นหืน",
+        "level": "c2"
+    },
+    {
+        "word": "rancor",
+        "type": "n.",
+        "meaning": "ความอาฆาตพยาบาท",
+        "level": "c2"
+    },
+    {
+        "word": "rapacious",
+        "type": "adj.",
+        "meaning": "โลภ, โลภมาก",
+        "level": "c2"
+    },
+    {
+        "word": "rarefied",
+        "type": "adj.",
+        "meaning": "หายาก, ประณีต",
+        "level": "c2"
+    },
+    {
+        "word": "recalcitrant",
+        "type": "adj.",
+        "meaning": "ดื้อรั้น, ไม่เชื่อฟัง",
+        "level": "c2"
+    },
+    {
+        "word": "recant",
+        "type": "v.",
+        "meaning": "ถอนคำพูด",
+        "level": "c2"
+    },
+    {
+        "word": "recidivism",
+        "type": "n.",
+        "meaning": "การกลับไปกระทำความผิดซ้ำ",
+        "level": "c2"
+    },
+    {
+        "word": "recondite",
+        "type": "adj.",
+        "meaning": "ลึกซึ้ง, เข้าใจยาก",
+        "level": "c2"
+    },
+    {
+        "word": "refractory",
+        "type": "adj.",
+        "meaning": "ดื้อรั้น, ไม่ตอบสนอง",
+        "level": "c2"
+    },
+    {
+        "word": "refulgent",
+        "type": "adj.",
+        "meaning": "สุกใส, เปล่งปลั่ง",
+        "level": "c2"
+    },
+    {
+        "word": "refute",
+        "type": "v.",
+        "meaning": "หักล้าง, พิสูจน์ว่าผิด",
+        "level": "c2"
+    },
+    {
+        "word": "relegate",
+        "type": "v.",
+        "meaning": "ลดตำแหน่ง, ลดระดับ",
+        "level": "c2"
+    },
+    {
+        "word": "remiss",
+        "type": "adj.",
+        "meaning": "ประมาท, สะเพร่า",
+        "level": "c2"
+    },
+    {
+        "word": "remonstrate",
+        "type": "v.",
+        "meaning": "ทักท้วง, คัดค้าน",
+        "level": "c2"
+    },
+    {
+        "word": "repast",
+        "type": "n.",
+        "meaning": "อาหาร, มื้ออาหาร",
+        "level": "c2"
+    },
+    {
+        "word": "replete",
+        "type": "adj.",
+        "meaning": "เต็มเปี่ยม, สมบูรณ์",
+        "level": "c2"
+    },
+    {
+        "word": "reprobate",
+        "type": "n., adj.",
+        "meaning": "คนชั่วร้าย, เลวทราม",
+        "level": "c2"
+    },
+    {
+        "word": "repudiate",
+        "type": "v.",
+        "meaning": "ปฏิเสธ, ไม่ยอมรับ",
+        "level": "c2"
+    },
+    {
+        "word": "rescind",
+        "type": "v.",
+        "meaning": "ยกเลิก (กฎหมาย/ข้อตกลง)",
+        "level": "c2"
+    },
+    {
+        "word": "resilient",
+        "type": "adj.",
+        "meaning": "ยืดหยุ่น, ฟื้นตัวเร็ว",
+        "level": "c2"
+    },
+    {
+        "word": "resplendent",
+        "type": "adj.",
+        "meaning": "รุ่งโรจน์, งดงาม",
+        "level": "c2"
+    },
+    {
+        "word": "restive",
+        "type": "adj.",
+        "meaning": "กระสับกระส่าย, ไม่สงบ",
+        "level": "c2"
+    },
+    {
+        "word": "reticent",
+        "type": "adj.",
+        "meaning": "เก็บตัว, ไม่ค่อยพูด",
+        "level": "c2"
+    },
+    {
+        "word": "retrograde",
+        "type": "adj., v.",
+        "meaning": "ถอยหลัง, เสื่อมถอย",
+        "level": "c2"
+    },
+    {
+        "word": "ribald",
+        "type": "adj.",
+        "meaning": "หยาบคาย, หยาบโลน",
+        "level": "c2"
+    },
+    {
+        "word": "rife",
+        "type": "adj.",
+        "meaning": "แพร่หลาย, เต็มไปด้วย (สิ่งไม่ดี)",
+        "level": "c2"
+    },
+    {
+        "word": "ruminative",
+        "type": "adj.",
+        "meaning": "ครุ่นคิด, ไตร่ตรอง",
+        "level": "c2"
+    },
+    {
+        "word": "sacrosanct",
+        "type": "adj.",
+        "meaning": "ศักดิ์สิทธิ์และไม่อาจละเมิดได้",
+        "level": "c2"
+    },
+    {
+        "word": "sagacious",
+        "type": "adj.",
+        "meaning": "ฉลาด, มีไหวพริบ",
+        "level": "c2"
+    },
+    {
+        "word": "salient",
+        "type": "adj.",
+        "meaning": "โดดเด่น, สำคัญ",
+        "level": "c2"
+    },
+    {
+        "word": "salubrious",
+        "type": "adj.",
+        "meaning": "ส่งเสริมสุขภาพ",
+        "level": "c2"
+    },
+    {
+        "word": "sanctimonious",
+        "type": "adj.",
+        "meaning": "ทำเป็นเคร่งศาสนา, เจ้าเล่ห์",
+        "level": "c2"
+    },
+    {
+        "word": "sanguine",
+        "type": "adj.",
+        "meaning": "ร่าเริง, มองโลกในแง่ดี",
+        "level": "c2"
+    },
+    {
+        "word": "sardonic",
+        "type": "adj.",
+        "meaning": "เย้ยหยัน, เสียดสี",
+        "level": "c2"
+    },
+    {
+        "word": "satiate",
+        "type": "v.",
+        "meaning": "ทำให้พอใจอย่างเต็มที่",
+        "level": "c2"
+    },
+    {
+        "word": "savoir-faire",
+        "type": "n.",
+        "meaning": "ความคล่องแคล่วทางสังคม",
+        "level": "c2"
+    },
+    {
+        "word": "scathing",
+        "type": "adj.",
+        "meaning": "วิพากษ์วิจารณ์อย่างรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "scintillating",
+        "type": "adj.",
+        "meaning": "เฉลียวฉลาด, มีชีวิตชีวา",
+        "level": "c2"
+    },
+    {
+        "word": "scrupulous",
+        "type": "adj.",
+        "meaning": "พิถีพิถัน, มีศีลธรรม",
+        "level": "c2"
+    },
+    {
+        "word": "sedulous",
+        "type": "adj.",
+        "meaning": "ขยันหมั่นเพียร",
+        "level": "c2"
+    },
+    {
+        "word": "seminal",
+        "type": "adj.",
+        "meaning": "สำคัญ, เป็นจุดเริ่มต้น",
+        "level": "c2"
+    },
+    {
+        "word": "sentient",
+        "type": "adj.",
+        "meaning": "มีความรู้สึก, มีสติ",
+        "level": "c2"
+    },
+    {
+        "word": "servile",
+        "type": "adj.",
+        "meaning": "ประจบสอพลอ, เหมือนทาส",
+        "level": "c2"
+    },
+    {
+        "word": "sinecure",
+        "type": "n.",
+        "meaning": "ตำแหน่งที่ได้เงินง่ายแต่ไม่ต้องทำงานมาก",
+        "level": "c2"
+    },
+    {
+        "word": "slander",
+        "type": "n., v.",
+        "meaning": "การหมิ่นประมาทด้วยวาจา, หมิ่นประมาทด้วยวาจา",
+        "level": "c2"
+    },
+    {
+        "word": "sojourn",
+        "type": "n., v.",
+        "meaning": "การพำนักชั่วคราว, พำนักชั่วคราว",
+        "level": "c2"
+    },
+    {
+        "word": "solace",
+        "type": "n., v.",
+        "meaning": "การปลอบโยน, ปลอบโยน",
+        "level": "c2"
+    },
+    {
+        "word": "solicitous",
+        "type": "adj.",
+        "meaning": "กังวลใจ, เอาใจใส่",
+        "level": "c2"
+    },
+    {
+        "word": "somnambulist",
+        "type": "n.",
+        "meaning": "ผู้เดินละเมอ",
+        "level": "c2"
+    },
+    {
+        "word": "sophistry",
+        "type": "n.",
+        "meaning": "การใช้เหตุผลที่ผิดเพื่อหลอกลวง",
+        "level": "c2"
+    },
+    {
+        "word": "sophomoric",
+        "type": "adj.",
+        "meaning": "ยังไม่เป็นผู้ใหญ่, ตื้นเขิน",
+        "level": "c2"
+    },
+    {
+        "word": "spate",
+        "type": "n.",
+        "meaning": "จำนวนมาก (ที่เกิดขึ้นอย่างรวดเร็ว)",
+        "level": "c2"
+    },
+    {
+        "word": "specious",
+        "type": "adj.",
+        "meaning": "ดูเหมือนถูกแต่ไม่จริง, น่าหลงเชื่อ",
+        "level": "c2"
+    },
+    {
+        "word": "splenetic",
+        "type": "adj.",
+        "meaning": "อารมณ์เสีย, ขุ่นเคือง",
+        "level": "c2"
+    },
+    {
+        "word": "spurious",
+        "type": "adj.",
+        "meaning": "ปลอม, ไม่แท้จริง",
+        "level": "c2"
+    },
+    {
+        "word": "staid",
+        "type": "adj.",
+        "meaning": "สงบเสงี่ยม, เคร่งขรึม",
+        "level": "c2"
+    },
+    {
+        "word": "stentorian",
+        "type": "adj.",
+        "meaning": "เสียงดังกึกก้อง",
+        "level": "c2"
+    },
+    {
+        "word": "stigma",
+        "type": "n.",
+        "meaning": "ตราบาป, ความอัปยศ",
+        "level": "c2"
+    },
+    {
+        "word": "stipulate",
+        "type": "v.",
+        "meaning": "กำหนดเงื่อนไข, ระบุ",
+        "level": "c2"
+    },
+    {
+        "word": "stoic",
+        "type": "adj., n.",
+        "meaning": "อดทน, ผู้ที่อดทน",
+        "level": "c2"
+    },
+    {
+        "word": "strident",
+        "type": "adj.",
+        "meaning": "เสียงดังบาดหู, แข็งกร้าว",
+        "level": "c2"
+    },
+    {
+        "word": "sublime",
+        "type": "adj.",
+        "meaning": "สูงส่ง, ยอดเยี่ยม",
+        "level": "c2"
+    },
+    {
+        "word": "subterfuge",
+        "type": "n.",
+        "meaning": "อุบาย, กลอุบาย",
+        "level": "c2"
+    },
+    {
+        "word": "succinct",
+        "type": "adj.",
+        "meaning": "กระชับ, รัดกุม",
+        "level": "c2"
+    },
+    {
+        "word": "suffuse",
+        "type": "v.",
+        "meaning": "แผ่กระจายไปทั่ว, คลุม",
+        "level": "c2"
+    },
+    {
+        "word": "supercilious",
+        "type": "adj.",
+        "meaning": "เย่อหยิ่ง, วางท่า",
+        "level": "c2"
+    },
+    {
+        "word": "superfluous",
+        "type": "adj.",
+        "meaning": "มากเกินความจำเป็น",
+        "level": "c2"
+    },
+    {
+        "word": "superimpose",
+        "type": "v.",
+        "meaning": "วางซ้อนทับกัน",
+        "level": "c2"
+    },
+    {
+        "word": "supplant",
+        "type": "v.",
+        "meaning": "เข้ามาแทนที่",
+        "level": "c2"
+    },
+    {
+        "word": "surreptitious",
+        "type": "adj.",
+        "meaning": "ลับๆ ล่อๆ, แอบซ่อน",
+        "level": "c2"
+    },
+    {
+        "word": "sybarite",
+        "type": "n.",
+        "meaning": "ผู้ที่รักความหรูหราฟุ่มเฟือย",
+        "level": "c2"
+    },
+    {
+        "word": "sycophant",
+        "type": "n.",
+        "meaning": "คนประจบสอพลอ",
+        "level": "c2"
+    },
+    {
+        "word": "tacit",
+        "type": "adj.",
+        "meaning": "โดยนัย, ไม่ได้กล่าวโดยตรง",
+        "level": "c2"
+    },
+    {
+        "word": "taciturn",
+        "type": "adj.",
+        "meaning": "เงียบขรึม, ไม่ค่อยพูด",
+        "level": "c2"
+    },
+    {
+        "word": "tangential",
+        "type": "adj.",
+        "meaning": "นอกประเด็น, ไม่เกี่ยวข้องโดยตรง",
+        "level": "c2"
+    },
+    {
+        "word": "tantamount",
+        "type": "adj.",
+        "meaning": "เท่ากัน, เท่ากับ",
+        "level": "c2"
+    },
+    {
+        "word": "tautology",
+        "type": "n.",
+        "meaning": "การใช้คำซ้ำซ้อนโดยไม่จำเป็น",
+        "level": "c2"
+    },
+    {
+        "word": "temerity",
+        "type": "n.",
+        "meaning": "ความบ้าบิ่น, ความกล้าหาญที่ขาดสติ",
+        "level": "c2"
+    },
+    {
+        "word": "temperance",
+        "type": "n.",
+        "meaning": "ความพอประมาณ, การไม่ดื่มสุรา",
+        "level": "c2"
+    },
+    {
+        "word": "tenable",
+        "type": "adj.",
+        "meaning": "ที่สามารถป้องกันได้, ที่สมเหตุสมผล",
+        "level": "c2"
+    },
+    {
+        "word": "tenacious",
+        "type": "adj.",
+        "meaning": "เหนียวแน่น, ยึดมั่น",
+        "level": "c2"
+    },
+    {
+        "word": "tenuous",
+        "type": "adj.",
+        "meaning": "บอบบาง, ไม่มั่นคง",
+        "level": "c2"
+    },
+    {
+        "word": "terse",
+        "type": "adj.",
+        "meaning": "ห้วน, กระชับ",
+        "level": "c2"
+    },
+    {
+        "word": "timorous",
+        "type": "adj.",
+        "meaning": "ขี้กลัว, ประหม่า",
+        "level": "c2"
+    },
+    {
+        "word": "tirade",
+        "type": "n.",
+        "meaning": "การตำหนิอย่างยาวนานและรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "titular",
+        "type": "adj.",
+        "meaning": "ในนาม, เป็นเพียงตำแหน่ง",
+        "level": "c2"
+    },
+    {
+        "word": "torpid",
+        "type": "adj.",
+        "meaning": "เฉื่อยชา, เซื่องซึม",
+        "level": "c2"
+    },
+    {
+        "word": "tortuous",
+        "type": "adj.",
+        "meaning": "คดเคี้ยว, ซับซ้อน",
+        "level": "c2"
+    },
+    {
+        "word": "tractable",
+        "type": "adj.",
+        "meaning": "ว่าง่าย, ควบคุมได้",
+        "level": "c2"
+    },
+    {
+        "word": "transcendent",
+        "type": "adj.",
+        "meaning": "เหนือกว่า, ยอดเยี่ยม",
+        "level": "c2"
+    },
+    {
+        "word": "transient",
+        "type": "adj., n.",
+        "meaning": "ชั่วคราว, ไม่ถาวร",
+        "level": "c2"
+    },
+    {
+        "word": "travesty",
+        "type": "n.",
+        "meaning": "การบิดเบือนที่น่าขบขัน, การล้อเลียน",
+        "level": "c2"
+    },
+    {
+        "word": "trenchant",
+        "type": "adj.",
+        "meaning": "คมคาย, เฉียบขาด",
+        "level": "c2"
+    },
+    {
+        "word": "truculent",
+        "type": "adj.",
+        "meaning": "ก้าวร้าว, ดุร้าย",
+        "level": "c2"
+    },
+    {
+        "word": "truncate",
+        "type": "v.",
+        "meaning": "ตัดให้สั้นลง",
+        "level": "c2"
+    },
+    {
+        "word": "turgid",
+        "type": "adj.",
+        "meaning": "บวม, อวดอ้าง",
+        "level": "c2"
+    },
+    {
+        "word": "turpitude",
+        "type": "n.",
+        "meaning": "ความเลวทราม, ความชั่วร้าย",
+        "level": "c2"
+    },
+    {
+        "word": "ubiquitous",
+        "type": "adj.",
+        "meaning": "มีอยู่ทุกหนทุกแห่ง",
+        "level": "c2"
+    },
+    {
+        "word": "unctuous",
+        "type": "adj.",
+        "meaning": "ประจบสอพลอ, หวานเลี่ยน",
+        "level": "c2"
+    },
+    {
+        "word": "undulating",
+        "type": "adj.",
+        "meaning": "เป็นคลื่น, เป็นลูกคลื่น",
+        "level": "c2"
+    },
+    {
+        "word": "unfettered",
+        "type": "adj.",
+        "meaning": "เป็นอิสระ, ไม่มีข้อจำกัด",
+        "level": "c2"
+    },
+    {
+        "word": "untenable",
+        "type": "adj.",
+        "meaning": "ที่ไม่สามารถรักษาไว้ได้, ไม่สมเหตุสมผล",
+        "level": "c2"
+    },
+    {
+        "word": "upbraid",
+        "type": "v.",
+        "meaning": "ตำหนิ, ดุด่า",
+        "level": "c2"
+    },
+    {
+        "word": "urbane",
+        "type": "adj.",
+        "meaning": "สุภาพ, มีมารยาท",
+        "level": "c2"
+    },
+    {
+        "word": "vacillate",
+        "type": "v.",
+        "meaning": "ลังเล, โลเล",
+        "level": "c2"
+    },
+    {
+        "word": "vacuous",
+        "type": "adj.",
+        "meaning": "ว่างเปล่า, ไร้สาระ",
+        "level": "c2"
+    },
+    {
+        "word": "valorous",
+        "type": "adj.",
+        "meaning": "กล้าหาญ",
+        "level": "c2"
+    },
+    {
+        "word": "vapid",
+        "type": "adj.",
+        "meaning": "จืดชืด, ไม่มีชีวิตชีวา",
+        "level": "c2"
+    },
+    {
+        "word": "vehement",
+        "type": "adj.",
+        "meaning": "รุนแรง, ดุเดือด",
+        "level": "c2"
+    },
+    {
+        "word": "venal",
+        "type": "adj.",
+        "meaning": "รับสินบน, ทุจริต",
+        "level": "c2"
+    },
+    {
+        "word": "venerate",
+        "type": "v.",
+        "meaning": "เคารพ, นับถือ",
+        "level": "c2"
+    },
+    {
+        "word": "veracity",
+        "type": "n.",
+        "meaning": "ความสัตย์จริง, ความถูกต้อง",
+        "level": "c2"
+    },
+    {
+        "word": "verbose",
+        "type": "adj.",
+        "meaning": "เยิ่นเย้อ, ใช้คำฟุ่มเฟือย",
+        "level": "c2"
+    },
+    {
+        "word": "verdant",
+        "type": "adj.",
+        "meaning": "เขียวชอุ่ม",
+        "level": "c2"
+    },
+    {
+        "word": "verisimilitude",
+        "type": "n.",
+        "meaning": "ความสมจริง",
+        "level": "c2"
+    },
+    {
+        "word": "veritable",
+        "type": "adj.",
+        "meaning": "ที่แท้จริง, อย่างแท้จริง",
+        "level": "c2"
+    },
+    {
+        "word": "vex",
+        "type": "v.",
+        "meaning": "ทำให้รำคาญ, ทำให้หงุดหงิด",
+        "level": "c2"
+    },
+    {
+        "word": "vexatious",
+        "type": "adj.",
+        "meaning": "ก่อกวน, น่ารำคาญ",
+        "level": "c2"
+    },
+    {
+        "word": "vicarious",
+        "type": "adj.",
+        "meaning": "ที่รู้สึกเหมือนได้ทำเอง (จากการดู/อ่าน)",
+        "level": "c2"
+    },
+    {
+        "word": "vicissitude",
+        "type": "n.",
+        "meaning": "การเปลี่ยนแปลงขึ้นๆ ลงๆ (ในชีวิต)",
+        "level": "c2"
+    },
+    {
+        "word": "vigilant",
+        "type": "adj.",
+        "meaning": "ระมัดระวัง, ตื่นตัว",
+        "level": "c2"
+    },
+    {
+        "word": "vilify",
+        "type": "v.",
+        "meaning": "ใส่ร้าย, ทำให้เสียชื่อเสียง",
+        "level": "c2"
+    },
+    {
+        "word": "vindicate",
+        "type": "v.",
+        "meaning": "พิสูจน์ว่าบริสุทธิ์, ปกป้อง",
+        "level": "c2"
+    },
+    {
+        "word": "virulent",
+        "type": "adj.",
+        "meaning": "เป็นพิษร้ายแรง, ร้ายกาจ",
+        "level": "c2"
+    },
+    {
+        "word": "visceral",
+        "type": "adj.",
+        "meaning": "จากสัญชาตญาณ, จากความรู้สึกภายใน",
+        "level": "c2"
+    },
+    {
+        "word": "vitriolic",
+        "type": "adj.",
+        "meaning": "ประชดประชัน, แดกดัน",
+        "level": "c2"
+    },
+    {
+        "word": "vituperate",
+        "type": "v.",
+        "meaning": "ด่าว่าอย่างรุนแรง",
+        "level": "c2"
+    },
+    {
+        "word": "vociferous",
+        "type": "adj.",
+        "meaning": "เสียงดัง, โวยวาย",
+        "level": "c2"
+    },
+    {
+        "word": "volatile",
+        "type": "adj.",
+        "meaning": "ระเหยง่าย, เปลี่ยนแปลงเร็ว",
+        "level": "c2"
+    },
+    {
+        "word": "voluminous",
+        "type": "adj.",
+        "meaning": "มีปริมาณมาก",
+        "level": "c2"
+    },
+    {
+        "word": "voracious",
+        "type": "adj.",
+        "meaning": "ตะกละ, อยากรู้อยากเห็นอย่างมาก",
+        "level": "c2"
+    },
+    {
+        "word": "waive",
+        "type": "v.",
+        "meaning": "สละสิทธิ์, ยอมแพ้",
+        "level": "c2"
+    },
+    {
+        "word": "wanton",
+        "type": "adj.",
+        "meaning": "ไร้เหตุผล, มุ่งร้าย",
+        "level": "c2"
+    },
+    {
+        "word": "warrant",
+        "type": "v.",
+        "meaning": "รับประกัน, รับรอง",
+        "level": "c2"
+    },
+    {
+        "word": "wary",
+        "type": "adj.",
+        "meaning": "ระมัดระวัง",
+        "level": "c2"
+    },
+    {
+        "word": "wax",
+        "type": "v.",
+        "meaning": "เพิ่มขึ้น, ขยายใหญ่ขึ้น (พระจันทร์เต็มดวง)",
+        "level": "c2"
+    },
+    {
+        "word": "welter",
+        "type": "n.",
+        "meaning": "ความยุ่งเหยิง, การม้วนตัว",
+        "level": "c2"
+    },
+    {
+        "word": "whimsical",
+        "type": "adj.",
+        "meaning": "แปลกประหลาด, เล่นตลก",
+        "level": "c2"
+    },
+    {
+        "word": "wield",
+        "type": "v.",
+        "meaning": "ใช้อำนาจ, ถือ (อาวุธ)",
+        "level": "c2"
+    },
+    {
+        "word": "wistful",
+        "type": "adj.",
+        "meaning": "โหยหา, คิดถึง",
+        "level": "c2"
+    },
+    {
+        "word": "zealot",
+        "type": "n.",
+        "meaning": "ผู้คลั่งไคล้, ผู้ที่แสดงความกระตือรือร้นเกินไป",
+        "level": "c2"
+    },
+    {
+        "word": "zenith",
+        "type": "n.",
+        "meaning": "จุดสูงสุด, จุดสุดยอด",
+        "level": "c2"
+    },
+    {
+        "word": "zephyr",
+        "type": "n.",
+        "meaning": "ลมอ่อนๆ",
+        "level": "c2"
+    }
+]

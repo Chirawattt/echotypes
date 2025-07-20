@@ -38,8 +38,7 @@ export const DEFAULT_SCORING_CONFIG: ScoringConfig = {
         'B1': 1.5,
         'B2': 1.75,
         'C1': 2.0,
-        'C2': 2.25,
-        'endless': 1.0
+        'C2': 2.25
     },
     maxStreakMultiplier: 20
 };

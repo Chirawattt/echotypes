@@ -1,10 +1,12 @@
 "use client";
-import { FaClock, FaKeyboard, FaTrophy, FaUndo, FaHome } from "react-icons/fa";
+import { useState } from "react";
+import { FaClock, FaKeyboard, FaTrophy, FaUndo, FaHome, FaExclamationTriangle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/lib/stores/gameStore";
 import { Button } from "@/components/ui/button";
 import { Word } from "@/lib/words/types";
+import IncorrectWordsModal from "./IncorrectWordsModal";
 
 export default function GameOver({ modeId, words, difficultyId, handleRestartGame, gameStyle, totalChallengeScore }: {
     modeId: string;
@@ -16,8 +18,13 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
 }) {
 
     const router = useRouter();
-    const { timeSpent, wpm, score, highScore, incorrectWords, bestStreak } = useGameStore();
+    const { timeSpent, wpm, score, highScore, incorrectWords, getModeStats } = useGameStore();
+    const [showIncorrectWordsModal, setShowIncorrectWordsModal] = useState(false);
     // Remove useAudio and sound playing from GameOver - moved to GameOverOverlay
+
+    // Get mode-specific statistics
+    const currentModeStats = getModeStats(modeId as 'echo' | 'memory' | 'typing');
+    const modeSpecificBestStreak = currentModeStats.bestStreak;
 
     // Use challenge score if in challenge mode, otherwise use regular score
     const displayScore = gameStyle === 'challenge' ? (totalChallengeScore || 0) : score;
@@ -95,13 +102,16 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                 {/* Detailed Stats Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     
-                    {/* Highest Streak - Show for all modes */}
+                    {/* Highest Streak - Show mode-specific streak */}
                     <div className="flex flex-col items-center bg-gradient-to-b from-orange-500/20 to-orange-600/10 rounded-2xl p-4 sm:p-6 border border-orange-500/30">
                         <div className="text-3xl mb-2">🔥</div>
-                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-orange-400 font-bold">{bestStreak}</div>
+                        <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-orange-400 font-bold">{modeSpecificBestStreak}</div>
                         <span className="text-orange-300 text-sm sm:text-base tracking-wider text-center">HIGHEST STREAK</span>
                         <div className="text-xs text-orange-200/70 mt-1 text-center">
-                            Max consecutive hits
+                            {modeId === 'echo' ? 'Best Echo streak' :
+                             modeId === 'memory' ? 'Best Memory streak' :
+                             modeId === 'typing' ? 'Best Typing streak' :
+                             'Max consecutive hits'} in {modeId} mode
                         </div>
                     </div>
 
@@ -139,17 +149,20 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                         </div>
                     </div>
 
-                    {/* Personal Best */}
+                    {/* Personal Best - Mode-specific */}
                     <div className="flex flex-col items-center bg-gradient-to-b from-amber-500/20 to-amber-600/10 rounded-2xl p-4 sm:p-6 border border-amber-500/30">
                         <FaTrophy className="text-3xl sm:text-4xl text-amber-400 mb-2" />
                         <div className="text-3xl sm:text-4xl lg:text-5xl mb-2 text-amber-400 font-bold">
-                            {displayHighScore}
+                            {gameStyle === 'challenge' ? displayHighScore : 
+                             (modeId === 'typing' ? (currentModeStats.bestWPM || 0) : currentModeStats.highScore)}
                             {gameStyle === 'challenge' && <span className="text-xl text-amber-300 ml-1">pts</span>}
+                            {modeId === 'typing' && gameStyle !== 'challenge' && <span className="text-xl text-amber-300 ml-1">WPM</span>}
                         </div>
                         <span className="text-amber-300 text-sm sm:text-base tracking-wider text-center">PERSONAL BEST</span>
                         <div className="text-xs text-amber-200/70 mt-1 text-center">
                             {gameStyle === 'challenge' ? 'Best challenge score' : 
-                             modeId === 'typing' ? 'Best WPM achieved' : 'Best score achieved'}
+                             modeId === 'typing' ? `Best WPM in ${modeId} mode` : 
+                             `Best score in ${modeId} mode`}
                         </div>
                     </div>
                 </div>
@@ -167,7 +180,7 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                                     `You completed ${score} correct answers • `
                                 }
                                 Accuracy: {score > 0 ? Math.round((score / (score + incorrectWords.length)) * 100) : 0}% • 
-                                {bestStreak > 0 && ` Max streak: ${bestStreak} consecutive hits`}
+                                {modeSpecificBestStreak > 0 && ` Max streak: ${modeSpecificBestStreak} consecutive hits`}
                             </div>
                         </div>
                     </div>
@@ -180,15 +193,11 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                         <div className="flex items-center justify-center bg-gradient-to-r from-neutral-500/10 to-neutral-600/10 rounded-xl p-4 border border-neutral-500/20">
                             <div className="text-center">
                                 <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
-                                    {difficultyId === 'endless' ? score : words.length}
+                                    {words.length}
                                 </div>
                                 <div className="text-sm text-neutral-400">
-                                    {difficultyId === 'endless' ? 
-                                        (modeId === 'echo' ? 'Words Echoed' : 
-                                         modeId === 'memory' ? 'Words Remembered' : 'Questions Completed') :
-                                        (modeId === 'echo' ? 'Total Echo Challenges' : 
-                                         modeId === 'memory' ? 'Total Memory Challenges' : 'Total Questions')
-                                    }
+                                    {modeId === 'echo' ? 'Total Echo Challenges' : 
+                                     modeId === 'memory' ? 'Total Memory Challenges' : 'Total Questions'}
                                 </div>
                             </div>
                         </div>
@@ -206,66 +215,56 @@ export default function GameOver({ modeId, words, difficultyId, handleRestartGam
                 )}
             </div>
             {incorrectWords.length > 0 && (
-                <>
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.2 }}
-                        className="w-full max-w-4xl mb-6 sm:mb-8"
-                    >
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl mb-4 sm:mb-6 lg:mb-8 text-center text-red-400 flex items-center justify-center gap-2 sm:gap-3 px-2">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.2 }}
+                    className="w-full max-w-4xl mb-6 sm:mb-8"
+                >
+                    <div className="text-center">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl mb-4 sm:mb-6 text-red-400 flex items-center justify-center gap-2 sm:gap-3 px-2">
                             <span className="text-red-500">❌</span>
-                            <span className="text-center">Incorrect Words</span>
+                            <span>Review Your Mistakes</span>
                             <span className="text-red-500">❌</span>
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 px-2 sm:px-4">
-                            {incorrectWords.map((word, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                                    className="bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 rounded-2xl p-4 sm:p-6 shadow-2xl border border-neutral-700/50 backdrop-blur-sm hover:shadow-red-500/10 transition-all duration-300"
-                                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                                >
-                                    {/* Correct Answer */}
-                                    <div className="mb-3 sm:mb-4">
-                                        <div className="text-xs sm:text-sm text-green-400/80 mb-1 flex items-center gap-2">
-                                            <span className="text-green-500">✓</span>
-                                            Correct Answer
-                                        </div>
-                                        <div className="text-xl sm:text-2xl lg:text-3xl text-green-400 font-bold bg-green-400/10 rounded-lg py-2 px-3 sm:px-4 border border-green-400/30 break-all">
-                                            {word.correct}
-                                        </div>
-                                    </div>
-
-                                    {/* Your Answer */}
-                                    <div>
-                                        <div className="text-xs sm:text-sm text-red-400/80 mb-1 flex items-center gap-2">
-                                            <span className="text-red-500">✗</span>
-                                            Your Answer
-                                        </div>
-                                        <div className="text-lg sm:text-xl lg:text-2xl text-red-400 font-medium bg-red-400/10 rounded-lg py-2 px-3 sm:px-4 border border-red-400/30 break-all">
-                                            {word.incorrect}
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
-                </>
+                        <p className="text-neutral-400 mb-6">
+                            You made {incorrectWords.length} mistake{incorrectWords.length > 1 ? 's' : ''} during this {modeId} challenge.
+                        </p>
+                        <Button
+                            onClick={() => setShowIncorrectWordsModal(true)}
+                            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-4 px-8 rounded-xl text-lg flex items-center justify-center gap-3 mx-auto shadow-xl border border-red-400/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                        >
+                            <FaExclamationTriangle className="text-xl" />
+                            <span>View Mistakes ({incorrectWords.length})</span>
+                        </Button>
+                    </div>
+                </motion.div>
             )}
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 lg:space-x-8 mb-6 sm:mb-8 px-2 sm:px-0 w-full max-w-md sm:max-w-none items-center justify-center" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                <Button onClick={() => router.push('/')} 
-                    className="bg-[#86D95C] hover:bg-[#78C351] text-black font-bold py-4 sm:py-6 px-8 sm:px-12 rounded-md text-lg sm:text-xl flex items-center justify-center gap-2 text-center cursor-pointer w-full sm:w-auto"> 
-                        <FaHome className="text-base sm:text-lg" /> <span>หน้าแรก</span> 
+                <Button 
+                    onClick={() => router.push('/')} 
+                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-6 px-12 rounded-2xl text-xl flex items-center justify-center gap-3 w-full sm:w-auto shadow-xl border border-green-400/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-green-500/25"
+                > 
+                    <FaHome className="text-xl" /> 
+                    <span>หน้าแรก</span> 
                 </Button> 
-                <Button onClick={handleRestartGame} 
-                    className="bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-4 sm:py-6 px-8 sm:px-12 rounded-md text-lg sm:text-xl flex items-center justify-center gap-2 text-center cursor-pointer w-full sm:w-auto">
-                        <FaUndo className="text-base sm:text-lg" /> <span>เริ่มใหม่</span> 
+                <Button 
+                    onClick={handleRestartGame} 
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-6 px-12 rounded-2xl text-xl flex items-center justify-center gap-3 w-full sm:w-auto shadow-xl border border-blue-400/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25"
+                >
+                    <FaUndo className="text-xl" /> 
+                    <span>เริ่มใหม่</span> 
                 </Button> 
-                
             </div>
+
+            {/* Incorrect Words Modal */}
+            <IncorrectWordsModal
+                isOpen={showIncorrectWordsModal}
+                onClose={() => setShowIncorrectWordsModal(false)}
+                incorrectWords={incorrectWords}
+                words={words}
+                modeId={modeId}
+            />
         </motion.main>
     )
 }

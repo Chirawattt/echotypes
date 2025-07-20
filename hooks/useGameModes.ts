@@ -65,9 +65,9 @@ export function useGameModes({
         }
     }, [status, currentWordIndex, words, modeId, setIsWordVisible, setPromptText, inputRef, gameStyle, ddaLevel]);
 
-    // Refocus logic for typing and meaning-match modes
+    // Refocus logic for typing mode
     useEffect(() => {
-        if (status === 'playing' && (modeId === 'typing' || modeId === 'meaning-match')) {
+        if (status === 'playing' && modeId === 'typing') {
             inputRef.current?.focus();
         }
     }, [status, currentWordIndex, modeId, inputRef]);

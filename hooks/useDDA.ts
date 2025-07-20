@@ -3,12 +3,7 @@ import { useGameStore } from '@/lib/stores/gameStore';
 import { getDdaGameSessionWords } from '@/lib/ddaWords';
 import { ddaConfig } from '@/lib/ddaConfig';
 
-interface UseDDAProps {
-    gameStyle: 'practice' | 'challenge';
-    modeId: string;
-}
-
-export function useDDA({ gameStyle, modeId }: UseDDAProps) {
+export function useDDA({ modeId }: { modeId: string }) {
     const {
         currentDifficultyLevel,
         performanceScore,
@@ -23,10 +18,6 @@ export function useDDA({ gameStyle, modeId }: UseDDAProps) {
 
     // Handle DDA performance update with clean transition
     const handleDdaUpdate = useCallback((isCorrect: boolean) => {
-        if ( modeId === 'meaning-match') {
-            return { levelChanged: false, newDifficultyLevel: currentDifficultyLevel };
-        }
-
         const result = updatePerformance(isCorrect);
 
 
@@ -54,7 +45,7 @@ export function useDDA({ gameStyle, modeId }: UseDDAProps) {
         }
 
         return result;
-    }, [gameStyle, modeId, currentDifficultyLevel, updatePerformance, setWords, setCurrentWordIndex, setIsTransitioning]);
+    }, [modeId, updatePerformance, setWords, setCurrentWordIndex, setIsTransitioning]);
 
     // Set difficulty level manually (for external control)
     const setDifficultyLevel = useCallback(() => {
