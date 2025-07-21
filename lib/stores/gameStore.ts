@@ -132,6 +132,7 @@ interface GameState {
     addIncorrectWord: (word: IncorrectWord) => void;
     resetGame: () => void;
     initializeGame: (words: Word[]) => void;
+    globalCleanup: () => void;
 }
 
 const TYPING_MODE_DURATION = 60;
@@ -235,7 +236,10 @@ export const useGameStore = create<GameState>((set, get) => ({
             bestStreak: Math.max(state.bestStreak, newStreak)
         };
     }),
-    resetStreak: () => set({ streakCount: 0 }),
+    resetStreak: () => {
+        console.log('🔄 STORE: resetStreak() called');
+        return set({ streakCount: 0 });
+    },
 
     // Challenge Mode Scoring actions
     setTotalChallengeScore: (score) => set((state) => ({
@@ -246,10 +250,13 @@ export const useGameStore = create<GameState>((set, get) => ({
         totalChallengeScore: state.totalChallengeScore + calculation.finalScore,
         lastScoreCalculation: calculation
     })),
-    resetChallengeScore: () => set({
-        totalChallengeScore: 0,
-        lastScoreCalculation: null
-    }),
+    resetChallengeScore: () => {
+        console.log('🔄 STORE: resetChallengeScore() called');
+        return set({
+            totalChallengeScore: 0,
+            lastScoreCalculation: null
+        });
+    },
 
     // DDA Actions
     updatePerformance: (isCorrect: boolean) => {
@@ -323,7 +330,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     })),
 
     resetGame: () => {
-
+        console.log('🔄 STORE: resetGame() called');
         return set({
             status: 'loading',
             countdown: 3,
@@ -354,6 +361,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     },
 
     initializeGame: (words: Word[]) => {
+        console.log('🚀 STORE: initializeGame() called with', words.length, 'words');
         return set({
             words,
             status: 'countdown',
@@ -397,5 +405,39 @@ export const useGameStore = create<GameState>((set, get) => ({
     getModeStats: (mode: 'echo' | 'memory' | 'typing') => {
         const state = get();
         return state.modeStats[mode];
+    },
+
+    // Global cleanup function to completely reset game state
+    globalCleanup: () => {
+        console.log('🧹 GLOBAL CLEANUP: Resetting all game state');
+        return set({
+            // Reset all game state to initial values
+            status: 'loading',
+            countdown: 3,
+            words: [],
+            currentWordIndex: 0,
+            userInput: '',
+            score: 0,
+            lives: 3,
+            isWrong: false,
+            isCorrect: false,
+            isTransitioning: false,
+            timeLeft: TYPING_MODE_DURATION,
+            startTime: null,
+            timeSpent: { minutes: 0, seconds: 0 },
+            currentTime: { minutes: 0, seconds: 0 },
+            highScore: 0,
+            wpm: 0,
+            isWordVisible: false,
+            promptText: '',
+            incorrectWords: [],
+            streakCount: 0,
+            bestStreak: 0,
+            totalChallengeScore: 0,
+            lastScoreCalculation: null,
+            // Reset DDA state
+            currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
+            performanceScore: 0,
+        });
     },
 }));

@@ -5,7 +5,6 @@ import { mapLevelToDisplayName } from '@/lib/difficultyHelpers';
 import StreakDisplay from '@/components/game/StreakDisplay';
 
 interface GameHeaderProps {
-    difficultyId: string;
     modeId: string;
     lives: number;
     timeLeft: number;
@@ -15,7 +14,6 @@ interface GameHeaderProps {
 }
 
 export default function GameHeader({
-    difficultyId,
     modeId,
     lives,
     timeLeft,
@@ -50,9 +48,9 @@ export default function GameHeader({
     );
 
     return (
-        <div className="flex flex-col items-center w-full shrink-0 relative z-10">
+        <div className="flex flex-col items-center w-full shrink-0 relative z-10 max-w-6xl mx-auto mt-10">
             {/* Game Info Section - Words Played, Streak Display, Lives Remaining */}
-            <section className="w-full flex justify-between items-center mt-6 pt-20 px-6 sm:px-8 max-w-6xl mx-auto" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+            <section className="w-full flex justify-between items-center p-6 sm:p-8" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
                 {/* Word Count and Difficulty Level */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -62,10 +60,7 @@ export default function GameHeader({
                 >
                     <p className="text-sm sm:text-base lg:text-lg font-bold">Words Played: {totalWordsPlayed}</p>
                     <p className="text-xs sm:text-sm uppercase text-blue-300 font-medium">
-                        {difficultyId === 'dda' 
-                            ? `Level ${mapLevelToDisplayName(currentDifficultyLevel)}`
-                            : difficultyId
-                        }
+                        {`Level ${mapLevelToDisplayName(currentDifficultyLevel)}`}
                     </p>
                 </motion.div>
 

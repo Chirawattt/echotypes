@@ -53,7 +53,13 @@ export const authOptions: NextAuthOptions = {
       }
       return false;
     },
-    async redirect({ baseUrl }) {
+    async redirect({ url, baseUrl }) {
+      // Store login timestamp for welcome toast detection
+      if (url === baseUrl) {
+        // This is a successful login redirect to home page
+        // The client will read this timestamp via localStorage
+        return `${baseUrl}?loginTimestamp=${Date.now()}`;
+      }
       return baseUrl;
     },
     async session({ session, token }) {

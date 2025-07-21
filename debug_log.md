@@ -1,50 +1,45 @@
-Navigating: {selectedTime: 30, selectedGameStyle: 'practice', timeParam: '&time=30', fullUrl: '/play/typing/dda/play?style=practice&time=30', modeId: 'typing'}
-turbopack-hot-reloader-common.ts:41 [Fast Refresh] rebuilding
-report-hmr-latency.ts:26 [Fast Refresh] done in 158ms
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-useGameLogic.ts:262 🚀 DEBUG: Starting game initialization
+📤 FINAL SCORE DATA TO SUBMIT: {gameMode: 'typing', gameStyle: 'practice', score: 15, highestStreak: 15, wordsCorrect: 15, …}gameMode: "typing"gameStyle: "practice"highestStreak: 15score: 15timeSpentSeconds: 30wordsCorrect: 15wordsIncorrect: 0wpm: 30[[Prototype]]: Object
+useGameLogic.ts:261 🎯 INITIALIZING NEW GAME: {modeId: 'typing', gameStyle: 'challenge', gameKey: 'typing-challenge', currentStoreState: {…}}
 useSpeech.ts:45 🔇 Cancelling speech synthesis
-useGameLogic.ts:276 🕐 DEBUG: Post-reset time setting logic: {modeId: 'typing', gameStyle: 'practice', selectedTime: 30, willSetTime: 30}
-useGameLogic.ts:283 ⏰ DEBUG: Setting post-reset custom time to: 30
-useGameLogic.ts:295 📥 DEBUG: Starting word loading phase...
-useGameLogic.ts:340 🕐 DEBUG: Initial time setting logic: {modeId: 'typing', gameStyle: 'practice', selectedTime: 30, willSetTime: 30}
-useGameLogic.ts:347 ⏰ DEBUG: Setting initial custom time to: 30
-useGameLogic.ts:541 🎮 DEBUG: Game Over useEffect triggered: {status: 'loading', hasStartTime: false, scoreSubmitted: false, willProcess: false}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-useGameLogic.ts:324 ✅ DEBUG: Words loaded successfully, transitioning to countdown...
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-useGameLogic.ts:541 🎮 DEBUG: Game Over useEffect triggered: {status: 'loading', hasStartTime: false, scoreSubmitted: false, willProcess: false}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-useGameLogic.ts:382 ⏰ DEBUG: Starting countdown sequence
+useGameLogic.ts:289 🔄 BEFORE RESET: {status: 'gameOver', score: 15, streakCount: 15, bestStreak: 15, totalChallengeScore: 0}
+gameStore.ts:332 🔄 STORE: resetGame() called
+gameStore.ts:239 🔄 STORE: resetStreak() called
+gameStore.ts:253 🔄 STORE: resetChallengeScore() called
+useGameLogic.ts:304 ✅ AFTER RESET - State should be clean now
+gameStore.ts:253 🔄 STORE: resetChallengeScore() called
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'gameOver', startTime: true, scoreSubmitted: false, wordsLength: 20, willSubmit: true}
+useGameLogic.ts:568 💾 SUBMITTING SCORE - Current state: {modeId: 'typing', gameStyle: 'challenge', score: 15, streakCount: 15, bestStreak: 15, …}
+useGameLogic.ts:637 📤 FINAL SCORE DATA TO SUBMIT: {gameMode: 'typing', gameStyle: 'challenge', score: 0, highestStreak: 15, wordsCorrect: 15, …}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'loading', startTime: false, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'loading', startTime: false, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+gameStore.ts:363 🚀 STORE: initializeGame() called with 20 words
 useSpeech.ts:45 🔇 Cancelling speech synthesis
-useGameLogic.ts:541 🎮 DEBUG: Game Over useEffect triggered: {status: 'countdown', hasStartTime: false, scoreSubmitted: false, willProcess: false}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-useGameLogic.ts:396 🚀 DEBUG: Game starting with timeLeft: 60
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-useGameLogic.ts:541 🎮 DEBUG: Game Over useEffect triggered: {status: 'playing', hasStartTime: false, scoreSubmitted: false, willProcess: false}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-useGameLogic.ts:541 🎮 DEBUG: Game Over useEffect triggered: {status: 'playing', hasStartTime: true, scoreSubmitted: false, willProcess: false}
-useGameLogic.ts:308 ✅ DDA cache preloaded in background
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
-page.tsx:40 🌐 DEBUG: DDA Play Page - URL Params: {rawTimeParam: '30', parsedSelectedTime: 30, gameStyle: 'practice', modeId: 'typing', searchParamsAll: {…}}
-useGameLogic.ts:31 🎮 DEBUG: useGameLogic Props Received: {modeId: 'typing', difficultyId: 'dda', gameStyle: 'practice', selectedTime: 30, selectedTimeType: 'number'}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'countdown', startTime: false, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: false, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useDDA.ts:36 DDA new words is  (5) [{…}, {…}, {…}, {…}, {…}]
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useDDA.ts:36 DDA new words is  (5) [{…}, {…}, {…}, {…}, {…}]
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useDDA.ts:36 DDA new words is  (5) [{…}, {…}, {…}, {…}, {…}]
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+gameStore.ts:239 🔄 STORE: resetStreak() called
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+gameStore.ts:239 🔄 STORE: resetStreak() called
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'playing', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}
+useGameLogic.ts:557 ⚡ GAME OVER EFFECT TRIGGERED: {status: 'gameOver', startTime: true, scoreSubmitted: true, wordsLength: 20, willSubmit: false}

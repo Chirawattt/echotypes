@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { globalCleanup } from "@/lib/cleanup";
+import { useGameStore } from "@/lib/stores/gameStore";
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaArrowLeft, FaUser, FaSignOutAlt, FaGoogle } from 'react-icons/fa';
+import { FaArrowLeft, FaUser, FaSignOutAlt, FaGoogle, FaUserCircle } from 'react-icons/fa';
 import { useAuth } from '@/providers/AuthContext';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
@@ -15,6 +15,7 @@ export default function Header() {
     const { session, status, signIn, signOut } = useAuth();
     const [showUserMenu, setShowUserMenu] = useState(false);
     const userMenuRef = useRef<HTMLDivElement>(null);
+    const { globalCleanup } = useGameStore();
 
     // Close user menu when clicking outside
     useEffect(() => {
@@ -42,7 +43,26 @@ export default function Header() {
 
 
     const handleBackClick = () => {
-        // Clean up all audio, timers, speech synthesis, and state
+        console.log('⬅️ BACK NAVIGATION: Performing global cleanup');
+        
+        // Clear all localStorage game data
+        if (typeof window !== 'undefined') {
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.includes('-timeSpent')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+        }
+        
+        // Cancel any pending speech
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+        
+        // Reset all game state
         globalCleanup();
         
         // Navigate back in history
@@ -50,7 +70,26 @@ export default function Header() {
     };
 
     const handleHomeClick = () => {
-        // Clean up all audio, timers, speech synthesis, and state
+        console.log('🏠 HEADER HOME NAVIGATION: Performing global cleanup');
+        
+        // Clear all localStorage game data
+        if (typeof window !== 'undefined') {
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.includes('-timeSpent')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+        }
+        
+        // Cancel any pending speech
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+        
+        // Reset all game state
         globalCleanup();
         
         // Navigate to home page
@@ -146,6 +185,21 @@ export default function Header() {
 
                                     {/* Menu Items */}
                                     <div className="py-1">
+                                        <button
+                                            onClick={() => {
+                                                setShowUserMenu(false);
+                                                router.push('/profile');
+                                            }}
+                                            className="w-full flex items-center space-x-3 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 text-left"
+                                        >
+                                            <FaUserCircle className="text-sm" />
+                                            <span 
+                                                className="text-sm font-medium"
+                                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                            >
+                                                Profile
+                                            </span>
+                                        </button>
                                         <button
                                             onClick={() => {
                                                 setShowUserMenu(false);

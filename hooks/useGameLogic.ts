@@ -44,11 +44,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         setWpm, setIsWordVisible, setPromptText, setTimeLeft,
         incrementWordIndex, decrementTimeLeft, addIncorrectWord, resetGame, initializeGame,
         incrementStreak, resetStreak, addChallengeScore, resetChallengeScore,
-        updateModeStats, getModeStats
+        updateModeStats, getModeStats, globalCleanup
     } = useGameStore();
 
     const inputRef = useRef<HTMLInputElement>(null);
     const isInitializedRef = useRef(false); // Flag to prevent re-initialization
+    const currentGameRef = useRef<string>(''); // Track current game mode/style combination
     const isLoadingWordsRef = useRef(false); // Flag to prevent multiple word loading
     
     // เพิ่ม state สำหรับติดตาม speak again
@@ -183,9 +184,20 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         // Reset score submission tracking for new game
         scoreSubmittedRef.current = false;
         
+        // Clear stored timeSpent from previous games
+        if (typeof window !== 'undefined') {
+            const gameKey = `${modeId}-${gameStyle}-timeSpent`;
+            localStorage.removeItem(gameKey);
+        }
+        
         // Use DDA system for DDA difficulty mode, regular difficulty selection otherwise
         const restartWithWords = async () => {
             resetGame(); // This sets status to 'loading'
+            
+            // Additional explicit resets to ensure clean state
+            setScore(0);
+            resetStreak();
+            resetChallengeScore();
             
             let sessionWords;
             if (difficultyId === 'dda') {
@@ -212,8 +224,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         restartWithWords();
         
         // Set custom time for typing practice mode
-        if (modeId === 'typing' && gameStyle === 'practice' && selectedTime) {
-            setTimeLeft(selectedTime);
+        if (modeId === 'typing' && gameStyle === 'practice' && selectedTime !== undefined) {
+            // selectedTime === null means unlimited time, set to very high number
+            const timeToSet = selectedTime === null ? 999999 : selectedTime;
+            setTimeLeft(timeToSet);
         }
         
         if (gameStyle === 'challenge') {
@@ -234,28 +248,84 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         );
     }, [events, timers]);
 
+    // Global cleanup for home navigation
+    const handleHomeNavigation = useCallback(() => {
+        console.log('🏠 HOME NAVIGATION: Performing global cleanup');
+        
+        // Clear all localStorage game data
+        if (typeof window !== 'undefined') {
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.includes('-timeSpent')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+        }
+        
+        // Cancel any pending speech
+        speech.cancelSpeech();
+        
+        // Reset all game state
+        globalCleanup();
+        
+        // Reset all refs to initial state
+        isInitializedRef.current = false;
+        currentGameRef.current = '';
+        scoreSubmittedRef.current = false;
+    }, [globalCleanup, speech]);
+
     // Initialize game
     useEffect(() => {
-        // Prevent re-initialization if already done
-        if (isInitializedRef.current) {
+        // Always allow re-initialization when mode or style changes
+        // Only prevent within the same mode/style combination
+        const currentGameKey = `${modeId}-${gameStyle}`;
+        if (isInitializedRef.current && currentGameRef.current === currentGameKey) {
             return;
         }
         
         isInitializedRef.current = true;
+        currentGameRef.current = currentGameKey;
+        
+        console.log(`🎯 INITIALIZING NEW GAME: ${currentGameKey}`);
         
         // Clear any pending speech synthesis
         speech.cancelSpeech();
-
 
         
         // Reset score submission tracking
         scoreSubmittedRef.current = false;
         
+        // Clear stored timeSpent from previous games
+        if (typeof window !== 'undefined') {
+            const gameKey = `${modeId}-${gameStyle}-timeSpent`;
+            localStorage.removeItem(gameKey);
+        }
+        
+        // Force reset critical game state values to prevent contamination
+        console.log('🔄 BEFORE RESET:', {
+            status,
+            score: wordsTypedCount,
+            streakCount,
+            bestStreak,
+            totalChallengeScore
+        });
+        
         resetGame(); // This sets status to 'loading' and timeLeft to 60
         
+        // Additional explicit resets to ensure clean state
+        setScore(0);
+        resetStreak();
+        resetChallengeScore();
+        
+        console.log('✅ AFTER RESET - State should be clean now');
+        
         // Set custom time immediately after reset for typing practice mode
-        if (modeId === 'typing' && gameStyle === 'practice' && selectedTime) {
-            setTimeLeft(selectedTime);
+        if (modeId === 'typing' && gameStyle === 'practice' && selectedTime !== undefined) {
+            // selectedTime === null means unlimited time, set to very high number
+            const timeToSet = selectedTime === null ? 999999 : selectedTime;
+            setTimeLeft(timeToSet);
         }
         
         // Initialize game with appropriate words based on difficulty and mode
@@ -297,8 +367,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                     initializeGame(sessionWords); // This will set status to 'countdown' and reset timeLeft to 60!
                     
                     // Set custom time AFTER initializeGame for typing practice mode
-                    if (modeId === 'typing' && gameStyle === 'practice' && selectedTime) {
-                        setTimeLeft(selectedTime);
+                    if (modeId === 'typing' && gameStyle === 'practice' && selectedTime !== undefined) {
+                        // selectedTime === null means unlimited time, set to very high number
+                        const timeToSet = selectedTime === null ? 999999 : selectedTime;
+                        setTimeLeft(timeToSet);
                     }
                     
                     isLoadingWordsRef.current = false;
@@ -313,8 +385,11 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         initializeGameWithWords();
         
         // Set custom time for typing practice mode
-        if (modeId === 'typing' && gameStyle === 'practice' && selectedTime) {
-            setTimeLeft(selectedTime);
+        if (modeId === 'typing' && gameStyle === 'practice' && selectedTime !== undefined) {
+            // selectedTime === null means unlimited time, set to very high number
+            const timeToSet = selectedTime === null ? 999999 : selectedTime;
+            console.log(`⏱️ SETTING CUSTOM TIME: ${selectedTime === null ? 'UNLIMITED' : selectedTime + 's'} (timeLeft set to ${timeToSet})`);
+            setTimeLeft(timeToSet);
         }
         
         if (gameStyle === 'challenge') {
@@ -335,6 +410,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
 
         return () => {
             isInitializedRef.current = false;
+            currentGameRef.current = ''; // Reset game tracking
             isLoadingWordsRef.current = false; // Reset loading flag
             scoreSubmittedRef.current = false; // Reset score submission flag
             scoreUtils.cleanup();
@@ -503,10 +579,32 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
     // Game over logic with database submission
     useEffect(() => {
         
-        if (status === 'gameOver' && startTime && !scoreSubmittedRef.current) {
+        // Only log when actually submitting to reduce noise
+        if (status === 'gameOver' && startTime && !scoreSubmittedRef.current && words.length > 0) {
+            console.log('⚡ GAME OVER - Will submit score');
+        }
+        
+        if (status === 'gameOver' && startTime && !scoreSubmittedRef.current && words.length > 0) {
             scoreSubmittedRef.current = true; // Mark as submitted to prevent duplicates
+            
+            // Capture state values IMMEDIATELY to prevent race condition with resets
+            const capturedState = {
+                finalWordsTypedCount: wordsTypedCount,
+                finalStreakCount: streakCount,
+                finalBestStreak: bestStreak,
+                finalTotalChallengeScore: totalChallengeScore,
+                finalIncorrectWords: [...incorrectWords],
+                finalStartTime: startTime
+            };
+            
+            console.log('💾 SUBMITTING SCORE - Captured state:', {
+                modeId,
+                gameStyle,
+                ...capturedState
+            });
+            
             // Calculate actual elapsed time for all modes (including typing challenge)
-            const elapsedTimeMs = new Date().getTime() - startTime.getTime();
+            const elapsedTimeMs = new Date().getTime() - capturedState.finalStartTime.getTime();
             const elapsedTimeSeconds = Math.floor(elapsedTimeMs / 1000);
             const finalTime = {
                 minutes: Math.floor(elapsedTimeSeconds / 60),
@@ -514,18 +612,24 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             };
 
             setTimeSpent(finalTime);
+            
+            // Store timeSpent in localStorage to persist across mode switches
+            if (typeof window !== 'undefined') {
+                const gameKey = `${modeId}-${gameStyle}-timeSpent`;
+                localStorage.setItem(gameKey, JSON.stringify(finalTime));
+            }
 
             const timeSpentSeconds = finalTime.minutes * 60 + finalTime.seconds;
             let currentWPM = 0;
 
             if (modeId === 'typing' && timeSpentSeconds > 0) {
                 const timeInMinutes = timeSpentSeconds / 60;
-                currentWPM = Math.round(wordsTypedCount / timeInMinutes);
+                currentWPM = Math.round(capturedState.finalWordsTypedCount / timeInMinutes);
                 setWpm(currentWPM);
             }
 
             // Update in-memory high score for immediate UI feedback
-            const currentScore = gameStyle === 'challenge' ? totalChallengeScore : wordsTypedCount;
+            const currentScore = gameStyle === 'challenge' ? capturedState.finalTotalChallengeScore : capturedState.finalWordsTypedCount;
             if (currentScore > highScore) {
                 setHighScore(currentScore);
             }
@@ -534,15 +638,15 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             const currentModeStats = getModeStats(modeId as 'echo' | 'memory' | 'typing');
             const newStats: Partial<import('@/lib/stores/gameStore').ModeStats> = {
                 totalGamesPlayed: currentModeStats.totalGamesPlayed + 1,
-                totalWordsCorrect: currentModeStats.totalWordsCorrect + wordsTypedCount,
-                totalWordsMissed: currentModeStats.totalWordsMissed + incorrectWords.length,
+                totalWordsCorrect: currentModeStats.totalWordsCorrect + capturedState.finalWordsTypedCount,
+                totalWordsMissed: currentModeStats.totalWordsMissed + capturedState.finalIncorrectWords.length,
             };
 
             // Use the session's best streak (already tracked during gameplay)
             
             // Update mode stats with session best streak if it's better
-            if (bestStreak > currentModeStats.bestStreak) {
-                newStats.bestStreak = bestStreak;
+            if (capturedState.finalBestStreak > currentModeStats.bestStreak) {
+                newStats.bestStreak = capturedState.finalBestStreak;
             }
 
             // Submit score to database if user is authenticated
@@ -550,14 +654,16 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                 const scoreData: GameScoreData = {
                     gameMode: modeId as 'echo' | 'memory' | 'typing',
                     gameStyle: gameStyle,
-                    score: gameStyle === 'challenge' ? totalChallengeScore : wordsTypedCount,
-                    highestStreak: bestStreak,
-                    wordsCorrect: wordsTypedCount,
-                    wordsIncorrect: incorrectWords.length,
+                    score: gameStyle === 'challenge' ? capturedState.finalTotalChallengeScore : capturedState.finalWordsTypedCount,
+                    highestStreak: capturedState.finalBestStreak,
+                    wordsCorrect: capturedState.finalWordsTypedCount,
+                    wordsIncorrect: capturedState.finalIncorrectWords.length,
                     timeSpentSeconds: timeSpentSeconds,
                     ...(modeId === 'typing' && { wpm: currentWPM }),
-                    ...(gameStyle === 'challenge' && { challengeTotalScore: totalChallengeScore }),
+                    ...(gameStyle === 'challenge' && { challengeTotalScore: capturedState.finalTotalChallengeScore }),
                 };
+                
+                console.log('📤 FINAL SCORE DATA TO SUBMIT (using captured state):', scoreData);
 
 
                 // Submit score asynchronously
@@ -601,10 +707,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                 }
             } else {
                 // For non-typing modes, update high score and best time
-                if (wordsTypedCount > currentModeStats.highScore) {
-                    newStats.highScore = wordsTypedCount;
+                if (capturedState.finalWordsTypedCount > currentModeStats.highScore) {
+                    newStats.highScore = capturedState.finalWordsTypedCount;
                     newStats.bestTime = finalTime;
-                } else if (wordsTypedCount === currentModeStats.highScore) {
+                } else if (capturedState.finalWordsTypedCount === currentModeStats.highScore) {
                     // Same score but better time
                     const currentBestTimeInSeconds = currentModeStats.bestTime ? 
                         (currentModeStats.bestTime.minutes * 60 + currentModeStats.bestTime.seconds) : Infinity;
@@ -695,6 +801,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         handleUserInputChange: events.handleUserInputChange,
         handleFormSubmit,
         handleRestartGame,
+        handleHomeNavigation,
         
         // Timer functions
         setIsEchoCountingDown: timers.setIsEchoCountingDown,
@@ -713,7 +820,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         setStartTime, setTimeSpent, setCurrentTime, setHighScore,
         setWpm, setIsWordVisible, setPromptText,
         incrementWordIndex, decrementTimeLeft, addIncorrectWord, resetGame, initializeGame,
-        incrementStreak, resetStreak, addChallengeScore, resetChallengeScore,
+        incrementStreak, resetStreak, addChallengeScore, resetChallengeScore, globalCleanup,
         
         // DDA Actions
         updatePerformance: dda.handleDdaUpdate,

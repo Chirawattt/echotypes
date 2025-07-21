@@ -44,12 +44,12 @@ export default function LoadingWords() {
                 {/* Title */}
                 <motion.h1
                     className="text-4xl md:text-6xl font-bold text-white mb-8"
-                    style={{ fontFamily: "'Caveat Brush', cursive" }}
+                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                    Loading Words
+                    กำลังเตรียมคำศัพท์ของคุณ...
                 </motion.h1>
 
                 {/* Loading Animation */}
@@ -83,7 +83,7 @@ export default function LoadingWords() {
                         repeat: Infinity,
                     }}
                 >
-                    Preparing your vocabulary challenge...
+                    กำลังเตรียมความท้าทายคำศัพท์ของคุณ...
                 </motion.p>
 
                 {/* Progress Indicator */}

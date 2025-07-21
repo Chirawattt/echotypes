@@ -101,3 +101,64 @@ ORDER BY gs.game_mode, gs.game_style, gs.score DESC;
 
 -- Grant access to the leaderboard view
 GRANT SELECT ON public_leaderboard TO anon, authenticated;
+
+-- Create GameSessions table for individual game session tracking
+CREATE TABLE IF NOT EXISTS "GameSessions" (
+    id SERIAL PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES "Users"(id) ON DELETE CASCADE,
+    game_mode VARCHAR(20) NOT NULL CHECK (game_mode IN ('echo', 'memory', 'typing')),
+    game_style VARCHAR(20) NOT NULL CHECK (game_style IN ('practice', 'challenge')),
+    score INTEGER NOT NULL DEFAULT 0,
+    streak INTEGER NOT NULL DEFAULT 0,
+    words_correct INTEGER NOT NULL DEFAULT 0,
+    words_incorrect INTEGER NOT NULL DEFAULT 0,
+    wpm INTEGER DEFAULT NULL, -- Only for typing mode
+    time_spent_seconds INTEGER NOT NULL DEFAULT 0,
+    challenge_total_score INTEGER DEFAULT NULL, -- Only for challenge mode
+    played_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for GameSessions
+CREATE INDEX IF NOT EXISTS idx_gamesessions_user_id ON "GameSessions"(user_id);
+CREATE INDEX IF NOT EXISTS idx_gamesessions_game_mode ON "GameSessions"(game_mode);
+CREATE INDEX IF NOT EXISTS idx_gamesessions_game_style ON "GameSessions"(game_style);
+CREATE INDEX IF NOT EXISTS idx_gamesessions_played_at ON "GameSessions"(played_at DESC);
+CREATE INDEX IF NOT EXISTS idx_gamesessions_score ON "GameSessions"(score DESC);
+
+-- Enable RLS for GameSessions
+ALTER TABLE "GameSessions" ENABLE ROW LEVEL SECURITY;
+
+-- RLS policies for GameSessions
+CREATE POLICY "Users can view own sessions" ON "GameSessions"
+    FOR SELECT USING (true);
+
+CREATE POLICY "Users can insert own sessions" ON "GameSessions"
+    FOR INSERT WITH CHECK (true);
+
+-- Create view for session statistics
+CREATE OR REPLACE VIEW user_session_stats AS
+SELECT 
+    user_id,
+    game_mode,
+    game_style,
+    COUNT(*) as total_games,
+    SUM(words_correct) as total_words_correct,
+    SUM(words_incorrect) as total_words_incorrect,
+    SUM(time_spent_seconds) as total_time_spent,
+    AVG(CASE 
+        WHEN (words_correct + words_incorrect) > 0 
+        THEN (words_correct::float / (words_correct + words_incorrect)) * 100 
+        ELSE 0 
+    END) as average_accuracy,
+    MAX(score) as best_score,
+    MAX(streak) as best_streak,
+    MAX(wpm) as best_wpm,
+    MAX(challenge_total_score) as best_challenge_score,
+    MIN(played_at) as first_played,
+    MAX(played_at) as last_played
+FROM "GameSessions"
+GROUP BY user_id, game_mode, game_style;
+
+-- Grant access to session stats view
+GRANT SELECT ON user_session_stats TO anon, authenticated;

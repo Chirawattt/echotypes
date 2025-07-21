@@ -19,10 +19,11 @@ import GameInput from '@/components/game/GameInput';
 import VirtualKeyboard from '@/components/game/VirtualKeyboard';
 import HeatLevelNotification from '@/components/game/HeatLevelNotification';
 
-export default function DdaGamePlayPage() {
+export default function DDAGamePlayPage() {
     const params = useParams();
     const searchParams = useSearchParams();
     const { modeId } = params as { modeId: string };
+    const difficultyId = 'dda'; // This page is specifically for DDA gameplay
 
     // Device detection for virtual keyboard
     const { isMobile } = useDeviceDetection();
@@ -35,12 +36,15 @@ export default function DdaGamePlayPage() {
     const gameStyle = (searchParams.get('style') as 'practice' | 'challenge') || 'practice';
     
     // Get selected time from URL params for typing practice mode
-    const selectedTime = searchParams.get('time') ? parseInt(searchParams.get('time')!) : null;
+    const timeParam = searchParams.get('time');
+    const selectedTime = timeParam 
+        ? (timeParam === 'unlimited' ? null : parseInt(timeParam)) 
+        : undefined;
 
-    // Use custom hook for all game logic with DDA difficulty
+    // Use custom hook for all game logic - supports both DDA and regular difficulties
     const gameLogic = useGameLogic({ 
         modeId, 
-        difficultyId: 'dda', 
+        difficultyId, // This can be 'dda' or 'a1', 'a2', etc.
         gameStyle,
         selectedTime: selectedTime 
     });
@@ -136,15 +140,35 @@ export default function DdaGamePlayPage() {
                         key="game-over-delay"
                         initial={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center"
+                        className="relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center"
                     >
-                        {/* Animated Background */}
-                        {/* <AnimatedBackground /> */}
-                        {/* <GameEffects 
-                            isCorrect={gameLogic.isCorrect}
-                            isWrong={gameLogic.isWrong}
-                            score={gameLogic.score}
-                        /> */}
+                        {/* Enhanced Animated Background */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            <motion.div
+                                animate={{
+                                    rotate: 360,
+                                    scale: [1, 1.2, 1]
+                                }}
+                                transition={{
+                                    duration: 20,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                                className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-full blur-xl"
+                            />
+                            <motion.div
+                                animate={{
+                                    rotate: -360,
+                                    scale: [1.1, 1, 1.1]
+                                }}
+                                transition={{
+                                    duration: 25,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                                className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-xl"
+                            />
+                        </div>
                         
                         {/* Dim overlay during game over delay */}
                         <motion.div 
@@ -154,7 +178,7 @@ export default function DdaGamePlayPage() {
                         />
                         
                         {/* Game content with final state */}
-                        <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-20 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl">
+                        <section className="flex-1 flex flex-col items-center justify-center w-full max-w-6xl mx-auto text-center px-6 py-8 relative z-20">
                             {/* Game Mode Renderer showing final state */}
                             <GameModeRenderer
                                 modeId={modeId}
@@ -227,8 +251,9 @@ export default function DdaGamePlayPage() {
                         key="gameover"
                         modeId={modeId}
                         words={gameLogic.words}
-                        difficultyId="dda"
+                        difficultyId={difficultyId}
                         handleRestartGame={gameLogic.handleRestartGame}
+                        handleHomeNavigation={gameLogic.handleHomeNavigation}
                         gameStyle={gameStyle}
                         totalChallengeScore={gameLogic.totalChallengeScore}
                         sessionBestStreak={gameLogic.bestStreak}
@@ -251,17 +276,53 @@ export default function DdaGamePlayPage() {
     }
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white pt-10 px-4 overflow-hidden relative">
+        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-10 px-4 overflow-hidden relative">
 
-            {/* Animated Background */}
-            {/* <AnimatedBackground /> */}
+            {/* Enhanced Animated Background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    animate={{
+                        rotate: 360,
+                        scale: [1, 1.2, 1]
+                    }}
+                    transition={{
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-full blur-xl"
+                />
+                <motion.div
+                    animate={{
+                        rotate: -360,
+                        scale: [1.1, 1, 1.1]
+                    }}
+                    transition={{
+                        duration: 25,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-xl"
+                />
+                <motion.div
+                    animate={{
+                        rotate: 180,
+                        scale: [1, 1.3, 1]
+                    }}
+                    transition={{
+                        duration: 15,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-orange-500/8 to-red-500/8 rounded-full blur-xl"
+                />
+            </div>
 
             {/* Streak Glow Effects */}
             <StreakGlowEffects streakCount={gameLogic.streakCount} />
 
             {/* Game Header */}
             <GameHeader
-                difficultyId="dda"
                 modeId={modeId}
                 lives={gameLogic.lives}
                 timeLeft={gameLogic.timeLeft}
@@ -273,10 +334,8 @@ export default function DdaGamePlayPage() {
             {/* Game Timer for non-typing modes */}
             <GameTimer modeId={modeId} currentTime={gameLogic.currentTime} />
 
-
-
             {/* Main Game Content */}
-            <section className="flex-1 flex flex-col items-center justify-center w-full text-center relative z-10 px-3 py-2 min-h-0 max-w-xl lg:max-w-7xl">
+            <section className="flex-1 flex flex-col items-center justify-center w-full max-w-6xl mx-auto text-center px-6 py-8 relative z-10">
 
                 {/* Game Mode Renderer */}
                 <GameModeRenderer
@@ -306,18 +365,9 @@ export default function DdaGamePlayPage() {
                     isOverdriveTransitioning={modeId === 'typing' && gameStyle === 'challenge' ? isOverdriveTransitioning : undefined}
                     totalChallengeScore={gameStyle === 'challenge' ? gameLogic.totalChallengeScore : undefined}
                     streakCount={gameStyle === 'challenge' ? gameLogic.streakCount : undefined}
-                    ddaLevel={modeId === 'memory' && gameStyle === 'challenge' ? gameLogic.currentDifficultyLevel : undefined}
-                    viewingTime={modeId === 'memory' && gameStyle === 'challenge' ? calculateViewTime(gameLogic.currentDifficultyLevel || 1) : undefined}
+                    ddaLevel={modeId === 'memory' && gameStyle === 'challenge' && difficultyId === 'dda' ? gameLogic.currentDifficultyLevel : undefined}
+                    viewingTime={modeId === 'memory' && gameStyle === 'challenge' && difficultyId === 'dda' ? calculateViewTime(gameLogic.currentDifficultyLevel || 1) : undefined}
                 />
-
-                {/* Score Breakdown Toast - Only for non-typing modes */}
-                {/* Score Breakdown Toast - For all modes in challenge mode */}
-                {/* <ScoreBreakdownToast
-                    gameStyle={gameStyle}
-                    lastScoreCalculation={gameLogic.lastScoreCalculation}
-                    showScoreBreakdown={gameLogic.showScoreBreakdown}
-                    modeId={modeId}
-                /> */}
 
                 {/* Game Input */}
                 <GameInput
@@ -337,25 +387,36 @@ export default function DdaGamePlayPage() {
                     currentWordIndex={gameLogic.currentWordIndex}
                 />
 
-                {/* Game Effects */}
-                {/* <GameEffects
-                    isCorrect={gameLogic.isCorrect}
-                    isWrong={gameLogic.isWrong}
-                    score={gameLogic.score}
-                /> */}
-                
+                {/* Finish Game Button for Unlimited Time Mode */}
+                {gameLogic.isUnlimitedTime && gameLogic.status === 'playing' && (
+                    <motion.button
+                        onClick={gameLogic.handleFinishGame}
+                        className="mt-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-4 px-10 rounded-3xl text-lg flex items-center gap-3 shadow-xl border border-red-400/30 backdrop-blur-sm transition-all duration-300"
+                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.5 }}
+                    >
+                        <span>🏁</span>
+                        <span>Finish Game</span>
+                    </motion.button>
+                )}
+
                 {/* Heat Level Notification for Typing Challenge */}
                 {modeId === 'typing' && gameStyle === 'challenge' && (
                     <HeatLevelNotification 
                         heatLevel={heatLevel}
                     />
                 )}
-
-                {/* Virtual Keyboard for Mobile Devices */}
-                {isMobile && (
-                    <VirtualKeyboard onKeyPress={handleVirtualKeyPress} />
-                )}
+                
             </section>
+
+            {/* Virtual Keyboard for Mobile Devices */}
+            {isMobile && (
+                <VirtualKeyboard onKeyPress={handleVirtualKeyPress} />
+            )}
 
         </main>
     );

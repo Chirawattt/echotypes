@@ -1,16 +1,20 @@
 "use client";
 
-import { FaPlay, FaKeyboard, FaBrain, FaVolumeUp, FaLightbulb } from "react-icons/fa";
+import { FaPlay, FaUser } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import WelcomeBackToast from "@/components/ui/WelcomeBackToast";
 
 export default function Home() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [userRegistered, setUserRegistered] = useState<boolean | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [showWelcomeToast, setShowWelcomeToast] = useState(false);
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
 
   useEffect(() => {
     if (status === 'loading' || isRedirecting) return;
@@ -23,6 +27,29 @@ export default function Home() {
 
     checkUserRegistration();
   }, [session, status, isRedirecting]);
+
+  // Detect fresh login from URL parameter
+  useEffect(() => {
+    if (session && status === 'authenticated' && !hasShownWelcome) {
+      const loginTimestamp = searchParams.get('loginTimestamp');
+      
+      if (loginTimestamp) {
+        const now = Date.now();
+        const loginTime = parseInt(loginTimestamp);
+        
+        // If less than 60 seconds since login, show welcome toast
+        if (now - loginTime < 60000) {
+          setShowWelcomeToast(true);
+          setHasShownWelcome(true);
+          
+          // Clean up URL by removing the timestamp parameter
+          const url = new URL(window.location.href);
+          url.searchParams.delete('loginTimestamp');
+          window.history.replaceState({}, '', url.toString());
+        }
+      }
+    }
+  }, [session, status, hasShownWelcome, searchParams]);
 
   const checkUserRegistration = async () => {
     try {
@@ -42,22 +69,21 @@ export default function Home() {
   };
 
   const handleStartGame = () => {
-    // Navigate to the game page or another page
-    // For now, let's log to console or navigate to a placeholder
     router.push('/play');
   };
 
-  const gameFeatures = [
-    { icon: FaKeyboard, label: "Typing", color: "text-green-400" },
-    { icon: FaBrain, label: "Memory", color: "text-purple-400" },
-    { icon: FaVolumeUp, label: "Echo", color: "text-blue-400" },
-    { icon: FaLightbulb, label: "Meaning", color: "text-amber-400" }
-  ];
+  const handleViewProfile = () => {
+    router.push('/profile');
+  };
+
+  const handleCloseWelcomeToast = () => {
+    setShowWelcomeToast(false);
+  };
 
   // Show loading while checking authentication and registration
   if (status === 'loading' || userRegistered === null) {
     return (
-      <div className="min-h-screen flex bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A items-center justify-center">
+      <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-black to-gray-900 items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
@@ -69,7 +95,14 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-br from-[#0A0A0A] via-[#101010] to-[#1A0A1A] text-white overflow-hidden relative">
+    <main className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden relative">
+      {/* Welcome Back Toast */}
+      <WelcomeBackToast
+        show={showWelcomeToast}
+        userName={session?.user?.name || undefined}
+        onClose={handleCloseWelcomeToast}
+      />
+      
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -82,7 +115,7 @@ export default function Home() {
             repeat: Infinity,
             ease: "linear"
           }}
-          className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-red-500/10 to-orange-500/10 rounded-full blur-xl"
+          className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-full blur-xl"
         />
         <motion.div
           animate={{
@@ -94,139 +127,105 @@ export default function Home() {
             repeat: Infinity,
             ease: "linear"
           }}
-          className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-xl"
-        />
-        <motion.div
-          animate={{
-            y: [-20, 20, -20],
-            x: [-10, 10, -10]
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-1/3 right-1/4 w-32 h-32 bg-gradient-to-br from-green-500/5 to-teal-500/5 rounded-full blur-lg"
+          className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-xl"
         />
       </div>
 
-      {/* Centered Content */}
-      <div className="flex-grow flex flex-col items-center justify-center pt-8 px-4 relative z-10 ">
+      {/* Main Content - Centered and Spacious */}
+      <div className="flex-grow flex flex-col items-center justify-center px-4 relative z-10">
+        
+        {/* Hero Section - More Space */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-8"
+          className="text-center mb-20"
         >
           <motion.h1
-            className="text-8xl font-bold bg-gradient-to-r from-red-400 via-orange-400 to-red-500 bg-clip-text text-transparent drop-shadow-2xl pb-4"
-            style={{ fontFamily: "'Caveat Brush', cursive" }}
+            className="text-8xl sm:text-9xl lg:text-[8rem] font-bold bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent py-10"
+            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             animate={{
-              textShadow: [
-                "0 0 20px rgba(239, 68, 68, 0.3)",
-                "0 0 40px rgba(239, 68, 68, 0.5)",
-                "0 0 20px rgba(239, 68, 68, 0.3)"
-              ]
+              backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
             }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 3, repeat: Infinity }}
           >
             EchoTypes
           </motion.h1>
-          <motion.p
+          
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-3xl mt-2 bg-gradient-to-r from-neutral-300 to-neutral-400 bg-clip-text text-transparent"
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+            className="space-y-4"
           >
-            เกมฝึกคำศัพท์ภาษาอังกฤษ
-          </motion.p>
+            <p className="text-3xl sm:text-4xl text-slate-300 font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              เกมฝึกคำศัพท์ภาษาอังกฤษ
+            </p>
+            <p className="text-xl text-slate-400 max-w-xl mx-auto" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              Learn English vocabulary through interactive games
+            </p>
+          </motion.div>
         </motion.div>
 
-        {/* Game Features Preview */}
+        {/* Action Buttons - Simplified */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"
+          transition={{ duration: 0.8, delay: 1 }}
+          className="flex flex-col sm:flex-row gap-8 items-center mb-16"
         >
-          {gameFeatures.map((feature, index) => (
-            <motion.div
-              key={feature.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
-              whileHover={{ scale: 1.1, y: -5 }}
-              className="flex flex-col items-center p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300"
-            >
-              <feature.icon className={`text-3xl md:text-4xl ${feature.color} mb-2`} />
-              <span className="text-sm md:text-base text-neutral-300 font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                {feature.label}
-              </span>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Enhanced Bottom Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
-        className="text-center mb-20 relative z-10"
-      >
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="inline-block"
-        >
+          {/* Main Play Button - Bigger and More Prominent */}
           <motion.button
             onClick={handleStartGame}
-            className="relative group focus:outline-none rounded-full border border-red-500 hover:border-red-600 transition-all duration-300"
-            title="Start Game"
-            aria-label="Start game"
-            animate={{
-              boxShadow: [
-                "0 0 20px rgba(239, 68, 68, 0.3)",
-                "0 0 40px rgba(239, 68, 68, 0.6)",
-                "0 0 20px rgba(239, 68, 68, 0.3)"
-              ]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
+            className="group relative"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {/* Glowing Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-500 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
-
-            {/* Main Button */}
-            <div className="relative bg-gradient-to-r from-red-500 to-orange-500 p-6 md:p-8 rounded-full shadow-2xl group-hover:from-red-400 group-hover:to-orange-400 transition-all duration-300">
-              <FaPlay className="text-white text-6xl md:text-7xl transform group-hover:scale-110 transition-transform duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-500 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
+            <div className="relative bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-6 px-16 rounded-3xl text-2xl backdrop-blur-sm border border-emerald-400/30 transition-all duration-300 shadow-lg flex items-center gap-4">
+              <FaPlay className="text-xl" />
+              <span style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>เริ่มเล่น</span>
             </div>
+          </motion.button>
+
+          {/* Profile Button - Smaller, Secondary */}
+          <motion.button
+            onClick={handleViewProfile}
+            className="bg-white/5 backdrop-blur-md hover:bg-white/10 text-white font-semibold py-4 px-8 rounded-2xl text-lg border border-white/15 hover:border-white/25 transition-all duration-300 flex items-center gap-3"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+          >
+            <FaUser className="text-lg" />
+            <span>โปรไฟล์</span>
           </motion.button>
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          className="mt-6 text-lg md:text-xl text-neutral-400 group-hover:text-neutral-300 transition-colors"
-          style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-        >
-          <span className="bg-gradient-to-r from-neutral-400 to-neutral-300 bg-clip-text text-transparent">
-            กดปุ่มเพื่อเริ่มการเล่น
-          </span>
-        </motion.p>
+        {/* Welcome Message - Subtle */}
+        {session?.user?.name && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 0.8 }}
+            className="text-center"
+          >
+            <p className="text-lg text-slate-400" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              Welcome back, <span className="font-semibold text-emerald-400">{session.user.name}</span>
+            </p>
+          </motion.div>
+        )}
+      </div>
 
-        {/* Additional Call to Action */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8, duration: 0.8 }}
-          className="mt-4"
-        >
-          <p className="text-sm text-neutral-500" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-            ฝึกฝนคำศัพท์ 4 รูปแบบ • A1-C2 Level
-          </p>
-        </motion.div>
+      {/* Simple Footer - Minimal Info */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2, duration: 0.8 }}
+        className="text-center pb-12 relative z-10"
+      >
+        <p className="text-sm text-slate-500" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+          Three learning modes • CEFR A1-C2 levels
+        </p>
       </motion.div>
     </main>
   );
