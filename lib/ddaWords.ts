@@ -54,19 +54,19 @@ export const getDdaGameSessionWords = (difficultyLevel: number): Word[] => {
 
 // ฟังก์ชันดึงคำศัพท์แบบ "Smoothing" - ผสมระดับความยาก
 // เพื่อให้การเปลี่ยนระดับนุ่มนวลขึ้น
-export const getDdaWordsSmoothed = (
+export const getDdaWordsSmoothed = async (
     currentLevel: number, 
     previousLevel: number | null = null,
     smoothingRatio: number = 0.3
-): Word[] => {
-    const currentWords = getDdaWords(currentLevel);
+): Promise<Word[]> => {
+    const currentWords = await getDdaWords(currentLevel);
     
     // หากไม่มีระดับก่อนหน้า หรือ smoothingRatio เป็น 0 ให้ใช้คำจากระดับปัจจุบันทั้งหมด
     if (!previousLevel || smoothingRatio === 0 || currentLevel === previousLevel) {
         return currentWords;
     }
     
-    const previousWords = getDdaWords(previousLevel);
+    const previousWords = await getDdaWords(previousLevel);
     const currentRatio = 1 - smoothingRatio;
     
     // คำนวณจำนวนคำที่จะเอาจากแต่ละระดับ
@@ -88,8 +88,8 @@ export const getDdaWordsSmoothed = (
 };
 
 // ฟังก์ชันดึงคำศัพท์เดียวแบบสุ่มตามระดับ DDA
-export const getRandomDdaWord = (difficultyLevel: number): Word | null => {
-    const words = getDdaWords(difficultyLevel);
+export const getRandomDdaWord = async (difficultyLevel: number): Promise<Word | null> => {
+    const words = await getDdaWords(difficultyLevel);
     if (words.length === 0) return null;
     
     const randomIndex = Math.floor(Math.random() * words.length);
@@ -97,8 +97,8 @@ export const getRandomDdaWord = (difficultyLevel: number): Word | null => {
 };
 
 // ฟังก์ชันดึงคำศัพท์หลายๆ คำแบบสุ่มตามระดับ DDA
-export const getRandomDdaWords = (difficultyLevel: number, count: number): Word[] => {
-    const words = getDdaWords(difficultyLevel);
+export const getRandomDdaWords = async (difficultyLevel: number, count: number): Promise<Word[]> => {
+    const words = await getDdaWords(difficultyLevel);
     if (words.length === 0) return [];
     
     const shuffled = [...words].sort(() => Math.random() - 0.5);
@@ -106,13 +106,13 @@ export const getRandomDdaWords = (difficultyLevel: number, count: number): Word[
 };
 
 // ฟังก์ชันเช็คว่าระดับที่ระบุมีคำศัพท์หรือไม่
-export const hasDdaWords = (difficultyLevel: number): boolean => {
-    const words = getDdaWords(difficultyLevel);
+export const hasDdaWords = async (difficultyLevel: number): Promise<boolean> => {
+    const words = await getDdaWords(difficultyLevel);
     return words.length > 0;
 };
 
 // ฟังก์ชันหาจำนวนคำในระดับ DDA
-export const getDdaWordCount = (difficultyLevel: number): number => {
-    const words = getDdaWords(difficultyLevel);
+export const getDdaWordCount = async (difficultyLevel: number): Promise<number> => {
+    const words = await getDdaWords(difficultyLevel);
     return words.length;
 };

@@ -7,16 +7,33 @@ import { FaBolt, FaMinus } from 'react-icons/fa';
 interface EnergyChangeNotificationProps {
     lastEnergyChange: number; // Positive for increase, negative for decrease
     trigger: number; // Counter to trigger the animation
+    gameKey?: string; // Optional key to reset component when game restarts
+    isGameActive?: boolean; // Only show notifications when game is active
 }
 
-export default function EnergyChangeNotification({ lastEnergyChange, trigger }: EnergyChangeNotificationProps) {
+export default function EnergyChangeNotification({ lastEnergyChange, trigger, gameKey, isGameActive = true }: EnergyChangeNotificationProps) {
     const [showNotification, setShowNotification] = useState(false);
     const [energyChange, setEnergyChange] = useState(0);
+    const [previousTrigger, setPreviousTrigger] = useState(0);
+
+    // Reset notification state when game key changes (game restarts)
+    useEffect(() => {
+        if (gameKey !== undefined) {
+            setShowNotification(false);
+            setEnergyChange(0);
+            setPreviousTrigger(0);
+        }
+    }, [gameKey]);
 
     useEffect(() => {
-        if (trigger > 0 && lastEnergyChange !== 0) {
+        // Only show notification if:
+        // 1. Game is active
+        // 2. Trigger has actually increased (indicating a new change)
+        // 3. We have a non-zero energy change
+        if (isGameActive && trigger > previousTrigger && lastEnergyChange !== 0) {
             setEnergyChange(lastEnergyChange);
             setShowNotification(true);
+            setPreviousTrigger(trigger);
 
             // Hide notification after 1.5 seconds (faster than score notifications)
             const timer = setTimeout(() => {
@@ -25,7 +42,7 @@ export default function EnergyChangeNotification({ lastEnergyChange, trigger }: 
 
             return () => clearTimeout(timer);
         }
-    }, [lastEnergyChange, trigger]);
+    }, [lastEnergyChange, trigger, isGameActive, previousTrigger]);
 
     const isPositive = energyChange > 0;
 

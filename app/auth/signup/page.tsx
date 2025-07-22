@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FaUser, FaArrowLeft, FaCheck } from 'react-icons/fa';
+import Image from 'next/image';
 
 export default function SignUp() {
   const { data: session, status } = useSession();
@@ -14,19 +15,7 @@ export default function SignUp() {
   const [error, setError] = useState('');
   const [checkingUser, setCheckingUser] = useState(true);
 
-  useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (!session) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    // Check if user is already registered
-    checkUserRegistration();
-  }, [session, status]);
-
-  const checkUserRegistration = async () => {
+  const checkUserRegistration = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/register');
       const result = await response.json();
@@ -48,7 +37,19 @@ export default function SignUp() {
       setError('Failed to check registration status');
       setCheckingUser(false);
     }
-  };
+  }, [session, router]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (!session) {
+      router.push('/auth/signin');
+      return;
+    }
+
+    // Check if user is already registered
+    checkUserRegistration();
+  }, [session, status, router, checkUserRegistration]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,9 +135,11 @@ export default function SignUp() {
           <div className="bg-neutral-800/50 rounded-xl p-4 mb-6">
             <div className="flex items-center space-x-3">
               {session?.user?.image ? (
-                <img 
+                <Image 
                   src={session.user.image} 
                   alt="Profile" 
+                  width={40}
+                  height={40}
                   className="w-10 h-10 rounded-full"
                 />
               ) : (

@@ -1,14 +1,15 @@
 import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth/next';
 import { NextRequest, NextResponse } from 'next/server';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { ScoreSubmission } from '@/lib/types';
 import { GameScoreData } from '@/lib/database';
+import type { Session } from 'next-auth';
 
 export async function POST(req: NextRequest) {
   try {
     // 1. Check authentication
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as Session | null;
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -162,7 +163,7 @@ export async function POST(req: NextRequest) {
 // GET endpoint for retrieving user scores and sessions
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as Session | null;
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

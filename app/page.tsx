@@ -4,10 +4,11 @@ import { FaPlay, FaUser, FaTrophy } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import WelcomeBackToast from "@/components/ui/WelcomeBackToast";
+import { Suspense } from "react";
 
-export default function Home() {
+function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
@@ -15,6 +16,23 @@ export default function Home() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
   const [hasShownWelcome, setHasShownWelcome] = useState(false);
+
+  const checkUserRegistration = useCallback(async () => {
+    try {
+      const response = await fetch("/api/auth/register");
+      const result = await response.json();
+      setUserRegistered(result.registered);
+
+      if (!result.registered) {
+        setIsRedirecting(true);
+        router.push("/auth/signup");
+      }
+    } catch (error) {
+      console.error("Error checking user registration:", error);
+      setIsRedirecting(true);
+      router.push("/auth/signup");
+    }
+  }, [router]);
 
   useEffect(() => {
     if (status === "loading" || isRedirecting) return;
@@ -26,7 +44,7 @@ export default function Home() {
     }
 
     checkUserRegistration();
-  }, [session, status, isRedirecting]);
+  }, [session, status, isRedirecting, router, checkUserRegistration]);
 
   // Detect fresh login from URL parameter
   useEffect(() => {
@@ -50,23 +68,6 @@ export default function Home() {
       }
     }
   }, [session, status, hasShownWelcome, searchParams]);
-
-  const checkUserRegistration = async () => {
-    try {
-      const response = await fetch("/api/auth/register");
-      const result = await response.json();
-      setUserRegistered(result.registered);
-
-      if (!result.registered) {
-        setIsRedirecting(true);
-        router.push("/auth/signup");
-      }
-    } catch (error) {
-      console.error("Error checking user registration:", error);
-      setIsRedirecting(true);
-      router.push("/auth/signup");
-    }
-  };
 
   const handleStartGame = () => {
     router.push("/play");
@@ -265,5 +266,22 @@ export default function Home() {
         </p>
       </motion.div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-black to-gray-900 items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+            Loading...
+          </p>
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

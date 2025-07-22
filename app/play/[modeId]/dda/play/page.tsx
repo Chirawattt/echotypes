@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGameLogic } from '@/hooks/useGameLogic';
 import { useDeviceDetection } from '@/hooks/useDeviceDetection';
@@ -20,7 +21,7 @@ import VirtualKeyboard from '@/components/game/VirtualKeyboard';
 import HeatLevelNotification from '@/components/game/HeatLevelNotification';
 import LevelChangeNotification from '@/components/game/LevelChangeNotification';
 
-export default function DDAGamePlayPage() {
+function DDAGamePlayPageContent() {
     const params = useParams();
     const searchParams = useSearchParams();
     const { modeId } = params as { modeId: string };
@@ -428,5 +429,22 @@ export default function DDAGamePlayPage() {
             )}
 
         </main>
+    );
+}
+
+export default function DDAGamePlayPage() {
+    return (
+        <Suspense fallback={
+            <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                        Loading game...
+                    </p>
+                </div>
+            </main>
+        }>
+            <DDAGamePlayPageContent />
+        </Suspense>
     );
 }

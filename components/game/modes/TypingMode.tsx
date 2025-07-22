@@ -62,15 +62,7 @@ export default function TypingMode({
                 animate={{ opacity: 1 }}
                 className="flex flex-col items-center text-center mb-3 max-w-4xl"
             >
-                {/* Show Nitro Bar even during transition for Typing Challenge */}
-                {gameStyle === 'challenge' && energy !== undefined && maxEnergy !== undefined && isLowEnergy !== undefined && (
-                    <NitroBar 
-                        energy={energy} 
-                        maxEnergy={maxEnergy} 
-                        isLowEnergy={isLowEnergy}
-                        heatLevel={heatLevel}
-                    />
-                )}
+
 
                 {/* Heat Level Display during transition */}
                 {gameStyle === 'challenge' && heatLevel && (

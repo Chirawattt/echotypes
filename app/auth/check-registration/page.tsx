@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -9,18 +9,7 @@ export default function CheckRegistration() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
 
-  useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (!session) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    checkUserRegistration();
-  }, [session, status]);
-
-  const checkUserRegistration = async () => {
+  const checkUserRegistration = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/register');
       const result = await response.json();
@@ -39,7 +28,18 @@ export default function CheckRegistration() {
     } finally {
       setChecking(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (!session) {
+      router.push('/auth/signin');
+      return;
+    }
+
+    checkUserRegistration();
+  }, [session, status, router, checkUserRegistration]);
 
   if (checking) {
     return (

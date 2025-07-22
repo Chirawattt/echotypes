@@ -95,6 +95,8 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
     const resetEnergy = useCallback(() => {
         setEnergy(10); // Reset to 10 points
         isInitializedRef.current = false; // Reset initialization flag
+        setLastEnergyChange(0); // Reset energy change tracking
+        setEnergyChangeCounter(0); // Reset energy change counter
     }, []);
 
     // Check if energy is low (less than 3 points)
