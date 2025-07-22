@@ -2,6 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚡ Recent Changes (Deployment Ready)
+
+### 🧹 Console Cleanup (Completed)
+- **Removed all debug console.log statements** from client-facing code
+- **Preserved console.error/warn** for legitimate error handling
+- **Files cleaned**: MemoryMode.tsx, EchoMode.tsx, useGameLogic.ts, gameStore.ts, useSpeech.ts, useGameScore.ts, useDDA.ts, header.tsx
+- **Status**: Production ready - no debug output in browser console
+
+### 📚 Documentation Restructure (Completed)
+- **Consolidated 11+ scattered docs** into 5 comprehensive guides:
+  - `docs/README.md` - Project overview and quick navigation
+  - `docs/DEVELOPMENT_GUIDE.md` - Setup, workflow, and patterns
+  - `docs/GAME_MODES.md` - Complete gameplay mechanics
+  - `docs/CHALLENGE_SYSTEM.md` - Scoring and competitive features
+  - `docs/APP_STRUCTURE.md` - Architecture (preserved)
+  - `docs/DDA_DESIGN.md` - Dynamic difficulty (preserved)
+- **Removed temporary files**: debug_log.md, continue_calude.md, lint-error.md
+- **Status**: Clean, organized documentation structure
+
 ## Development Commands
 
 - **Dev server**: `npm run dev` (uses Turbopack for faster builds)

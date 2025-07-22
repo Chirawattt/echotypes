@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EchoTypes - English Vocabulary Learning Game
 
-## Getting Started
+An interactive web application for learning English vocabulary through engaging game modes. Built with Next.js 15, TypeScript, and modern web technologies.
 
-First, run the development server:
+## 🎮 Game Modes
+
+- **Echo Mode**: Listen and type what you hear
+- **Memory Mode**: Memorize and recall words visually  
+- **Typing Mode**: Speed typing with energy management
+- **MeaningMatch Mode**: Match words with their definitions
+
+Each mode supports both **Practice** (learning-focused) and **Challenge** (competitive) styles.
+
+## ✨ Key Features
+
+- **Dynamic Difficulty Adjustment**: AI-powered difficulty scaling
+- **Real-time Scoring**: Challenge mode with streak bonuses
+- **User Profiles**: Progress tracking and leaderboards
+- **CEFR Levels**: A1-C2 vocabulary progression
+- **Audio Integration**: Text-to-speech and sound effects
+- **Mobile Optimized**: Responsive design for all devices
+
+## 🚀 Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your configuration
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000` to start learning!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📚 Documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Comprehensive documentation is available in the `/docs` directory:
 
-## Learn More
+- **[Development Guide](./docs/DEVELOPMENT_GUIDE.md)** - Setup and development workflow
+- **[Game Modes](./docs/GAME_MODES.md)** - Complete gameplay mechanics  
+- **[Challenge System](./docs/CHALLENGE_SYSTEM.md)** - Scoring and competitive features
+- **[App Structure](./docs/APP_STRUCTURE.md)** - Architecture overview
+- **[DDA Design](./docs/DDA_DESIGN.md)** - Dynamic difficulty system
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Frontend**: Next.js 15 + React 19 + TypeScript
+- **State**: Zustand for game state management
+- **Database**: Supabase (PostgreSQL)
+- **Auth**: NextAuth.js with OAuth providers
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📱 Browser Support
 
-## Deploy on Vercel
+- Chrome/Edge 90+
+- Firefox 88+  
+- Safari 14+
+- Mobile browsers with Web Speech API support
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🎯 Project Status
+
+✅ **Production Ready**
+- All game modes implemented and tested
+- User authentication and profiles
+- Scoring and leaderboard system
+- Mobile optimization complete
+- Performance optimized for deployment
+
+Built with ❤️ for English language learners worldwide.
