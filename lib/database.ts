@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from './supabase';
 
 export interface GameScoreData {
@@ -105,30 +106,6 @@ export async function getUserScores(filters?: {
   }
 }
 
-/**
- * Get leaderboard data for a specific game mode
- */
-export async function getLeaderboard(
-  gameMode: string,
-  gameStyle: string,
-  limit: number = 10
-): Promise<LeaderboardEntry[]> {
-  try {
-    const { data, error } = await supabase
-      .from('public_leaderboard')
-      .select('*')
-      .eq('game_mode', gameMode)
-      .eq('game_style', gameStyle)
-      .limit(limit);
-
-    if (error) throw error;
-
-    return data || [];
-  } catch (error) {
-    console.error('Error fetching leaderboard:', error);
-    return [];
-  }
-}
 
 /**
  * Get user's personal best for a specific game configuration
@@ -242,5 +219,59 @@ export async function checkMilestones(newScore: GameScoreData): Promise<{
   } catch (error) {
     console.error('Error checking milestones:', error);
     return { newMilestones: [] };
+  }
+}
+
+/**
+ * Get leaderboard data for a specific game mode and style (DDA system - no difficulty filtering)
+ */
+export async function getLeaderboard(
+  gameMode: string,
+  gameStyle: string,
+  limit: number = 10
+): Promise<LeaderboardEntry[]> {
+  try {
+    // For challenge mode, we want to rank by challenge_total_score
+    // For practice mode, we can rank by score (words correct) or highest_streak
+    const rankingField = gameStyle === 'challenge' ? 'challenge_total_score' : 'score';
+    
+    // Query the GameScores table and join with Users to get display names
+    // No difficulty filtering since all modes use DDA
+    const { data, error } = await supabase
+      .from('GameScores')
+      .select(`
+        ${rankingField},
+        highest_streak,
+        wpm,
+        score,
+        challenge_total_score,
+        created_at,
+        Users:user_id(name)
+      `)
+      .eq('game_mode', gameMode)
+      .eq('game_style', gameStyle)
+      .not(rankingField, 'is', null)
+      .order(rankingField, { ascending: false })
+      .limit(limit);
+
+    if (error) throw error;
+
+    // Transform the data to match LeaderboardEntry interface
+    const leaderboard: LeaderboardEntry[] = (data || []).map((entry, index) => ({
+      player_name: (entry.Users as any)?.name || 'Anonymous',
+      game_mode: gameMode,
+      game_style: gameStyle,
+      score: entry.score,
+      highest_streak: entry.highest_streak,
+      wpm: entry.wpm,
+      challenge_total_score: entry.challenge_total_score,
+      created_at: entry.created_at,
+      rank: index + 1
+    }));
+
+    return leaderboard;
+  } catch (error) {
+    console.error('Error fetching leaderboard:', error);
+    return [];
   }
 }

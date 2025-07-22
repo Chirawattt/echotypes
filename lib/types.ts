@@ -1,8 +1,10 @@
 // Shared types for word data
 export interface Word {
+    id?: number;
     word: string;
     type?: string;
     meaning: string;
+    level: string; // CEFR level: 'a1', 'a2', 'b1', 'b2', 'c1', 'c2'
 }
 
 // Game session data for individual game records

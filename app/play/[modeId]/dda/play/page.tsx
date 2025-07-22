@@ -18,12 +18,13 @@ import GameModeRenderer from '@/components/game/GameModeRenderer';
 import GameInput from '@/components/game/GameInput';
 import VirtualKeyboard from '@/components/game/VirtualKeyboard';
 import HeatLevelNotification from '@/components/game/HeatLevelNotification';
+import LevelChangeNotification from '@/components/game/LevelChangeNotification';
 
 export default function DDAGamePlayPage() {
     const params = useParams();
     const searchParams = useSearchParams();
     const { modeId } = params as { modeId: string };
-    const difficultyId = 'dda'; // This page is specifically for DDA gameplay
+    // Everything is DDA now - no need for difficultyId
 
     // Device detection for virtual keyboard
     const { isMobile } = useDeviceDetection();
@@ -41,10 +42,9 @@ export default function DDAGamePlayPage() {
         ? (timeParam === 'unlimited' ? null : parseInt(timeParam)) 
         : undefined;
 
-    // Use custom hook for all game logic - supports both DDA and regular difficulties
+    // Use custom hook for all game logic - everything is DDA now
     const gameLogic = useGameLogic({ 
         modeId, 
-        difficultyId, // This can be 'dda' or 'a1', 'a2', etc.
         gameStyle,
         selectedTime: selectedTime 
     });
@@ -207,6 +207,8 @@ export default function DDAGamePlayPage() {
                                 isOverdriveTransitioning={modeId === 'typing' && gameStyle === 'challenge' ? isOverdriveTransitioning : undefined}
                                 totalChallengeScore={gameStyle === 'challenge' ? gameLogic.totalChallengeScore : undefined}
                                 streakCount={gameStyle === 'challenge' ? gameLogic.streakCount : undefined}
+                                lastEnergyChange={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.lastEnergyChange : undefined}
+                                energyChangeCounter={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.energyChangeCounter : undefined}
                                 ddaLevel={modeId === 'memory' && gameStyle === 'challenge' ? gameLogic.currentDifficultyLevel : undefined}
                                 viewingTime={modeId === 'memory' && gameStyle === 'challenge' ? calculateViewTime(gameLogic.currentDifficultyLevel || 1) : undefined}
                             />
@@ -251,7 +253,6 @@ export default function DDAGamePlayPage() {
                         key="gameover"
                         modeId={modeId}
                         words={gameLogic.words}
-                        difficultyId={difficultyId}
                         handleRestartGame={gameLogic.handleRestartGame}
                         handleHomeNavigation={gameLogic.handleHomeNavigation}
                         gameStyle={gameStyle}
@@ -365,8 +366,11 @@ export default function DDAGamePlayPage() {
                     isOverdriveTransitioning={modeId === 'typing' && gameStyle === 'challenge' ? isOverdriveTransitioning : undefined}
                     totalChallengeScore={gameStyle === 'challenge' ? gameLogic.totalChallengeScore : undefined}
                     streakCount={gameStyle === 'challenge' ? gameLogic.streakCount : undefined}
-                    ddaLevel={modeId === 'memory' && gameStyle === 'challenge' && difficultyId === 'dda' ? gameLogic.currentDifficultyLevel : undefined}
-                    viewingTime={modeId === 'memory' && gameStyle === 'challenge' && difficultyId === 'dda' ? calculateViewTime(gameLogic.currentDifficultyLevel || 1) : undefined}
+
+                    lastEnergyChange={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.lastEnergyChange : undefined}
+                    energyChangeCounter={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.energyChangeCounter : undefined}
+                    ddaLevel={modeId === 'memory' && gameStyle === 'challenge' ? gameLogic.currentDifficultyLevel : undefined}
+                    viewingTime={modeId === 'memory' && gameStyle === 'challenge' ? calculateViewTime(gameLogic.currentDifficultyLevel || 1) : undefined}
                 />
 
                 {/* Game Input */}
@@ -388,7 +392,7 @@ export default function DDAGamePlayPage() {
                 />
 
                 {/* Finish Game Button for Unlimited Time Mode */}
-                {gameLogic.isUnlimitedTime && gameLogic.status === 'playing' && (
+                {selectedTime === null && gameLogic.status === 'playing' && (
                     <motion.button
                         onClick={gameLogic.handleFinishGame}
                         className="mt-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-4 px-10 rounded-3xl text-lg flex items-center gap-3 shadow-xl border border-red-400/30 backdrop-blur-sm transition-all duration-300"
@@ -410,6 +414,11 @@ export default function DDAGamePlayPage() {
                         heatLevel={heatLevel}
                     />
                 )}
+
+                {/* Level Change Notification for DDA */}
+                <LevelChangeNotification 
+                    currentLevel={gameLogic.currentDifficultyLevel}
+                />
                 
             </section>
 

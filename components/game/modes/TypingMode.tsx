@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { FaKeyboard } from 'react-icons/fa';
 import NitroBar from '../NitroBar';
 import { HeatLevel } from '@/hooks/useOverdriveSystem';
+import AnimatedNumber from '../AnimatedNumber';
+import EnergyChangeNotification from '../EnergyChangeNotification';
 
 interface TypingModeProps {
     currentWord: string;
@@ -20,6 +22,12 @@ interface TypingModeProps {
     // Challenge Mode scoring props
     totalChallengeScore?: number;
     streakCount?: number;
+    // Point change notification props
+    lastScoreChange?: number;
+    scoreChangeCounter?: number;
+    // Energy change notification props
+    lastEnergyChange?: number;
+    energyChangeCounter?: number;
 }
 
 export default function TypingMode({ 
@@ -33,7 +41,9 @@ export default function TypingMode({
     heatLevel,
     correctWordsCount,
     totalChallengeScore,
-    streakCount
+    streakCount,
+    lastEnergyChange,
+    energyChangeCounter
 }: TypingModeProps) {
     // Function to get score color based on streak level
     const getScoreColorByStreak = (streak: number) => {
@@ -144,9 +154,19 @@ export default function TypingMode({
                             ease: "easeInOut"
                         }}
                     >
-                        {totalChallengeScore} pts.
+                        <AnimatedNumber value={totalChallengeScore || 0} duration={0.6} /> pts.
                     </motion.p>
                 </motion.div>
+            )}
+
+ 
+
+            {/* Energy Change Notification for Typing Challenge Mode */}
+            {gameStyle === 'challenge' && (
+                <EnergyChangeNotification 
+                    lastEnergyChange={lastEnergyChange || 0} 
+                    trigger={energyChangeCounter || 0}
+                />
             )}
 
             {/* Heat Level Display for Typing Challenge Mode */}

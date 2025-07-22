@@ -5,17 +5,21 @@ interface UseNitroEnergyProps {
     isGameActive: boolean;
     onEnergyDepleted: () => void;
     energyDecayInterval?: number; // For overdrive system
+    isTransitioning?: boolean; // To prevent energy resets during DDA transitions
 }
 
-export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, energyDecayInterval = 1000 }: UseNitroEnergyProps) {
+export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, energyDecayInterval = 1000, isTransitioning = false }: UseNitroEnergyProps) {
     const [energy, setEnergy] = useState(10); // Start with 10 points
     const [maxEnergy] = useState(15); // Maximum energy cap at 15 points
+    const [lastEnergyChange, setLastEnergyChange] = useState<number>(0); // Track energy changes for notifications
+    const [energyChangeCounter, setEnergyChangeCounter] = useState<number>(0); // Counter to trigger notifications
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const isInitializedRef = useRef(false); // Flag to prevent early game over
 
     // Energy decreases based on overdrive interval when game is active
+    // But pause during DDA transitions to prevent visual glitches
     useEffect(() => {
-        if (isTypingMode && isGameActive && energy > 0) {
+        if (isTypingMode && isGameActive && energy > 0 && !isTransitioning) {
             // Mark as initialized when game becomes active
             isInitializedRef.current = true;
             
@@ -36,7 +40,7 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
                 clearInterval(intervalRef.current);
             }
         }
-    }, [isTypingMode, isGameActive, energy, energyDecayInterval]);
+    }, [isTypingMode, isGameActive, energy, energyDecayInterval, isTransitioning]);
 
     // Handle energy depletion in separate useEffect to avoid setState during render
     // Only trigger game over if game has been properly initialized
@@ -61,7 +65,15 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
             energyBonus = 1.5;
         }
 
-        setEnergy(prev => Math.min(prev + energyBonus, maxEnergy));
+        setEnergy(prev => {
+            const newEnergy = Math.min(prev + energyBonus, maxEnergy);
+            const actualChange = newEnergy - prev;
+            if (actualChange > 0) {
+                setLastEnergyChange(actualChange);
+                setEnergyChangeCounter(counter => counter + 1);
+            }
+            return newEnergy;
+        });
     }, [isTypingMode, maxEnergy]);
 
     // Remove energy for wrong answers
@@ -69,8 +81,13 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
         if (!isTypingMode) return;
 
         setEnergy(prev => {
-            const newEnergy = prev - 3; // ลด 3 แต้ม
-            return Math.max(0, newEnergy); // ป้องกันไม่ให้ติดลบ
+            const newEnergy = Math.max(0, prev - 3); // ลด 3 แต้ม
+            const actualChange = newEnergy - prev; // This will be negative
+            if (actualChange < 0) {
+                setLastEnergyChange(actualChange);
+                setEnergyChangeCounter(counter => counter + 1);
+            }
+            return newEnergy;
         });
     }, [isTypingMode]);
 
@@ -89,6 +106,8 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
         isLowEnergy,
         addEnergy,
         removeEnergy,
-        resetEnergy
+        resetEnergy,
+        lastEnergyChange,
+        energyChangeCounter
     };
 }

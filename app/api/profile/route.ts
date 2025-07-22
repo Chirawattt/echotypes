@@ -126,12 +126,7 @@ export async function GET() {
       bestStreak
     };
 
-    console.log('📊 Profile API - Calculated stats:', {
-      totalGames,
-      totalSessions: sessions?.length || 0,
-      userStats,
-      modesWithData: Object.keys(sessionStatsByMode)
-    });
+
 
     return NextResponse.json({
       success: true,

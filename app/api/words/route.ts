@@ -15,17 +15,32 @@ export async function GET(req: NextRequest) {
       }, { status: 400 });
     }
 
-    // Fetch words from the database for the specified level
-    const { data: words, error } = await supabase
+    // Fetch words from the database for the specified level with random ordering
+    // Use a larger pool and random selection to ensure word diversity
+    const poolSize = Math.max(limit * 3, 100); // Get 3x requested amount or minimum 100 words
+    
+    const { data: allWords, error } = await supabase
       .from('Words')
       .select('id, word, type, meaning, level')
       .eq('level', level.toLowerCase())
-      .limit(limit);
+      .limit(poolSize);
 
     if (error) {
       console.error('❌ Error fetching words from database:', error);
       throw error;
     }
+
+    // Randomly shuffle and select the requested number of words
+    const shuffleArray = (array: any[]) => {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
+
+    const words = allWords ? shuffleArray(allWords).slice(0, limit) : [];
 
     if (!words || words.length === 0) {
       console.warn(`⚠️ No words found for level: ${level}`);

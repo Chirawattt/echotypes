@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { useGameStore } from '@/lib/stores/gameStore';
+import AnimatedNumber from '../AnimatedNumber';
 
 interface MemoryModeProps {
     currentWord: string;
@@ -31,11 +32,18 @@ export default function MemoryMode({
     onTimeLeftChange,
     onTimerReady,
     streakCount,
-    totalScore
+    totalScore,
+    ddaLevel,
+    viewingTime
 }: MemoryModeProps) {
     const [timeLeft, setTimeLeft] = useState(5.0);
     const [isTimerActive, setIsTimerActive] = useState(false);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    
+    // Display time countdown (during word viewing phase)
+    const [displayTimeLeft, setDisplayTimeLeft] = useState(0);
+    const [isDisplayTimerActive, setIsDisplayTimerActive] = useState(false);
+    const displayTimerRef = useRef<NodeJS.Timeout | null>(null);
     
     // Get feedback states from game store
     const { isCorrect, isWrong, status, totalChallengeScore } = useGameStore();
@@ -56,7 +64,6 @@ export default function MemoryMode({
             timerRef.current = null;
         }
         setIsTimerActive(false);
-        console.log('Memory Timer stopped - answer submitted');
     }, []);
 
     // Listen for answer submission to stop timer
@@ -76,6 +83,13 @@ export default function MemoryMode({
                 clearInterval(timerRef.current);
                 timerRef.current = null;
             }
+            // Also stop display timer
+            setIsDisplayTimerActive(false);
+            setDisplayTimeLeft(0);
+            if (displayTimerRef.current) {
+                clearInterval(displayTimerRef.current);
+                displayTimerRef.current = null;
+            }
         }
     }, [status]);
 
@@ -84,11 +98,17 @@ export default function MemoryMode({
     // Reset timer when word changes or when word becomes invisible (typing phase starts)
     useLayoutEffect(() => {
         if (!isWordVisible && gameStyle === 'challenge') {
-            // Start timer when typing phase begins
+            // Start typing phase timer when word becomes hidden
             setTimeLeft(5.0);
             setIsTimerActive(true);
+            // Stop display timer
+            setIsDisplayTimerActive(false);
+            if (displayTimerRef.current) {
+                clearInterval(displayTimerRef.current);
+                displayTimerRef.current = null;
+            }
         } else {
-            // Stop timer when memorizing
+            // Stop typing phase timer when memorizing
             setIsTimerActive(false);
             if (timerRef.current) {
                 clearInterval(timerRef.current);
@@ -96,6 +116,35 @@ export default function MemoryMode({
             }
         }
     }, [isWordVisible, gameStyle, currentWordIndex]);
+
+    // Start display timer when word becomes visible (memorization phase)
+    useLayoutEffect(() => {
+        if (isWordVisible) {
+            if (gameStyle === 'challenge') {
+                if (viewingTime && viewingTime > 0) {
+                    // Use provided viewing time
+                    setDisplayTimeLeft(viewingTime);
+                    setIsDisplayTimerActive(true);
+                } else {
+                    // Fallback: calculate from DDA level if viewingTime is not provided
+                    const fallbackTime = ddaLevel === 1 ? 2.0 : ddaLevel === 2 ? 1.9 : ddaLevel === 3 ? 1.75 : ddaLevel === 4 ? 1.55 : ddaLevel === 5 ? 1.35 : 1.15;
+                    setDisplayTimeLeft(fallbackTime);
+                    setIsDisplayTimerActive(true);
+                }
+            } else {
+                // For practice mode, show default 2 seconds
+                setDisplayTimeLeft(2.0);
+                setIsDisplayTimerActive(true);
+            }
+        } else {
+            // Stop display timer when word is not visible
+            setIsDisplayTimerActive(false);
+            if (displayTimerRef.current) {
+                clearInterval(displayTimerRef.current);
+                displayTimerRef.current = null;
+            }
+        }
+    }, [isWordVisible, gameStyle, currentWordIndex, viewingTime, ddaLevel]);
 
     // Timer countdown logic
     useEffect(() => {
@@ -129,6 +178,35 @@ export default function MemoryMode({
         }
     }, [isTimerActive, gameStyle, isWordVisible, onTimeUp]);
 
+    // Display timer countdown logic (during memorization phase)
+    useEffect(() => {
+        if (isDisplayTimerActive && isWordVisible) {
+            displayTimerRef.current = setInterval(() => {
+                setDisplayTimeLeft((prev) => {
+                    const newTime = Math.max(0, prev - 0.1);
+                    
+                    // Stop timer when it reaches 0
+                    if (newTime <= 0) {
+                        setIsDisplayTimerActive(false);
+                        if (displayTimerRef.current) {
+                            clearInterval(displayTimerRef.current);
+                            displayTimerRef.current = null;
+                        }
+                    }
+                    
+                    return newTime;
+                });
+            }, 100);
+
+            return () => {
+                if (displayTimerRef.current) {
+                    clearInterval(displayTimerRef.current);
+                    displayTimerRef.current = null;
+                }
+            };
+        }
+    }, [isDisplayTimerActive, isWordVisible]);
+
     // Separate useEffect for reporting time left to prevent setState during render
     useEffect(() => {
         if (onTimeLeftChange) {
@@ -145,6 +223,10 @@ export default function MemoryMode({
             if (timerRef.current) {
                 clearInterval(timerRef.current);
                 timerRef.current = null;
+            }
+            if (displayTimerRef.current) {
+                clearInterval(displayTimerRef.current);
+                displayTimerRef.current = null;
             }
         };
     }, []);
@@ -174,8 +256,59 @@ export default function MemoryMode({
                             ease: "easeInOut"
                         }}
                     >
-                        {totalScore || totalChallengeScore} pts.
+                        <AnimatedNumber value={(totalScore || totalChallengeScore) || 0} duration={0.6} /> pts.
                     </motion.p>
+                </motion.div>
+            )}
+
+            {/* Display Time Indicator - Always visible for Memory mode */}
+            {gameStyle === 'challenge' && (
+                <motion.div
+                    className="mb-4 flex items-center justify-center gap-2"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className={`w-2 h-2 rounded-full ${
+                        isWordVisible ? (displayTimeLeft <= 0.5 ? 'bg-red-400' : 'bg-purple-400') : 'bg-gray-400'
+                    } animate-pulse`}></div>
+                    <span
+                        className={`text-lg sm:text-xl font-bold ${
+                            isWordVisible ? (displayTimeLeft <= 0.5 ? 'text-red-400' : 'text-purple-400') : 'text-gray-400'
+                        }`}
+                        style={{ fontFamily: "'Caveat Brush', cursive" }}
+                    >
+                        {isWordVisible ? `Display time: ${displayTimeLeft.toFixed(1)}s` : 'Word hidden - Type now!'}
+                    </span>
+                    {ddaLevel && (
+                        <span className="text-sm text-purple-300/80 ml-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                            (Level {ddaLevel === 1 ? 'A1' : ddaLevel === 2 ? 'A2' : ddaLevel === 3 ? 'B1' : ddaLevel === 4 ? 'B2' : ddaLevel === 5 ? 'C1' : 'C2'})
+                        </span>
+                    )}
+                </motion.div>
+            )}
+
+            {gameStyle === 'practice' && (
+                <motion.div
+                    className="mb-4 flex items-center justify-center gap-2"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className={`w-2 h-2 rounded-full ${
+                        isWordVisible ? 'bg-blue-400' : 'bg-gray-400'
+                    } animate-pulse`}></div>
+                    <span
+                        className={`text-lg sm:text-xl font-bold ${
+                            isWordVisible ? 'text-blue-400' : 'text-gray-400'
+                        }`}
+                        style={{ fontFamily: "'Caveat Brush', cursive" }}
+                    >
+                        {isWordVisible ? `Display time: ${displayTimeLeft.toFixed(1)}s` : 'Word hidden - Type now!'}
+                    </span>
+                    <span className="text-sm text-blue-300/80 ml-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                        (Practice Mode)
+                    </span>
                 </motion.div>
             )}
 

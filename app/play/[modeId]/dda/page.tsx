@@ -156,8 +156,7 @@ export default function DDAPreGamePage() {
     const router = useRouter();
     const params = useParams();
     const modeId = params.modeId as string;
-    const difficultyId = 'dda'; // This page is specifically for DDA mode
-
+    // Everything is DDA now - no need for difficultyId
     const [showHowToPlay, setShowHowToPlay] = useState(false);
     const [selectedGameStyle, setSelectedGameStyle] = useState<'practice' | 'challenge'>('challenge');
     const [currentStep, setCurrentStep] = useState(0);
@@ -169,16 +168,13 @@ export default function DDAPreGamePage() {
     const modeInfo = getModeInfo(modeId);
     const howToPlaySteps = getHowToPlaySteps(modeId);
 
-    // Determine if this is DDA mode or fixed difficulty
-    const isDDAMode = difficultyId === 'dda';
-
     const handleStartGame = () => {
         // Show time selection modal for typing practice mode
         if (modeId === 'typing' && selectedGameStyle === 'practice') {
             setShowTimeSelectionModal(true);
         } else {
-            // Navigate to gameplay page
-            router.push(`/play/${modeId}/${difficultyId}/play?style=${selectedGameStyle}`);
+            // Navigate to gameplay page (simplified DDA routing)
+            router.push(`/play/${modeId}/dda/play?style=${selectedGameStyle}`);
         }
     };
 
@@ -193,7 +189,7 @@ export default function DDAPreGamePage() {
         const timeParam = selectedTime !== undefined 
             ? (selectedTime === null ? '&time=unlimited' : `&time=${selectedTime}`) 
             : '';
-        router.push(`/play/${modeId}/${difficultyId}/play?style=${selectedGameStyle}${timeParam}`);
+        router.push(`/play/${modeId}/dda/play?style=${selectedGameStyle}${timeParam}`);
     };
 
     const handleCancelTimeSelection = () => {
@@ -325,10 +321,7 @@ export default function DDAPreGamePage() {
                                 <span className="font-semibold">ประระดับความยากอัตโนมัติ (A1-C2)</span>
                             </div>
                             <p className="text-slate-300 text-sm mt-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
-                                {isDDAMode 
-                                    ? 'เกมจะปรับระดับความยากโดยอัตโนมัติตามผลการเล่นของคุณ' 
-                                    : 'ฝึกคำศัพท์ในระดับความยากที่กำหนดไว้'
-                                }
+                                เกมจะปรับระดับความยากโดยอัตโนมัติตามผลการเล่นของคุณ
                             </p>
                         </div>
 

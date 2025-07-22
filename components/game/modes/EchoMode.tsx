@@ -5,6 +5,7 @@ import { FaVolumeUp, FaClock } from 'react-icons/fa';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { cancelSpeechSynthesis } from '@/lib/cleanup';
 import { useGameStore } from '@/lib/stores/gameStore';
+import AnimatedNumber from '../AnimatedNumber';
 
 interface EchoModeProps {
     currentWord: string;
@@ -66,7 +67,6 @@ export default function EchoMode({
             timerRef.current = null;
         }
         setIsCountingDown(false);
-        console.log('Timer stopped - answer submitted');
     }, []);
 
     // Listen for answer submission to stop timer
@@ -120,7 +120,6 @@ export default function EchoMode({
 
                 timerRef.current = setTimeout(tick, 100); // Update every 100ms for smooth countdown
             } else {
-                console.log('Time up!');
                 setTimeLeft(0);
                 setIsCountingDown(false);
 
@@ -145,7 +144,6 @@ export default function EchoMode({
         setTimeLeft(5.0);
         setIsCountingDown(false);
         setSpeakAgainUsed(false); // รีเซ็ต speak again status
-        console.log('Echo Mode - Word changed, resetting state');
 
         // แจ้งให้ parent รู้ว่า reset แล้ว
         if (usedSpeakAgain) {
@@ -157,7 +155,6 @@ export default function EchoMode({
     useEffect(() => {
         if (gameStyle === 'challenge' && speechUtterance) {
             const handleSpeechEnd = () => {
-                console.log('Speech ended, starting timer...');
                 setIsCountingDown(true);
                 startTimer();
 
@@ -266,7 +263,7 @@ export default function EchoMode({
                                 ease: "easeInOut"
                             }}
                         >
-                            {totalChallengeScore} pts.
+                            <AnimatedNumber value={totalChallengeScore || 0} duration={0.6} /> pts.
                         </motion.p>
                     </motion.div>
 

@@ -4,18 +4,21 @@ import { calculateEchoModeScore, calculateTotalScore, calculateTypingModeScore }
 
 interface UseGameScoreProps {
     gameStyle: 'practice' | 'challenge';
-    difficultyId: string;
     modeId: string;
     usedSpeakAgain?: boolean; // เพิ่ม prop สำหรับ Echo mode
 }
 
-export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain = false }: UseGameScoreProps) {
+export function useGameScore({ gameStyle, modeId, usedSpeakAgain = false }: UseGameScoreProps) {
     const {
         streakCount,
         totalChallengeScore,
         lastScoreCalculation,
+        lastScoreChange,
         addChallengeScore,
-        resetChallengeScore
+        resetChallengeScore,
+        setLastScoreChange,
+        words,
+        currentWordIndex
     } = useGameStore();
 
     // Score-related state
@@ -23,6 +26,12 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
     
     // Score-related refs
     const scoreBreakdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Helper function to get current word's difficulty level
+    const getCurrentWordLevel = useCallback((): string => {
+        const currentWord = words[currentWordIndex];
+        return currentWord?.level?.toUpperCase() || 'A1'; // Default to A1 if no level found
+    }, [words, currentWordIndex]);
 
     // Calculate and add challenge score
     const calculateAndAddScore = useCallback((
@@ -36,9 +45,10 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         }
 
         let scoreCalculation;
+        const currentWordLevel = getCurrentWordLevel();
 
         if (modeId === 'echo') {
-            scoreCalculation = calculateEchoModeScore(echoTimeLeft, difficultyId, streakCount, true, usedSpeakAgain);
+            scoreCalculation = calculateEchoModeScore(echoTimeLeft, currentWordLevel, streakCount, true, usedSpeakAgain);
         } else if (modeId === 'typing' && currentWord) {
             // Use new Typing Challenge scoring system with combo multiplier
             const typingScore = calculateTypingModeScore(currentWord, streakCount, true);
@@ -59,10 +69,10 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
             };
         } else if (modeId === 'memory') {
             const timeUsed = 5.0 - memoryTimeLeft;
-            scoreCalculation = calculateTotalScore(timeUsed, difficultyId, streakCount, true);
+            scoreCalculation = calculateTotalScore(timeUsed, currentWordLevel, streakCount, true);
         } else {
             const timeUsed = 5.0;
-            scoreCalculation = calculateTotalScore(timeUsed, difficultyId, streakCount, true);
+            scoreCalculation = calculateTotalScore(timeUsed, currentWordLevel, streakCount, true);
         }
 
         addChallengeScore(scoreCalculation);
@@ -79,7 +89,7 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         scoreBreakdownTimerRef.current = setTimeout(() => {
             setShowScoreBreakdown(false);
         }, 1500);
-    }, [gameStyle, difficultyId, modeId, streakCount, usedSpeakAgain, addChallengeScore]);
+    }, [gameStyle, modeId, streakCount, usedSpeakAgain, addChallengeScore, getCurrentWordLevel]);
 
     // Calculate score for time up scenarios
     const calculateScoreForTimeUp = useCallback(() => {
@@ -88,10 +98,10 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         }
 
         if (modeId === 'echo') {
-            const scoreCalculation = calculateEchoModeScore(0, difficultyId, streakCount, false, usedSpeakAgain);
-            console.log(`Time up! No score added. Calculation: ${scoreCalculation.finalScore}`);
+            const currentWordLevel = getCurrentWordLevel();
+            calculateEchoModeScore(0, currentWordLevel, streakCount, false, usedSpeakAgain);
         }
-    }, [gameStyle, modeId, difficultyId, streakCount, usedSpeakAgain]);
+    }, [gameStyle, modeId, streakCount, usedSpeakAgain, getCurrentWordLevel]);
 
     // Cleanup function
     const cleanup = useCallback(() => {
@@ -105,6 +115,7 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         showScoreBreakdown,
         totalChallengeScore,
         lastScoreCalculation,
+        lastScoreChange,
         
         // Refs
         scoreBreakdownTimerRef,
@@ -113,6 +124,7 @@ export function useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain =
         calculateAndAddScore,
         calculateScoreForTimeUp,
         resetChallengeScore,
+        setLastScoreChange,
         cleanup
     };
 }

@@ -5,24 +5,22 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const gameMode = searchParams.get('gameMode');
-    const difficulty = searchParams.get('difficulty');
     const gameStyle = searchParams.get('gameStyle');
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    // Validate required parameters
-    if (!gameMode || !difficulty || !gameStyle) {
+    // Validate required parameters (no difficulty needed - DDA system)
+    if (!gameMode || !gameStyle) {
       return NextResponse.json(
-        { error: 'gameMode, difficulty, and gameStyle are required' },
+        { error: 'gameMode and gameStyle are required' },
         { status: 400 }
       );
     }
 
-    // Validate enum values
+    // Validate enum values (removed difficulty validation)
     if (!['echo', 'memory', 'typing'].includes(gameMode) ||
-        !['a1', 'a2', 'b1', 'b2', 'c1', 'c2', 'dda'].includes(difficulty) ||
         !['practice', 'challenge'].includes(gameStyle)) {
       return NextResponse.json(
-        { error: 'Invalid game mode, difficulty, or style' },
+        { error: 'Invalid game mode or style' },
         { status: 400 }
       );
     }
@@ -35,13 +33,12 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const leaderboard = await getLeaderboard(gameMode, difficulty, gameStyle, limit);
+    const leaderboard = await getLeaderboard(gameMode, gameStyle, limit);
 
     return NextResponse.json({
       leaderboard,
       filters: {
         gameMode,
-        difficulty,
         gameStyle,
         limit,
       },

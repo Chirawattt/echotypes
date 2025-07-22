@@ -10,10 +10,7 @@ export function useSpeech() {
             return null;
         }
         
-        console.log('🎤 Speak function called with:', text);
-        
         if (typeof window !== 'undefined' && window.speechSynthesis) {
-            console.log('🔇 Cancelling previous speech');
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(text);
@@ -23,14 +20,13 @@ export function useSpeech() {
             currentUtteranceRef.current = utterance;
 
             utterance.onend = () => {
-                console.log('✅ Speech ended for:', text);
                 if (onEnd) {
                     onEnd();
                 }
             };
 
             utterance.onstart = () => {
-                console.log('🎙️ Speech started for:', text);
+                // Speech started
             };
 
             window.speechSynthesis.speak(utterance);
@@ -42,7 +38,6 @@ export function useSpeech() {
 
     const cancelSpeech = useCallback(() => {
         if (typeof window !== 'undefined' && window.speechSynthesis) {
-            console.log('🔇 Cancelling speech synthesis');
             window.speechSynthesis.cancel();
         }
     }, []);

@@ -186,10 +186,7 @@ Currently no automated tests are configured. Testing should focus on:
      - Maintained beautiful animations directly on gradient backgrounds
      - Improved visual hierarchy and user experience
 
-5. **Routing Simplification (In Progress)**
-   - 🔄 **Started removal of [difficultyId] parameter**: Since all modes now use DDA
-     - Identified that routing can be simplified from `/play/[modeId]/[difficultyId]` to `/play/[modeId]`
-     - User will complete this restructuring manually
+
 
 ### 🔧 Current System Status
 

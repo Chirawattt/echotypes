@@ -40,6 +40,12 @@ interface GameModeRendererProps {
     // Challenge Mode scoring props
     totalChallengeScore?: number;
     streakCount?: number;
+    // Point change notification props for Typing Challenge
+    lastScoreChange?: number;
+    scoreChangeCounter?: number;
+    // Energy change notification props for Typing Challenge
+    lastEnergyChange?: number;
+    energyChangeCounter?: number;
     // Debug props for Memory Mode
     ddaLevel?: number;
     viewingTime?: number;
@@ -71,6 +77,10 @@ export default function GameModeRenderer({
     correctWordsCount,
     totalChallengeScore,
     streakCount,
+    lastScoreChange,
+    scoreChangeCounter,
+    lastEnergyChange,
+    energyChangeCounter,
     ddaLevel,
     viewingTime
 }: GameModeRendererProps) {
@@ -112,6 +122,10 @@ export default function GameModeRenderer({
                 correctWordsCount={correctWordsCount}
                 totalChallengeScore={totalChallengeScore}
                 streakCount={streakCount}
+                lastScoreChange={lastScoreChange}
+                scoreChangeCounter={scoreChangeCounter}
+                lastEnergyChange={lastEnergyChange}
+                energyChangeCounter={energyChangeCounter}
             />
         );
     }

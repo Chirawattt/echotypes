@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useGameStore } from "@/lib/stores/gameStore";
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaArrowLeft, FaUser, FaSignOutAlt, FaGoogle, FaUserCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaUser, FaSignOutAlt, FaGoogle, FaUserCircle, FaTrophy } from 'react-icons/fa';
 import { useAuth } from '@/providers/AuthContext';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
@@ -43,8 +43,6 @@ export default function Header() {
 
 
     const handleBackClick = () => {
-        console.log('⬅️ BACK NAVIGATION: Performing global cleanup');
-        
         // Clear all localStorage game data
         if (typeof window !== 'undefined') {
             const keysToRemove = [];
@@ -70,8 +68,6 @@ export default function Header() {
     };
 
     const handleHomeClick = () => {
-        console.log('🏠 HEADER HOME NAVIGATION: Performing global cleanup');
-        
         // Clear all localStorage game data
         if (typeof window !== 'undefined') {
             const keysToRemove = [];
@@ -198,6 +194,21 @@ export default function Header() {
                                                 style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                             >
                                                 Profile
+                                            </span>
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setShowUserMenu(false);
+                                                router.push('/leaderboard');
+                                            }}
+                                            className="w-full flex items-center space-x-3 px-4 py-2 text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-colors duration-200 text-left"
+                                        >
+                                            <FaTrophy className="text-sm" />
+                                            <span 
+                                                className="text-sm font-medium"
+                                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
+                                            >
+                                                Leaderboard
                                             </span>
                                         </button>
                                         <button

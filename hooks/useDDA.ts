@@ -33,13 +33,15 @@ export function useDDA({ modeId }: { modeId: string }) {
                 // Batch all state updates together to prevent multiple re-renders
                 // 1. Replace all words with new level words
                 setWords(newLevelWords);
-                console.log("DDA new words is ", newLevelWords.slice(0, 5));
 
                 // 2. Reset to first word of new level
                 // Reset index to -1 because it will be incremented to 0 on next render
                 if (modeId === 'echo' || modeId === 'memory') setCurrentWordIndex(-1);
                 else if (modeId === 'typing') setCurrentWordIndex(0);
                 else setCurrentWordIndex(0); // Default for other modes
+
+                // 3. End DDA transition
+                setIsTransitioning(false);
 
             }, 100); // Minimal delay for batched updates
         }

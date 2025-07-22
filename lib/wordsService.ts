@@ -69,7 +69,7 @@ export async function getGameSessionWords(
 ): Promise<Word[]> {
   try {
     // Fetch more words than needed for better randomization
-    const fetchLimit = Math.max(sessionSize * 2, 50); // Fetch 2x session size or minimum 50
+    const fetchLimit = Math.max(sessionSize * 3, 100); // Fetch 3x session size or minimum 100
     const words = await fetchWordsFromDatabase(level, fetchLimit);
 
     if (words.length === 0) {

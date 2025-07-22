@@ -22,7 +22,7 @@ export const preloadDdaWords = async (): Promise<void> => {
     
     for (const level of levels) {
         try {
-            const words = await getGameSessionWords(level, 50); // Get more words for variety
+            const words = await getGameSessionWords(level, 100); // Get more words for variety
             ddaWordCache[level] = words;
         } catch (error) {
             console.error(`❌ Failed to cache words for level ${level}:`, error);

@@ -20,13 +20,21 @@ import { useOverdriveSystem } from './useOverdriveSystem';
 
 interface UseGameLogicProps {
     modeId: string;
-    difficultyId: string;
     gameStyle: 'practice' | 'challenge';
     selectedTime?: number | null;
 }
 
-export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: UseGameLogicProps) {
+interface ScoreRecord {
+    score: number;
+    highest_streak?: number;
+    wpm?: number;
+}
+
+export function useGameLogic({ modeId, gameStyle, selectedTime }: UseGameLogicProps) {
     const { data: session } = useSession();
+    
+    // Extract user ID for dependency array safety - use safer type assertion
+    const userId = (session as unknown as { user?: { id?: string } })?.user?.id;
     
 
     
@@ -61,6 +69,10 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
     // Add state for database-fetched best streak (mode+style specific)
     const [databaseBestStreak, setDatabaseBestStreak] = useState(0);
     
+
+    
+
+    
     // Add state for best WPM across all styles for typing mode
     const [bestWpmAllStyles, setBestWpmAllStyles] = useState(0);
     
@@ -72,7 +84,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
     const speech = useSpeech();
     const dda = useDDA({ modeId });
     const timers = useGameTimers({ modeId, gameStyle });
-    const scoreUtils = useGameScore({ gameStyle, difficultyId, modeId, usedSpeakAgain });
+    const scoreUtils = useGameScore({ gameStyle, modeId, usedSpeakAgain });
     
     // Overdrive system for Typing Challenge Mode
     const overdriveSystem = useOverdriveSystem({
@@ -86,6 +98,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         isTypingMode: modeId === 'typing' && gameStyle === 'challenge',
         isGameActive: status === 'playing',
         energyDecayInterval: overdriveSystem.currentHeatLevel.energyDecayInterval,
+        isTransitioning: isTransitioning, // Prevent energy issues during DDA transitions
         onEnergyDepleted: () => {
             setStatus('gameOver');
         }
@@ -106,7 +119,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
     // Game events hook
     const events = useGameEvents({
         modeId,
-        difficultyId,
         currentDifficultyLevel: dda.currentDifficultyLevel,
         playSound: audio.playSound,
         correctAudioRef: audio.correctAudioRef,
@@ -135,7 +147,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             const newLives = lives - 1;
             const isLastWord = currentWordIndex === words.length - 1;
 
-            if (newLives <= 0 || (isLastWord && difficultyId !== 'dda')) {
+            if (newLives <= 0) {
                 // Only play completed sound for non-echo modes
                 // Echo mode will play sound in GameOverOverlay
                 if (modeId !== 'echo') {
@@ -146,8 +158,8 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             }
 
             // Handle DDA mode - reshuffle words when reaching the end
-            if (difficultyId === 'dda' && isLastWord) {
-                // Use DDA for both challenge and practice modes when difficultyId is 'dda'
+            if (isLastWord) {
+                // Use DDA for both challenge and practice modes
                 const reshuffledWords = getDdaGameSessionWords(dda.currentDifficultyLevel);
                 setWords(reshuffledWords);
                 setCurrentWordIndex(0);
@@ -162,7 +174,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             setIsCorrect(false);
             setIsTransitioning(false);
         }, 1200);
-    }, [lives, currentWordIndex, words, difficultyId, modeId, dda, audio, setStatus, setIsTransitioning, setIsWrong, addIncorrectWord, resetStreak, setWords, setCurrentWordIndex, incrementWordIndex, setLives, setUserInput, setIsCorrect]);
+    }, [lives, currentWordIndex, words, modeId, dda, audio, setStatus, setIsTransitioning, setIsWrong, addIncorrectWord, resetStreak, setWords, setCurrentWordIndex, incrementWordIndex, setLives, setUserInput, setIsCorrect]);
 
     // Handle time up for Echo mode challenge
     const handleEchoTimeUp = useCallback(() => {
@@ -199,18 +211,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             resetStreak();
             resetChallengeScore();
             
-            let sessionWords;
-            if (difficultyId === 'dda') {
-                // Reset DDA state first, then get words from cache
-                dda.resetDdaState();
-                sessionWords = getDdaGameSessionWords(ddaConfig.INITIAL_DIFFICULTY_LEVEL);
-            } else {
-                // Fetch words from database
-                sessionWords = await getGameSessionWords(difficultyId, 20);
-            }
+            // Reset DDA state first, then get words from cache
+            dda.resetDdaState();
+            const sessionWords = getDdaGameSessionWords(ddaConfig.INITIAL_DIFFICULTY_LEVEL);
             
             if (sessionWords.length === 0) {
-                console.error(`❌ No words available for restart with ${difficultyId}`);
+                console.error(`❌ No words available for restart`);
                 return;
             }
             
@@ -237,7 +243,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         if (modeId === 'typing' && gameStyle === 'challenge') {
             nitroEnergy.resetEnergy();
         }
-    }, [difficultyId, gameStyle, modeId, selectedTime, resetGame, setWords, setTimeLeft, dda, scoreUtils, nitroEnergy]);
+    }, [gameStyle, modeId, selectedTime, resetGame, setWords, setTimeLeft, dda, scoreUtils, nitroEnergy, resetChallengeScore, resetStreak, setScore, setStatus]);
 
     // Form submit wrapper
     const handleFormSubmit = useCallback((e: React.FormEvent) => {
@@ -250,8 +256,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
 
     // Global cleanup for home navigation
     const handleHomeNavigation = useCallback(() => {
-        console.log('🏠 HOME NAVIGATION: Performing global cleanup');
-        
         // Clear all localStorage game data
         if (typeof window !== 'undefined') {
             const keysToRemove = [];
@@ -276,6 +280,11 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         scoreSubmittedRef.current = false;
     }, [globalCleanup, speech]);
 
+    // Handle finish game for unlimited time mode
+    const handleFinishGame = useCallback(() => {
+        setStatus('gameOver');
+    }, [setStatus]);
+
     // Initialize game
     useEffect(() => {
         // Always allow re-initialization when mode or style changes
@@ -287,8 +296,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         
         isInitializedRef.current = true;
         currentGameRef.current = currentGameKey;
-        
-        console.log(`🎯 INITIALIZING NEW GAME: ${currentGameKey}`);
         
         // Clear any pending speech synthesis
         speech.cancelSpeech();
@@ -304,22 +311,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         }
         
         // Force reset critical game state values to prevent contamination
-        console.log('🔄 BEFORE RESET:', {
-            status,
-            score: wordsTypedCount,
-            streakCount,
-            bestStreak,
-            totalChallengeScore
-        });
-        
         resetGame(); // This sets status to 'loading' and timeLeft to 60
         
         // Additional explicit resets to ensure clean state
         setScore(0);
         resetStreak();
         resetChallengeScore();
-        
-        console.log('✅ AFTER RESET - State should be clean now');
         
         // Set custom time immediately after reset for typing practice mode
         if (modeId === 'typing' && gameStyle === 'practice' && selectedTime !== undefined) {
@@ -337,27 +334,21 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             isLoadingWordsRef.current = true;
             
             try {
-                let sessionWords;
-                if (difficultyId === 'dda') {
-                    // DDA mode: Get initial words from database directly, preload cache in background
-                    const ddaLevel = ddaConfig.INITIAL_DIFFICULTY_LEVEL;
-                    const mappedLevel = mapLevelToFileName(ddaLevel);
-                    sessionWords = await getGameSessionWords(mappedLevel, 20);
-                    
-                    // Preload cache in background (non-blocking)
-                    setTimeout(() => {
-                        preloadDdaWords().then(() => {
-                        }).catch(error => {
-                            console.warn('⚠️ DDA cache preload failed:', error);
-                        });
-                    }, 2000); // Delay to ensure game has started
-                } else {
-                    // Regular mode: Fetch words from database
-                    sessionWords = await getGameSessionWords(difficultyId, 20);
-                }
+                // DDA mode: Get initial words from database directly, preload cache in background
+                const ddaLevel = ddaConfig.INITIAL_DIFFICULTY_LEVEL;
+                const mappedLevel = mapLevelToFileName(ddaLevel);
+                const sessionWords = await getGameSessionWords(mappedLevel, 20);
+                
+                // Preload cache in background (non-blocking)
+                setTimeout(() => {
+                    preloadDdaWords().then(() => {
+                    }).catch(error => {
+                        console.warn('⚠️ DDA cache preload failed:', error);
+                    });
+                }, 2000); // Delay to ensure game has started
                 
                 if (sessionWords.length === 0) {
-                    console.error(`❌ No words available for ${difficultyId}`);
+                    console.error(`❌ No words available`);
                     isLoadingWordsRef.current = false;
                     return;
                 }
@@ -388,7 +379,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         if (modeId === 'typing' && gameStyle === 'practice' && selectedTime !== undefined) {
             // selectedTime === null means unlimited time, set to very high number
             const timeToSet = selectedTime === null ? 999999 : selectedTime;
-            console.log(`⏱️ SETTING CUSTOM TIME: ${selectedTime === null ? 'UNLIMITED' : selectedTime + 's'} (timeLeft set to ${timeToSet})`);
             setTimeLeft(timeToSet);
         }
         
@@ -401,11 +391,9 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             nitroEnergy.resetEnergy();
         }
         
-        // Initialize DDA system for DDA difficulty mode regardless of game style
-        if (difficultyId === 'dda') {
-            dda.resetDdaState();
-            dda.initDifficultyLevelRef.current = ddaConfig.INITIAL_DIFFICULTY_LEVEL;
-        }
+        // Initialize DDA system (everything is DDA now)
+        dda.resetDdaState();
+        dda.initDifficultyLevelRef.current = ddaConfig.INITIAL_DIFFICULTY_LEVEL;
         inputRef.current?.focus();
 
         return () => {
@@ -416,7 +404,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             scoreUtils.cleanup();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [difficultyId, gameStyle, modeId, selectedTime]); // เจตนาไม่ใส่ hooks objects เพื่อป้องกัน infinite loop
+    }, [gameStyle, modeId, selectedTime]); // เจตนาไม่ใส่ hooks objects เพื่อป้องกัน infinite loop
 
 
 
@@ -451,7 +439,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         const fetchPersonalBest = async () => {
 
 
-            if (session?.user?.id) {
+            if (userId) {
                 try {
                     const apiUrl = `/api/scores?gameMode=${modeId}&gameStyle=${gameStyle}`;
                     
@@ -463,11 +451,11 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                         
                         if (scores.length > 0) {
                             // Get the highest score for this mode/style combination
-                            const personalBest = Math.max(...scores.map((score: any) => score.score));
+                            const personalBest = Math.max(...scores.map((score: ScoreRecord) => score.score));
                             setHighScore(personalBest);
                             
                             // Get the best streak for this mode/style combination
-                            const bestStreakForModeStyle = Math.max(...scores.map((score: any) => score.highest_streak || 0));
+                            const bestStreakForModeStyle = Math.max(...scores.map((score: ScoreRecord) => score.highest_streak || 0));
                             setDatabaseBestStreak(bestStreakForModeStyle);
                         } else {
                             // No scores found, start with 0
@@ -503,12 +491,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
 
         fetchPersonalBest();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [modeId, gameStyle, session?.user?.id]); // Fetch when mode, style, or user changes
+    }, [modeId, gameStyle, userId]); // Fetch when mode, style, or user changes
 
     // Fetch best WPM across all styles for typing mode
     useEffect(() => {
         const fetchBestWpmAllStyles = async () => {
-            if (modeId === 'typing' && session?.user?.id) {
+            if (modeId === 'typing' && userId) {
                 try {
                     // Fetch all typing scores (both practice and challenge)
                     const response = await fetch(`/api/scores?gameMode=typing`);
@@ -518,7 +506,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                         
                         if (allTypingScores.length > 0) {
                             // Get the highest WPM across all typing styles
-                            const bestWpm = Math.max(...allTypingScores.map((score: any) => score.wpm || 0));
+                            const bestWpm = Math.max(...allTypingScores.map((score: ScoreRecord) => score.wpm || 0));
                             setBestWpmAllStyles(bestWpm);
                         } else {
                             setBestWpmAllStyles(0);
@@ -536,13 +524,12 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         };
 
         fetchBestWpmAllStyles();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [modeId, session?.user?.id]); // Only depends on modeId and user, not gameStyle
+    }, [modeId, userId]); // Only depends on modeId and user, not gameStyle
 
     // Fetch best streak across all styles for all modes
     useEffect(() => {
         const fetchBestStreakAllStyles = async () => {
-            if (session?.user?.id) {
+            if (userId) {
                 try {
                     // Fetch all scores for the current mode (both practice and challenge)
                     const response = await fetch(`/api/scores?gameMode=${modeId}`);
@@ -552,7 +539,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                         
                         if (allModeScores.length > 0) {
                             // Get the highest streak across all styles for this mode
-                            const bestStreak = Math.max(...allModeScores.map((score: any) => score.highest_streak || 0));
+                            const bestStreak = Math.max(...allModeScores.map((score: ScoreRecord) => score.highest_streak || 0));
                             setBestStreakAllStyles(bestStreak);
                         } else {
                             setBestStreakAllStyles(0);
@@ -570,8 +557,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         };
 
         fetchBestStreakAllStyles();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [modeId, session?.user?.id]); // Only depends on modeId and user, not gameStyle
+    }, [modeId, userId]); // Only depends on modeId and user, not gameStyle
 
     // Track if score has been submitted for this game session
     const scoreSubmittedRef = useRef(false);
@@ -581,7 +567,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         
         // Only log when actually submitting to reduce noise
         if (status === 'gameOver' && startTime && !scoreSubmittedRef.current && words.length > 0) {
-            console.log('⚡ GAME OVER - Will submit score');
         }
         
         if (status === 'gameOver' && startTime && !scoreSubmittedRef.current && words.length > 0) {
@@ -596,12 +581,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                 finalIncorrectWords: [...incorrectWords],
                 finalStartTime: startTime
             };
-            
-            console.log('💾 SUBMITTING SCORE - Captured state:', {
-                modeId,
-                gameStyle,
-                ...capturedState
-            });
             
             // Calculate actual elapsed time for all modes (including typing challenge)
             const elapsedTimeMs = new Date().getTime() - capturedState.finalStartTime.getTime();
@@ -663,8 +642,6 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                     ...(gameStyle === 'challenge' && { challengeTotalScore: capturedState.finalTotalChallengeScore }),
                 };
                 
-                console.log('📤 FINAL SCORE DATA TO SUBMIT (using captured state):', scoreData);
-
 
                 // Submit score asynchronously
                 submitGameScore(scoreData).then(async (result) => {
@@ -678,7 +655,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
                                     const refreshResult = await response.json();
                                     const scores = refreshResult.scores || [];
                                     if (scores.length > 0) {
-                                        const newPersonalBest = Math.max(...scores.map((score: any) => score.score));
+                                        const newPersonalBest = Math.max(...scores.map((score: ScoreRecord) => score.score));
                                         setHighScore(newPersonalBest);
                                     }
                                 }
@@ -725,7 +702,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
             updateModeStats(modeId as 'echo' | 'memory' | 'typing', newStats);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status, startTime, wordsTypedCount, highScore, modeId, difficultyId, gameStyle, totalChallengeScore, session]); // Remove store functions to prevent infinite loop
+    }, [status, startTime, wordsTypedCount, highScore, modeId, gameStyle, totalChallengeScore, session]); // Remove store functions to prevent infinite loop
 
 
     // Focus input when Echo countdown starts (challenge mode)
@@ -802,6 +779,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         handleFormSubmit,
         handleRestartGame,
         handleHomeNavigation,
+        handleFinishGame,
         
         // Timer functions
         setIsEchoCountingDown: timers.setIsEchoCountingDown,
@@ -809,6 +787,7 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         setMemoryTimeLeft: timers.setMemoryTimeLeft,
         handleEchoTimeUp,
         handleMemoryTimeUp,
+        
         handleEchoTimerReady: timers.handleEchoTimerReady,
         handleMemoryTimerReady: timers.handleMemoryTimerReady,
         handleEchoTimeLeftChange: timers.handleEchoTimeLeftChange,
@@ -840,6 +819,8 @@ export function useGameLogic({ modeId, difficultyId, gameStyle, selectedTime }: 
         addEnergy: nitroEnergy.addEnergy,
         removeEnergy: nitroEnergy.removeEnergy,
         resetEnergy: nitroEnergy.resetEnergy,
+        lastEnergyChange: nitroEnergy.lastEnergyChange,
+        energyChangeCounter: nitroEnergy.energyChangeCounter,
         
         // Overdrive System for Typing Challenge
         heatLevel: overdriveSystem.currentHeatLevel,

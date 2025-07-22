@@ -1,11 +1,10 @@
 import { useCallback } from 'react';
 import { useGameStore } from '@/lib/stores/gameStore';
-import { getGameSessionWords } from '@/lib/words-new';
+
 import { getDdaGameSessionWords } from '@/lib/ddaWords';
 
 interface UseGameEventsProps {
     modeId: string;
-    difficultyId: string;
     currentDifficultyLevel: number;
     playSound: (audioRef: React.RefObject<HTMLAudioElement | null>, volume?: number) => void;
     correctAudioRef: React.RefObject<HTMLAudioElement | null>;
@@ -22,7 +21,6 @@ interface UseGameEventsProps {
 
 export function useGameEvents({
     modeId,
-    difficultyId,
     currentDifficultyLevel,
     playSound,
     correctAudioRef,
@@ -76,6 +74,9 @@ export function useGameEvents({
         // Block submission during any type of transition
         if (!userInput.trim() || isTransitioning) return;
 
+        // Immediately set transitioning to prevent spam submissions
+        setIsTransitioning(true);
+
         // Stop Echo timer immediately when answer is submitted
         stopEchoTimer();
         
@@ -92,13 +93,8 @@ export function useGameEvents({
         calculateAndAddScore(isAnswerCorrect, echoTimeLeft, memoryTimeLeft, words[currentWordIndex]?.word);
 
 
-        // For typing mode, check if DDA level changed
+        // For typing mode, handle word progression with DDA
         if (modeId === 'typing') {
-            // For typing mode, check if DDA level changed
-            if (currentWordIndex === words.length - 1 && difficultyId !== 'dda') {
-                setStatus('gameOver');
-                return;
-            }
             
             if (isAnswerCorrect) {
                 playSound(correctAudioRef);
@@ -123,22 +119,23 @@ export function useGameEvents({
                 }
             }
 
-            // Normal word progression (no DDA level change)
-            if (difficultyId === 'dda' && currentWordIndex === words.length - 1) {
-                let reshuffledWords;
-                if (difficultyId === 'dda') {
-                    // Use DDA words for both challenge and practice modes
-                    reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
-                } else {
-                    reshuffledWords = getGameSessionWords(difficultyId);
-                }
+            // Handle DDA word progression 
+            if (currentWordIndex === words.length - 1) {
+                // Use DDA words for both challenge and practice modes
+                const reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
                 setWords(reshuffledWords);
                 setCurrentWordIndex(0);
             } else {
                 if (ddaResult.levelChanged) {
+                    // DDA level changed - let the DDA system handle transitions
+                    // Don't interfere with the natural DDA flow
+                } else {
+                    // Normal word progression - increment and reset transition
+                    incrementWordIndex();
                     setIsTransitioning(false);
-                }else incrementWordIndex();
+                }
             }
+            
             setUserInput('');
             return;
         }
@@ -162,7 +159,7 @@ export function useGameEvents({
             const newLives = isAnswerCorrect ? lives : lives - 1;
             const isLastWord = currentWordIndex === words.length - 1;
 
-            if (newLives <= 0 || (isLastWord && difficultyId !== 'dda')) {
+            if (newLives <= 0) {
                 // Only play completed sound for typing mode
                 // Echo and Memory modes will play sound in GameOverOverlay
                 if (modeId === 'typing') {
@@ -173,14 +170,9 @@ export function useGameEvents({
             }
             
         
-            if (difficultyId === 'dda' && isLastWord) {
-                let reshuffledWords;
-                if (difficultyId === 'dda') {
-                    // Use DDA words for both challenge and practice modes
-                    reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
-                } else {
-                    reshuffledWords = getGameSessionWords(difficultyId);
-                }
+            if (isLastWord) {
+                // Use DDA words for both challenge and practice modes
+                const reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
                 setWords(reshuffledWords);
                 setCurrentWordIndex(0);
             } else {
@@ -193,7 +185,7 @@ export function useGameEvents({
         }, 1200);
     }, [
         userInput, isTransitioning, modeId, words, currentWordIndex, 
-        difficultyId, lives, currentDifficultyLevel, playSound, correctAudioRef, 
+        lives, currentDifficultyLevel, playSound, correctAudioRef, 
         incorrectAudioRef, completedAudioRef, setStatus, setScore, setIsCorrect, 
         incrementStreak, setIsWrong, addIncorrectWord, resetStreak, setWords, 
         setCurrentWordIndex, incrementWordIndex, setUserInput, setLives, 

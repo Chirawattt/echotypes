@@ -78,6 +78,7 @@ interface GameState {
     // Challenge Mode Scoring
     totalChallengeScore: number;
     lastScoreCalculation: ScoreCalculation | null;
+    lastScoreChange: number;
 
     // DDA State
     currentDifficultyLevel: number;
@@ -117,6 +118,7 @@ interface GameState {
     // Challenge Mode Scoring actions
     setTotalChallengeScore: (score: number | ((prev: number) => number)) => void;
     setLastScoreCalculation: (calculation: ScoreCalculation | null) => void;
+    setLastScoreChange: (change: number) => void;
     addChallengeScore: (calculation: ScoreCalculation) => void;
     resetChallengeScore: () => void;
 
@@ -191,6 +193,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     totalChallengeScore: 0,
     lastScoreCalculation: null,
+    lastScoreChange: 0,
     // DDA Initial state
     currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
     performanceScore: 0,
@@ -237,7 +240,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         };
     }),
     resetStreak: () => {
-        console.log('🔄 STORE: resetStreak() called');
         return set({ streakCount: 0 });
     },
 
@@ -246,15 +248,17 @@ export const useGameStore = create<GameState>((set, get) => ({
         totalChallengeScore: typeof score === 'function' ? score(state.totalChallengeScore) : score
     })),
     setLastScoreCalculation: (calculation) => set({ lastScoreCalculation: calculation }),
+    setLastScoreChange: (change) => set({ lastScoreChange: change }),
     addChallengeScore: (calculation) => set((state) => ({
         totalChallengeScore: state.totalChallengeScore + calculation.finalScore,
-        lastScoreCalculation: calculation
+        lastScoreCalculation: calculation,
+        lastScoreChange: calculation.finalScore
     })),
     resetChallengeScore: () => {
-        console.log('🔄 STORE: resetChallengeScore() called');
         return set({
             totalChallengeScore: 0,
-            lastScoreCalculation: null
+            lastScoreCalculation: null,
+            lastScoreChange: 0
         });
     },
 
@@ -271,15 +275,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
         const state = get();
         let newPerformanceScore = state.performanceScore + (isCorrect ? PERFORMANCE_ON_CORRECT : PERFORMANCE_ON_INCORRECT);
-
-
-        // check if performance score is at lowest level and out of bounds
-        if (newPerformanceScore < LEVEL_DOWN_THRESHOLD) {
-            console.warn('Performance score is below minimum threshold, resetting to level down threshold');
-            newPerformanceScore = (LEVEL_DOWN_THRESHOLD + 1);
-        } else if (newPerformanceScore > LEVEL_UP_THRESHOLD) {
-            newPerformanceScore = LEVEL_UP_THRESHOLD;
-        }
+    
         
         let newDifficultyLevel = state.currentDifficultyLevel;
         let levelChanged = false;
@@ -330,7 +326,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     })),
 
     resetGame: () => {
-        console.log('🔄 STORE: resetGame() called');
         return set({
             status: 'loading',
             countdown: 3,
@@ -353,6 +348,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         bestStreak: 0,
         totalChallengeScore: 0,
         lastScoreCalculation: null,
+        lastScoreChange: 0,
         // Reset DDA state
         currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
         performanceScore: 0,
@@ -361,7 +357,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     },
 
     initializeGame: (words: Word[]) => {
-        console.log('🚀 STORE: initializeGame() called with', words.length, 'words');
         return set({
             words,
             status: 'countdown',
@@ -385,6 +380,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         bestStreak: 0, // Reset best streak for new game
         totalChallengeScore: 0,
         lastScoreCalculation: null,
+        lastScoreChange: 0,
         // Reset DDA state
         currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
         performanceScore: 0,
@@ -409,7 +405,6 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     // Global cleanup function to completely reset game state
     globalCleanup: () => {
-        console.log('🧹 GLOBAL CLEANUP: Resetting all game state');
         return set({
             // Reset all game state to initial values
             status: 'loading',
@@ -435,6 +430,7 @@ export const useGameStore = create<GameState>((set, get) => ({
             bestStreak: 0,
             totalChallengeScore: 0,
             lastScoreCalculation: null,
+            lastScoreChange: 0,
             // Reset DDA state
             currentDifficultyLevel: ddaConfig.INITIAL_DIFFICULTY_LEVEL,
             performanceScore: 0,
