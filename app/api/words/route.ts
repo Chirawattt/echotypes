@@ -31,7 +31,15 @@ export async function GET(req: NextRequest) {
     }
 
     // Randomly shuffle and select the requested number of words
-    const shuffleArray = (array: any[]) => {
+    type Word = {
+      id: number;
+      word: string;
+      type: string;
+      meaning: string;
+      level: string;
+    };
+
+    const shuffleArray = (array: Word[]) => {
       const shuffled = [...array];
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));

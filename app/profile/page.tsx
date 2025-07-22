@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FaKeyboard, FaBrain, FaVolumeUp, FaUser, FaTrophy, FaFire, FaClock, FaBullseye, FaArrowLeft, FaChartLine } from 'react-icons/fa';
+import { FaKeyboard, FaBrain, FaVolumeUp, FaUser, FaTrophy, FaFire, FaClock, FaBullseye, FaChartLine } from 'react-icons/fa';
 import Image from 'next/image';
 import { UserStats, SessionStats } from '@/lib/types';
 

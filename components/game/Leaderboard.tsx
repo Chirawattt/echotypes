@@ -35,7 +35,6 @@ export default function Leaderboard({ gameMode, gameStyle, limit = 10 }: Leaderb
         // Fetch leaderboard
         const params = new URLSearchParams({
           gameMode,
-          difficulty,
           gameStyle,
           limit: limit.toString(),
         });
@@ -50,7 +49,7 @@ export default function Leaderboard({ gameMode, gameStyle, limit = 10 }: Leaderb
 
         // Fetch user's personal score if authenticated
         if (session?.user) {
-          const userScores = await getUserScores({ gameMode, difficulty, gameStyle });
+          const userScores = await getUserScores({ gameMode, gameStyle });
           setUserScore(userScores[0] || null);
         }
 
@@ -63,12 +62,7 @@ export default function Leaderboard({ gameMode, gameStyle, limit = 10 }: Leaderb
     };
 
     fetchData();
-  }, [gameMode, difficulty, gameStyle, limit, session]);
-
-  const formatDifficulty = (diff: string) => {
-    if (diff === 'dda') return 'Dynamic';
-    return diff.toUpperCase();
-  };
+  }, [gameMode, gameStyle, limit, session]);
 
   const formatGameMode = (mode: string) => {
     return mode.charAt(0).toUpperCase() + mode.slice(1);
@@ -107,7 +101,7 @@ export default function Leaderboard({ gameMode, gameStyle, limit = 10 }: Leaderb
       <div className="mb-4">
         <h3 className="text-xl font-bold text-white">Leaderboard</h3>
         <p className="text-gray-400 text-sm">
-          {formatGameMode(gameMode)} • {formatDifficulty(difficulty)} • {formatGameStyle(gameStyle)}
+          {formatGameMode(gameMode)} • {formatGameStyle(gameStyle)}
         </p>
       </div>
 

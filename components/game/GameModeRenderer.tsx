@@ -6,6 +6,9 @@ import { HeatLevel } from '@/hooks/useOverdriveSystem';
 interface Word {
     word: string;
     meaning?: string;
+    type?: string;
+    level?: string; // CEFR level: 'a1', 'a2', 'b1', 'b2', 'c1', 'c2'
+    id?: number; // Optional ID for database records
 }
 
 interface GameModeRendererProps {
