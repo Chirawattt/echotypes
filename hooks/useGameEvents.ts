@@ -120,20 +120,39 @@ export function useGameEvents({
             }
 
             // Handle DDA word progression 
-            if (currentWordIndex === words.length - 1) {
-                // Use DDA words for both challenge and practice modes
-                const reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
-                setWords(reshuffledWords);
-                setCurrentWordIndex(0);
+            if (ddaResult.levelChanged) {
+                // DDA level changed - let the DDA system handle transitions
+                // Don't interfere with the natural DDA flow
+                // The useDDA hook will handle setIsTransitioning(false)
             } else {
-                if (ddaResult.levelChanged) {
-                    // DDA level changed - let the DDA system handle transitions
-                    // Don't interfere with the natural DDA flow
+                // No level change - handle normal word progression
+                if (currentWordIndex === words.length - 1) {
+                    // Use DDA words for both challenge and practice modes
+                    try {
+                        const reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
+                        if (reshuffledWords && reshuffledWords.length > 0) {
+                            setWords(reshuffledWords);
+                            setCurrentWordIndex(0);
+                        } else {
+                            console.error('❌ No words available for typing mode reshuffle, ending game');
+                            setStatus('gameOver');
+                            setIsTransitioning(false);
+                            setUserInput('');
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('❌ Error reshuffling words in typing mode:', error);
+                        setStatus('gameOver');
+                        setIsTransitioning(false);
+                        setUserInput('');
+                        return;
+                    }
                 } else {
-                    // Normal word progression - increment and reset transition
+                    // Normal word progression - increment to next word
                     incrementWordIndex();
-                    setIsTransitioning(false);
                 }
+                // Always reset transition for typing mode when no DDA level change
+                setIsTransitioning(false);
             }
             
             setUserInput('');
@@ -166,18 +185,34 @@ export function useGameEvents({
                     playSound(completedAudioRef, 0.5);
                 }
                 setStatus('gameOver');
+                setIsTransitioning(false); // Ensure we exit transition state
                 return;
             }
             
-        
+            // Handle word progression for Echo and Memory modes
             if (isLastWord) {
                 // Use DDA words for both challenge and practice modes
-                const reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
-                setWords(reshuffledWords);
-                setCurrentWordIndex(0);
+                try {
+                    const reshuffledWords = getDdaGameSessionWords(currentDifficultyLevel);
+                    if (reshuffledWords && reshuffledWords.length > 0) {
+                        setWords(reshuffledWords);
+                        setCurrentWordIndex(0);
+                    } else {
+                        console.error('❌ No words available for reshuffle, ending game');
+                        setStatus('gameOver');
+                        setIsTransitioning(false);
+                        return;
+                    }
+                } catch (error) {
+                    console.error('❌ Error reshuffling words:', error);
+                    setStatus('gameOver');
+                    setIsTransitioning(false);
+                    return;
+                }
             } else {
                 incrementWordIndex();
             }
+            
             setUserInput('');
             setIsWrong(false);
             setIsCorrect(false);

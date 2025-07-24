@@ -108,7 +108,6 @@ export default function Header() {
                 <FaArrowLeft className="text-lg group-hover:text-red-400 transition-colors duration-300" />
                 <span
                     className="text-lg font-medium group-hover:text-red-400 transition-colors duration-300"
-                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                 >
                     Back
                 </span>
@@ -117,7 +116,6 @@ export default function Header() {
             {/* Logo - Center */}
             <div
                 className="absolute left-1/2 transform -translate-x-1/2 text-3xl opacity-60 cursor-pointer hover:opacity-100 transition-opacity duration-300"
-                style={{ fontFamily: "'Caveat Brush', cursive" }}
                 onClick={handleHomeClick}
                 title="Go to Home Page"
             >
@@ -170,7 +168,6 @@ export default function Header() {
                                     <div className="px-4 py-3 border-b border-gray-200/20">
                                         <p 
                                             className="text-gray-800 font-medium text-sm"
-                                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                         >
                                             {session.user?.name || 'User'}
                                         </p>
@@ -191,7 +188,6 @@ export default function Header() {
                                             <FaUserCircle className="text-sm" />
                                             <span 
                                                 className="text-sm font-medium"
-                                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                             >
                                                 Profile
                                             </span>
@@ -206,7 +202,6 @@ export default function Header() {
                                             <FaTrophy className="text-sm" />
                                             <span 
                                                 className="text-sm font-medium"
-                                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                             >
                                                 Leaderboard
                                             </span>
@@ -221,7 +216,6 @@ export default function Header() {
                                             <FaSignOutAlt className="text-sm" />
                                             <span 
                                                 className="text-sm font-medium"
-                                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                             >
                                                 Sign Out
                                             </span>
@@ -245,7 +239,6 @@ export default function Header() {
                         <FaGoogle className="text-sm" />
                         <span 
                             className="text-sm font-medium"
-                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                         >
                             Sign In
                         </span>

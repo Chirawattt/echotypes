@@ -59,7 +59,6 @@ function AuthErrorContent() {
           {/* Error Title */}
           <h1 
             className="text-3xl text-white mb-4"
-            style={{ fontFamily: "'Caveat Brush', cursive" }}
           >
             Authentication Error
           </h1>
@@ -67,7 +66,6 @@ function AuthErrorContent() {
           {/* Error Message */}
           <p 
             className="text-neutral-300 text-lg mb-8 leading-relaxed"
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
           >
             {getErrorMessage(error)}
           </p>
@@ -89,7 +87,7 @@ function AuthErrorContent() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <span>
                 Try Again
               </span>
             </motion.button>
@@ -133,7 +131,7 @@ export default function AuthError() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+          <p className="text-white text-lg">
             Loading...
           </p>
         </div>

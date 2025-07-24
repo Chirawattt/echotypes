@@ -20,29 +20,48 @@ export function useDDA({ modeId }: { modeId: string }) {
     const handleDdaUpdate = useCallback((isCorrect: boolean) => {
         const result = updatePerformance(isCorrect);
 
-
         if (result.levelChanged) {
+            // Validate the new difficulty level is within bounds
+            if (result.newDifficultyLevel < ddaConfig.MIN_DIFFICULTY_LEVEL || 
+                result.newDifficultyLevel > ddaConfig.MAX_DIFFICULTY_LEVEL) {
+                console.error(`❌ DDA: Invalid difficulty level ${result.newDifficultyLevel}. Skipping transition.`);
+                return result;
+            }
+
             // Start transition - block all speech during this period
             setIsTransitioning(true);
 
             // Clean transition - complete word replacement
             setTimeout(() => {
-                // Get fresh words for the new difficulty level
-                const newLevelWords = getDdaGameSessionWords(result.newDifficultyLevel);
+                try {
+                    // Get fresh words for the new difficulty level
+                    const newLevelWords = getDdaGameSessionWords(result.newDifficultyLevel);
 
-                // Batch all state updates together to prevent multiple re-renders
-                // 1. Replace all words with new level words
-                setWords(newLevelWords);
+                    // Validate that we received words
+                    if (!newLevelWords || newLevelWords.length === 0) {
+                        console.error(`❌ DDA: No words available for level ${result.newDifficultyLevel}. Aborting transition.`);
+                        setIsTransitioning(false);
+                        return;
+                    }
 
-                // 2. Reset to first word of new level
-                // Reset index to -1 because it will be incremented to 0 on next render
-                if (modeId === 'echo' || modeId === 'memory') setCurrentWordIndex(-1);
-                else if (modeId === 'typing') setCurrentWordIndex(0);
-                else setCurrentWordIndex(0); // Default for other modes
+                    // Batch all state updates together to prevent multiple re-renders
+                    // 1. Replace all words with new level words
+                    setWords(newLevelWords);
 
-                // 3. End DDA transition
-                setIsTransitioning(false);
+                    // 2. Reset to first word of new level
+                    // Reset index to -1 because it will be incremented to 0 on next render
+                    if (modeId === 'echo' || modeId === 'memory') setCurrentWordIndex(-1);
+                    else if (modeId === 'typing') setCurrentWordIndex(0);
+                    else setCurrentWordIndex(0); // Default for other modes
 
+                    // 3. End DDA transition
+                    setIsTransitioning(false);
+
+                } catch (error) {
+                    console.error('❌ DDA: Error during level transition:', error);
+                    // Always ensure we exit transition state even on error
+                    setIsTransitioning(false);
+                }
             }, 100); // Minimal delay for batched updates
         }
 

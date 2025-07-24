@@ -20,6 +20,8 @@ import GameInput from '@/components/game/GameInput';
 import VirtualKeyboard from '@/components/game/VirtualKeyboard';
 import HeatLevelNotification from '@/components/game/HeatLevelNotification';
 import LevelChangeNotification from '@/components/game/LevelChangeNotification';
+import C2MasteryNotification from '@/components/game/C2MasteryNotification';
+import { shouldOfferC2Completion } from '@/lib/ddaWords';
 
 function DDAGamePlayPageContent() {
     const params = useParams();
@@ -33,6 +35,10 @@ function DDAGamePlayPageContent() {
     // State to manage game over transition
     const [showGameOverOverlay, setShowGameOverOverlay] = useState(false);
     const [showFinalGameOver, setShowFinalGameOver] = useState(false);
+    
+    // State for C2 mastery notification
+    const [showC2Mastery, setShowC2Mastery] = useState(false);
+    const [c2CheckCounter, setC2CheckCounter] = useState(0);
 
     // Get game style from URL search params
     const gameStyle = (searchParams.get('style') as 'practice' | 'challenge') || 'practice';
@@ -102,8 +108,28 @@ function DDAGamePlayPageContent() {
         if (gameLogic.status === 'countdown' || gameLogic.status === 'playing') {
             setShowGameOverOverlay(false);
             setShowFinalGameOver(false);
+            setShowC2Mastery(false);
         }
     }, [gameLogic.status]);
+
+    // Check for C2 mastery notification
+    useEffect(() => {
+        // Only check during gameplay and at C2 level
+        if (gameLogic.status === 'playing' && 
+            gameLogic.currentDifficultyLevel === 6 && 
+            !showC2Mastery) {
+            
+            // Check every 10 words to avoid frequent checks
+            const totalWords = gameLogic.score;
+            if (totalWords > 0 && totalWords % 10 === 0 && c2CheckCounter !== totalWords) {
+                setC2CheckCounter(totalWords);
+                
+                if (shouldOfferC2Completion(totalWords, gameLogic.streakCount)) {
+                    setShowC2Mastery(true);
+                }
+            }
+        }
+    }, [gameLogic.status, gameLogic.currentDifficultyLevel, gameLogic.score, gameLogic.streakCount, showC2Mastery, c2CheckCounter]);
 
     const handleOverlayComplete = () => {
         // Add a small delay before starting the fade out
@@ -208,8 +234,6 @@ function DDAGamePlayPageContent() {
                                 isOverdriveTransitioning={modeId === 'typing' && gameStyle === 'challenge' ? isOverdriveTransitioning : undefined}
                                 totalChallengeScore={gameStyle === 'challenge' ? gameLogic.totalChallengeScore : undefined}
                                 streakCount={gameStyle === 'challenge' ? gameLogic.streakCount : undefined}
-                                lastEnergyChange={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.lastEnergyChange : undefined}
-                                energyChangeCounter={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.energyChangeCounter : undefined}
                                 ddaLevel={modeId === 'memory' && gameStyle === 'challenge' ? gameLogic.currentDifficultyLevel : undefined}
                                 viewingTime={modeId === 'memory' && gameStyle === 'challenge' ? calculateViewTime(gameLogic.currentDifficultyLevel || 1) : undefined}
                             />
@@ -367,9 +391,6 @@ function DDAGamePlayPageContent() {
                     isOverdriveTransitioning={modeId === 'typing' && gameStyle === 'challenge' ? isOverdriveTransitioning : undefined}
                     totalChallengeScore={gameStyle === 'challenge' ? gameLogic.totalChallengeScore : undefined}
                     streakCount={gameStyle === 'challenge' ? gameLogic.streakCount : undefined}
-
-                    lastEnergyChange={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.lastEnergyChange : undefined}
-                    energyChangeCounter={modeId === 'typing' && gameStyle === 'challenge' ? gameLogic.energyChangeCounter : undefined}
                     ddaLevel={modeId === 'memory' && gameStyle === 'challenge' ? gameLogic.currentDifficultyLevel : undefined}
                     viewingTime={modeId === 'memory' && gameStyle === 'challenge' ? calculateViewTime(gameLogic.currentDifficultyLevel || 1) : undefined}
                 />
@@ -419,6 +440,15 @@ function DDAGamePlayPageContent() {
                 {/* Level Change Notification for DDA */}
                 <LevelChangeNotification 
                     currentLevel={gameLogic.currentDifficultyLevel}
+                />
+
+                {/* C2 Mastery Achievement Notification */}
+                <C2MasteryNotification
+                    show={showC2Mastery}
+                    totalWordsPlayed={gameLogic.score}
+                    streakCount={gameLogic.streakCount}
+                    onContinue={() => setShowC2Mastery(false)}
+                    onClose={() => setShowC2Mastery(false)}
                 />
                 
             </section>

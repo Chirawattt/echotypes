@@ -48,13 +48,11 @@ function SignInContent() {
           <div className="text-center mb-8">
             <h1 
               className="text-4xl text-white mb-2"
-              style={{ fontFamily: "'Caveat Brush', cursive" }}
             >
               EchoTypes
             </h1>
             <p 
               className="text-neutral-400 text-lg"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               Sign in to continue
             </p>
@@ -90,7 +88,7 @@ function SignInContent() {
             whileTap={{ scale: 0.98 }}
           >
             <FaGoogle className="text-xl" />
-            <span style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+            <span>
               Continue with Google
             </span>
           </motion.button>
@@ -111,7 +109,7 @@ export default function SignIn() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+          <p className="text-white text-lg">
             Loading...
           </p>
         </div>

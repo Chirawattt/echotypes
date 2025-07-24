@@ -15,22 +15,19 @@ export async function GET(req: NextRequest) {
       }, { status: 400 });
     }
 
-    // Fetch words from the database for the specified level with random ordering
-    // Use a larger pool and random selection to ensure word diversity
-    const poolSize = Math.max(limit * 3, 100); // Get 3x requested amount or minimum 100 words
-    
-    const { data: allWords, error } = await supabase
-      .from('Words')
-      .select('id, word, type, meaning, level')
-      .eq('level', level.toLowerCase())
-      .limit(poolSize);
+    // Use the Supabase function to get random words directly
+    const { data: words, error } = await supabase
+      .rpc('get_random_words', {
+        p_level: level.toLowerCase(),
+        p_limit: limit
+      });
 
     if (error) {
       console.error('❌ Error fetching words from database:', error);
       throw error;
     }
 
-    // Randomly shuffle and select the requested number of words
+    // Define Word type for TypeScript
     type Word = {
       id: number;
       word: string;
@@ -38,17 +35,6 @@ export async function GET(req: NextRequest) {
       meaning: string;
       level: string;
     };
-
-    const shuffleArray = (array: Word[]) => {
-      const shuffled = [...array];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    };
-
-    const words = allWords ? shuffleArray(allWords).slice(0, limit) : [];
 
     if (!words || words.length === 0) {
       console.warn(`⚠️ No words found for level: ${level}`);
@@ -58,9 +44,8 @@ export async function GET(req: NextRequest) {
       });
     }
 
-
     // Transform the data to match the expected Word interface
-    const transformedWords = words.map(word => ({
+    const transformedWords = words.map((word: Word) => ({
       id: word.id,
       word: word.word,
       type: word.type,

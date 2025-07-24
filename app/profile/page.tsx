@@ -104,7 +104,7 @@ export default function ProfilePage() {
       <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-black to-gray-900 items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+          <p className="text-white text-lg">
             Loading profile...
           </p>
         </div>
@@ -126,13 +126,11 @@ export default function ProfilePage() {
         >
           <h1 
             className="text-6xl sm:text-7xl font-bold bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4"
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
           >
             Profile
           </h1>
           <p 
             className="text-xl text-slate-400"
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
           >
             Your learning journey
           </p>
@@ -165,13 +163,11 @@ export default function ProfilePage() {
             <div>
               <h2 
                 className="text-3xl font-bold text-white mb-2"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 {session?.user?.name || 'Player'}
               </h2>
               <p 
                 className="text-slate-300 text-lg"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 {session?.user?.email}
               </p>
@@ -189,40 +185,40 @@ export default function ProfilePage() {
           >
             <div className="bg-white/5 backdrop-blur-md border border-white/15 rounded-2xl p-6 text-center">
               <FaTrophy className="text-3xl text-amber-400 mx-auto mb-3" />
-              <div className="text-2xl font-bold text-white" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-2xl font-bold text-white">
                 {userStats.totalWordsCorrect}
               </div>
-              <div className="text-sm text-amber-200" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-sm text-amber-200">
                 Words Learned
               </div>
             </div>
             
             <div className="bg-white/5 backdrop-blur-md border border-white/15 rounded-2xl p-6 text-center">
               <FaFire className="text-3xl text-red-400 mx-auto mb-3" />
-              <div className="text-2xl font-bold text-white" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-2xl font-bold text-white">
                 {userStats.bestStreak}
               </div>
-              <div className="text-sm text-red-200" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-sm text-red-200">
                 Best Streak
               </div>
             </div>
             
             <div className="bg-white/5 backdrop-blur-md border border-white/15 rounded-2xl p-6 text-center">
               <FaClock className="text-3xl text-blue-400 mx-auto mb-3" />
-              <div className="text-2xl font-bold text-white" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-2xl font-bold text-white">
                 {formatTime(userStats.totalTimeSpent)}
               </div>
-              <div className="text-sm text-blue-200" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-sm text-blue-200">
                 Time Played
               </div>
             </div>
             
             <div className="bg-white/5 backdrop-blur-md border border-white/15 rounded-2xl p-6 text-center">
               <FaBullseye className="text-3xl text-green-400 mx-auto mb-3" />
-              <div className="text-2xl font-bold text-white" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-2xl font-bold text-white">
                 {userStats.overallAccuracy.toFixed(1)}%
               </div>
-              <div className="text-sm text-green-200" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <div className="text-sm text-green-200">
                 Accuracy
               </div>
             </div>
@@ -239,32 +235,31 @@ export default function ProfilePage() {
           >
             <h3 
               className="text-2xl font-bold text-white mb-4"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               Learning Progress
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div>
-                <div className="text-3xl font-bold text-emerald-400" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <div className="text-3xl font-bold text-emerald-400">
                   {userStats.totalGames}
                 </div>
-                <div className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <div className="text-slate-300">
                   Games Completed
                 </div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-purple-400" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <div className="text-3xl font-bold text-purple-400">
                   {Math.round(userStats.totalWordsCorrect / Math.max(userStats.totalGames, 1))}
                 </div>
-                <div className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <div className="text-slate-300">
                   Avg Words/Game
                 </div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-blue-400" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <div className="text-3xl font-bold text-blue-400">
                   {Math.round(userStats.totalTimeSpent / Math.max(userStats.totalGames, 1) / 60)}
                 </div>
-                <div className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <div className="text-slate-300">
                   Avg Minutes/Game
                 </div>
               </div>
@@ -282,7 +277,6 @@ export default function ProfilePage() {
           >
             <h3 
               className="text-3xl font-bold text-center text-white mb-8"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               Mode Statistics
             </h3>
@@ -305,80 +299,80 @@ export default function ProfilePage() {
                       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
                         <config.icon className={`text-3xl ${config.color}`} />
                       </div>
-                      <h4 className="text-xl font-bold text-white" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                      <h4 className="text-xl font-bold text-white">
                         {config.name}
                       </h4>
                     </div>
 
                     {/* Practice Mode Stats */}
                     <div className="mb-6">
-                      <h5 className="text-lg font-semibold text-white mb-3 flex items-center gap-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                      <h5 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                         <FaChartLine className="text-sm" />
                         Practice
                       </h5>
                       {practiceData ? (
                         <div className="bg-white/5 rounded-2xl p-4 space-y-2">
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Games:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{practiceData.total_games}</span>
+                            <span className="text-slate-300">Games:</span>
+                            <span className="text-white font-medium">{practiceData.total_games}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Best Score:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{practiceData.best_score}</span>
+                            <span className="text-slate-300">Best Score:</span>
+                            <span className="text-white font-medium">{practiceData.best_score}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Best Streak:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{practiceData.best_streak}</span>
+                            <span className="text-slate-300">Best Streak:</span>
+                            <span className="text-white font-medium">{practiceData.best_streak}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Accuracy:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{practiceData.average_accuracy.toFixed(1)}%</span>
+                            <span className="text-slate-300">Accuracy:</span>
+                            <span className="text-white font-medium">{practiceData.average_accuracy.toFixed(1)}%</span>
                           </div>
                           {modeKey === 'typing' && practiceData.best_wpm && (
                             <div className="flex justify-between text-sm">
-                              <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Best WPM:</span>
-                              <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{practiceData.best_wpm}</span>
+                              <span className="text-slate-300">Best WPM:</span>
+                              <span className="text-white font-medium">{practiceData.best_wpm}</span>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <p className="text-slate-400 text-center py-2 text-sm" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>No games yet</p>
+                        <p className="text-slate-400 text-center py-2 text-sm">No games yet</p>
                       )}
                     </div>
 
                     {/* Challenge Mode Stats */}
                     <div>
-                      <h5 className="text-lg font-semibold text-white mb-3 flex items-center gap-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                      <h5 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                         <FaTrophy className="text-sm" />
                         Challenge
                       </h5>
                       {challengeData ? (
                         <div className="bg-white/5 rounded-2xl p-4 space-y-2">
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Games:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{challengeData.total_games}</span>
+                            <span className="text-slate-300">Games:</span>
+                            <span className="text-white font-medium">{challengeData.total_games}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Best Score:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{challengeData.best_challenge_score || challengeData.best_score}</span>
+                            <span className="text-slate-300">Best Score:</span>
+                            <span className="text-white font-medium">{challengeData.best_challenge_score || challengeData.best_score}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Best Streak:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{challengeData.best_streak}</span>
+                            <span className="text-slate-300">Best Streak:</span>
+                            <span className="text-white font-medium">{challengeData.best_streak}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Accuracy:</span>
-                            <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{challengeData.average_accuracy.toFixed(1)}%</span>
+                            <span className="text-slate-300">Accuracy:</span>
+                            <span className="text-white font-medium">{challengeData.average_accuracy.toFixed(1)}%</span>
                           </div>
                           {modeKey === 'typing' && challengeData.best_wpm && (
                             <div className="flex justify-between text-sm">
-                              <span className="text-slate-300" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>Best WPM:</span>
-                              <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{challengeData.best_wpm}</span>
+                              <span className="text-slate-300">Best WPM:</span>
+                              <span className="text-white font-medium">{challengeData.best_wpm}</span>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <p className="text-slate-400 text-center py-2 text-sm" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>No games yet</p>
+                        <p className="text-slate-400 text-center py-2 text-sm">No games yet</p>
                       )}
                     </div>
                   </motion.div>
@@ -400,7 +394,6 @@ export default function ProfilePage() {
             className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-4 px-12 rounded-2xl text-xl backdrop-blur-sm border border-emerald-400/30 transition-all duration-300 shadow-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
           >
             Continue Learning
           </motion.button>

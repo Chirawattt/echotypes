@@ -11,8 +11,6 @@ interface UseNitroEnergyProps {
 export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, energyDecayInterval = 1000, isTransitioning = false }: UseNitroEnergyProps) {
     const [energy, setEnergy] = useState(10); // Start with 10 points
     const [maxEnergy] = useState(15); // Maximum energy cap at 15 points
-    const [lastEnergyChange, setLastEnergyChange] = useState<number>(0); // Track energy changes for notifications
-    const [energyChangeCounter, setEnergyChangeCounter] = useState<number>(0); // Counter to trigger notifications
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const isInitializedRef = useRef(false); // Flag to prevent early game over
 
@@ -67,11 +65,6 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
 
         setEnergy(prev => {
             const newEnergy = Math.min(prev + energyBonus, maxEnergy);
-            const actualChange = newEnergy - prev;
-            if (actualChange > 0) {
-                setLastEnergyChange(actualChange);
-                setEnergyChangeCounter(counter => counter + 1);
-            }
             return newEnergy;
         });
     }, [isTypingMode, maxEnergy]);
@@ -82,11 +75,6 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
 
         setEnergy(prev => {
             const newEnergy = Math.max(0, prev - 3); // ลด 3 แต้ม
-            const actualChange = newEnergy - prev; // This will be negative
-            if (actualChange < 0) {
-                setLastEnergyChange(actualChange);
-                setEnergyChangeCounter(counter => counter + 1);
-            }
             return newEnergy;
         });
     }, [isTypingMode]);
@@ -95,8 +83,6 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
     const resetEnergy = useCallback(() => {
         setEnergy(10); // Reset to 10 points
         isInitializedRef.current = false; // Reset initialization flag
-        setLastEnergyChange(0); // Reset energy change tracking
-        setEnergyChangeCounter(0); // Reset energy change counter
     }, []);
 
     // Check if energy is low (less than 3 points)
@@ -108,8 +94,6 @@ export function useNitroEnergy({ isTypingMode, isGameActive, onEnergyDepleted, e
         isLowEnergy,
         addEnergy,
         removeEnergy,
-        resetEnergy,
-        lastEnergyChange,
-        energyChangeCounter
+        resetEnergy
     };
 }

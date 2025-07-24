@@ -299,8 +299,7 @@ export default function GameOver({ modeId, words, handleRestartGame, handleHomeN
                         <Button
                             onClick={() => setShowIncorrectWordsModal(true)}
                             className="bg-gradient-to-r from-red-500/80 to-red-600/80 hover:from-red-500 hover:to-red-600 text-white font-semibold py-5 px-10 rounded-xl text-xl backdrop-blur-sm border border-red-400/30 transition-all duration-300 hover:scale-105 shadow-lg"
-                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                        >
+                                                    >
                             <FaExclamationTriangle className="mr-3 text-lg" />
                             <span>View Mistakes ({incorrectWords.length})</span>
                         </Button>
@@ -316,16 +315,14 @@ export default function GameOver({ modeId, words, handleRestartGame, handleHomeN
                         router.push('/');
                     }} 
                     className="bg-gradient-to-r from-emerald-600/80 to-green-700/80 hover:from-emerald-600 hover:to-green-700 text-white font-semibold py-7 px-12 rounded-xl text-xl backdrop-blur-sm border border-emerald-400/30 transition-all duration-300 hover:scale-105 shadow-lg min-w-[200px]"
-                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                > 
+                                    > 
                     <FaHome className="mr-3 text-lg" /> 
                     <span>หน้าแรก</span> 
                 </Button> 
                 <Button 
                     onClick={handleRestartGame}
                     className="bg-gradient-to-r from-blue-600/80 to-indigo-700/80 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-7 px-12 rounded-xl text-xl backdrop-blur-sm border border-blue-400/30 transition-all duration-300 hover:scale-105 shadow-lg min-w-[200px]"
-                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                >
+                                    >
                     <FaUndo className="mr-3 text-lg" /> 
                     <span>เริ่มใหม่</span> 
                 </Button> 

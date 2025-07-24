@@ -93,7 +93,6 @@ function HomeContent() {
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p
             className="text-white text-lg"
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
           >
             Loading...
           </p>
@@ -150,7 +149,6 @@ function HomeContent() {
         >
           <motion.h1
             className="text-8xl sm:text-9xl lg:text-[8rem] font-bold bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent py-10"
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             animate={{
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
             }}
@@ -167,13 +165,11 @@ function HomeContent() {
           >
             <p
               className="text-3xl sm:text-4xl text-slate-300 font-medium"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               เกมฝึกคำศัพท์ภาษาอังกฤษ
             </p>
             <p
               className="text-xl text-slate-400 max-w-xl mx-auto"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               Learn English vocabulary through interactive games
             </p>
@@ -194,7 +190,6 @@ function HomeContent() {
               className="bg-white/5 backdrop-blur-md hover:bg-white/10 text-white font-semibold py-4 px-8 rounded-2xl text-lg border border-white/15 hover:border-white/25 transition-all duration-300 flex items-center gap-3"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               <FaUser className="text-lg" />
               <span>โปรไฟล์</span>
@@ -206,7 +201,6 @@ function HomeContent() {
               className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-md hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-orange-500/20 text-white font-semibold py-4 px-8 rounded-2xl text-lg border border-yellow-400/20 hover:border-yellow-400/40 transition-all duration-300 flex items-center gap-3"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               <FaTrophy className="text-lg text-yellow-400" />
               <span>อันดับ</span>
@@ -223,7 +217,7 @@ function HomeContent() {
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-500 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
             <div className="relative bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-6 px-16 rounded-3xl text-2xl backdrop-blur-sm border border-emerald-400/30 transition-all duration-300 shadow-lg flex items-center gap-4">
               <FaPlay className="text-xl" />
-              <span style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <span>
                 เริ่มเล่น
               </span>
             </div>
@@ -240,7 +234,6 @@ function HomeContent() {
           >
             <p
               className="text-lg text-slate-400"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               Welcome back,{" "}
               <span className="font-semibold text-emerald-400">
@@ -260,7 +253,6 @@ function HomeContent() {
       >
         <p
           className="text-sm text-slate-500"
-          style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
         >
           Three learning modes • Dynamic Difficulty Adjustment
         </p>
@@ -275,7 +267,7 @@ export default function Home() {
       <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-black to-gray-900 items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+          <p className="text-white text-lg">
             Loading...
           </p>
         </div>

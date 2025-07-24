@@ -53,8 +53,7 @@ const GameInput = forwardRef<HTMLInputElement, GameInputProps>(({
                             isCorrect ? 'text-green-400 border-green-500' :
                                 'text-white border-white/30 focus:border-blue-400'
                             } ${isTransitioning ? 'cursor-not-allowed opacity-50' : ''}`}
-                        style={{ fontFamily: "'Caveat Brush', cursive" }}
-                    />
+                                            />
 
                     {/* Visual Feedback Indicators */}
                     <AnimatePresence>
@@ -92,8 +91,7 @@ const GameInput = forwardRef<HTMLInputElement, GameInputProps>(({
                 >
                     <p
                         className="text-white/60 text-sm sm:text-base font-medium"
-                        style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
-                    >
+                                            >
                         💡 Press <kbd className="px-2 py-1 bg-white/10 rounded-md text-white/80 font-mono text-sm">Enter</kbd> to submit your answer
                     </p>
                 </motion.div>

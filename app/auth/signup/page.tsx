@@ -119,13 +119,11 @@ export default function SignUp() {
           <div className="text-center mb-8">
             <h1 
               className="text-4xl text-white mb-2"
-              style={{ fontFamily: "'Caveat Brush', cursive" }}
             >
               EchoTypes
             </h1>
             <p 
               className="text-neutral-400 text-lg"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               Complete your profile
             </p>
@@ -171,7 +169,6 @@ export default function SignUp() {
               <label 
                 htmlFor="displayName" 
                 className="block text-white font-medium mb-2"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 Display Name
               </label>
@@ -204,7 +201,7 @@ export default function SignUp() {
               ) : (
                 <FaCheck className="text-xl" />
               )}
-              <span style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+              <span>
                 {loading ? 'Creating Account...' : 'Complete Registration'}
               </span>
             </motion.button>

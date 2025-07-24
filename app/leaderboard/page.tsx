@@ -180,14 +180,12 @@ export default function LeaderboardPage() {
             <FaTrophy className="text-yellow-400 text-4xl" />
             <h1
               className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
-              style={{ fontFamily: "'Caveat Brush', cursive" }}
             >
               Leaderboard
             </h1>
           </div>
           <p
             className="text-gray-300 text-lg"
-            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
           >
             แข่งขันกับผู้เล่นคนอื่น ๆ ในระบบปรับความยากอัตโนมัติ (DDA)
           </p>
@@ -205,7 +203,6 @@ export default function LeaderboardPage() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-300 mb-3"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 Game Mode
               </label>
@@ -236,9 +233,6 @@ export default function LeaderboardPage() {
                       />
                       <span
                         className="text-xs font-medium"
-                        style={{
-                          fontFamily: "'Playpen Sans Thai', sans-serif",
-                        }}
                       >
                         {mode.name}
                       </span>
@@ -252,7 +246,6 @@ export default function LeaderboardPage() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-300 mb-3"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 Game Style
               </label>
@@ -271,7 +264,6 @@ export default function LeaderboardPage() {
                           : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/8"
                       }
                     `}
-                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                   >
                     {style.name}
                   </button>
@@ -292,7 +284,6 @@ export default function LeaderboardPage() {
           <div className="text-center">
             <div
               className="text-lg font-bold text-white"
-              style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
             >
               {gameModes.find((m) => m.id === filters.gameMode)?.name} •{" "}
               {gameStyles.find((s) => s.id === filters.gameStyle)?.name}
@@ -315,7 +306,6 @@ export default function LeaderboardPage() {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
               <p
                 className="text-gray-400"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 Loading leaderboard...
               </p>
@@ -350,7 +340,6 @@ export default function LeaderboardPage() {
                   <div className="flex-1">
                     <div
                       className="font-bold text-white text-lg"
-                      style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                     >
                       {entry.player_name}
                     </div>
@@ -377,7 +366,6 @@ export default function LeaderboardPage() {
                   <div className="text-right">
                     <div
                       className="text-xl font-bold text-white"
-                      style={{ fontFamily: "'Caveat Brush', cursive" }}
                     >
                       {formatScore(entry)}
                     </div>
@@ -396,13 +384,11 @@ export default function LeaderboardPage() {
               <FaTrophy className="text-gray-600 text-6xl mx-auto mb-4" />
               <h3
                 className="text-xl font-bold text-gray-400 mb-2"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 No scores yet
               </h3>
               <p
                 className="text-gray-500"
-                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
               >
                 Be the first to set a score in this category!
               </p>

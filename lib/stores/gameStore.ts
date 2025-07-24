@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Word } from '@/lib/types';
 import { ScoreCalculation } from '@/lib/scoring';
 import { ddaConfig } from '@/lib/ddaConfig';
+import { clearC2WordHistory } from '@/lib/ddaWords';
 
 export type GameStatus = 'loading' | 'countdown' | 'playing' | 'gameOver';
 
@@ -285,7 +286,9 @@ export const useGameStore = create<GameState>((set, get) => ({
             newDifficultyLevel++;
             newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลอัพ
             levelChanged = true;
-
+        } else if (newPerformanceScore >= LEVEL_UP_THRESHOLD && newDifficultyLevel >= MAX_DIFFICULTY_LEVEL) {
+            // If at max level and performance is good, keep performance score at threshold to prevent accumulation
+            newPerformanceScore = Math.min(newPerformanceScore, LEVEL_UP_THRESHOLD);
         }
 
         // ตรวจสอบเงื่อนไข Level Down
@@ -293,6 +296,9 @@ export const useGameStore = create<GameState>((set, get) => ({
             newDifficultyLevel--;
             newPerformanceScore = 0; // รีเซ็ตคะแนนเมื่อเลเวลลด
             levelChanged = true;
+        } else if (newPerformanceScore <= LEVEL_DOWN_THRESHOLD && newDifficultyLevel <= MIN_DIFFICULTY_LEVEL) {
+            // If at min level and performance is poor, keep performance score at threshold to prevent further decline
+            newPerformanceScore = Math.max(newPerformanceScore, LEVEL_DOWN_THRESHOLD);
         }
 
         set({
@@ -405,6 +411,9 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     // Global cleanup function to completely reset game state
     globalCleanup: () => {
+        // Clear C2 word history for fresh start
+        clearC2WordHistory();
+        
         return set({
             // Reset all game state to initial values
             status: 'loading',

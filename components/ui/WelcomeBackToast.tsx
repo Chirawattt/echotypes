@@ -63,7 +63,6 @@ export default function WelcomeBackToast({ show, userName, onClose }: WelcomeBac
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.3, duration: 0.4 }}
                                 className="text-lg font-bold text-green-300"
-                                style={{ fontFamily: "'Caveat Brush', cursive" }}
                             >
                                 Welcome Back!
                             </motion.h3>
@@ -78,13 +77,11 @@ export default function WelcomeBackToast({ show, userName, onClose }: WelcomeBac
                         >
                             <p 
                                 className="text-white font-medium"
-                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                             >
                                 {userName ? `สวัสดี ${userName}!` : 'สวัสดีครับ!'}
                             </p>
                             <p 
                                 className="text-green-200/80 text-sm"
-                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                             >
                                 พร้อมฝึกคำศัพท์ภาษาอังกฤษแล้วหรือยัง? 🎯
                             </p>
@@ -104,7 +101,6 @@ export default function WelcomeBackToast({ show, userName, onClose }: WelcomeBac
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.6, duration: 0.4 }}
                             className="text-xs text-green-300/60 mt-2 text-center"
-                            style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                         >
                             กดเพื่อปิด
                         </motion.p>

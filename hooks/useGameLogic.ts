@@ -819,8 +819,6 @@ export function useGameLogic({ modeId, gameStyle, selectedTime }: UseGameLogicPr
         addEnergy: nitroEnergy.addEnergy,
         removeEnergy: nitroEnergy.removeEnergy,
         resetEnergy: nitroEnergy.resetEnergy,
-        lastEnergyChange: nitroEnergy.lastEnergyChange,
-        energyChangeCounter: nitroEnergy.energyChangeCounter,
         
         // Overdrive System for Typing Challenge
         heatLevel: overdriveSystem.currentHeatLevel,

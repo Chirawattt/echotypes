@@ -14,6 +14,10 @@ export const getDdaWords = async (difficultyLevel: number): Promise<Word[]> => {
 // Simple word cache for DDA system to enable synchronous access
 const ddaWordCache: { [level: string]: Word[] } = {};
 
+// Word history tracking for C2 level to avoid immediate repeats
+const c2WordHistory: Set<string> = new Set();
+const C2_HISTORY_LIMIT = 50; // Remember last 50 words to avoid repeats
+
 // Pre-populate DDA word cache from database
 export const preloadDdaWords = async (): Promise<void> => {
     
@@ -34,22 +38,91 @@ export const preloadDdaWords = async (): Promise<void> => {
 
 // ฟังก์ชันดึงคำศัพท์แบบสุ่มตามระดับ DDA - Uses cached words for synchronous access
 export const getDdaGameSessionWords = (difficultyLevel: number): Word[] => {
+    // Validate difficulty level range
+    if (difficultyLevel < 1 || difficultyLevel > 6) {
+        console.error(`❌ Invalid difficulty level: ${difficultyLevel}. Must be between 1-6.`);
+        difficultyLevel = Math.max(1, Math.min(6, difficultyLevel)); // Clamp to valid range
+    }
+
     const fileName = mapLevelToFileName(difficultyLevel);
-    
     
     // Get words from cache
     const cachedWords = ddaWordCache[fileName] || [];
     
     if (cachedWords.length === 0) {
         console.warn(`⚠️ No cached words available for level ${fileName}. Cache may not be loaded.`);
+        // Try to return words from A1 as fallback
+        const fallbackWords = ddaWordCache['a1'] || [];
+        if (fallbackWords.length > 0) {
+            console.warn(`🔄 Using A1 words as fallback for level ${fileName}`);
+            const shuffled = [...fallbackWords].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, 20);
+        }
         return [];
     }
     
-    // Shuffle and return 20 words for the session
+    // Special handling for C2 level to reduce repetition
+    if (difficultyLevel === 6) {
+        return getC2WordsWithVariety(cachedWords);
+    }
+    
+    // For other levels, use standard shuffling
     const shuffled = [...cachedWords].sort(() => Math.random() - 0.5);
     const sessionWords = shuffled.slice(0, 20);
     
     return sessionWords;
+};
+
+// Enhanced C2 word selection with variety and mixed difficulty
+const getC2WordsWithVariety = (c2Words: Word[]): Word[] => {
+    const sessionSize = 20;
+    let selectedWords: Word[] = [];
+    
+    // Try to get fresh words (not in recent history)
+    const availableWords = c2Words.filter(word => !c2WordHistory.has(word.word.toLowerCase()));
+    
+    if (availableWords.length >= sessionSize) {
+        // Enough fresh words available
+        const shuffled = [...availableWords].sort(() => Math.random() - 0.5);
+        selectedWords = shuffled.slice(0, sessionSize);
+    } else {
+        // Mix fresh words with some from history, plus lower level words for variety
+        const freshWords = [...availableWords].sort(() => Math.random() - 0.5);
+        
+        // Add some C1 words for variety (30% of session)
+        const c1Words = ddaWordCache['c1'] || [];
+        const c1Count = Math.min(6, Math.floor(sessionSize * 0.3));
+        const c1Selected = c1Words.length > 0 
+            ? [...c1Words].sort(() => Math.random() - 0.5).slice(0, c1Count)
+            : [];
+        
+        // Fill remaining slots with C2 words (including some from history if needed)
+        const remainingSlots = sessionSize - freshWords.length - c1Selected.length;
+        const historyWords = remainingSlots > 0 
+            ? [...c2Words].sort(() => Math.random() - 0.5).slice(0, remainingSlots)
+            : [];
+        
+        selectedWords = [...freshWords, ...c1Selected, ...historyWords];
+        
+        // Shuffle the final mix
+        selectedWords = selectedWords.sort(() => Math.random() - 0.5);
+        
+        console.log(`🎯 C2 Enhanced: ${freshWords.length} fresh C2, ${c1Selected.length} C1, ${historyWords.length} repeat C2`);
+    }
+    
+    // Update word history
+    selectedWords.forEach(word => {
+        c2WordHistory.add(word.word.toLowerCase());
+    });
+    
+    // Limit history size
+    if (c2WordHistory.size > C2_HISTORY_LIMIT) {
+        const historyArray = Array.from(c2WordHistory);
+        const toRemove = historyArray.slice(0, c2WordHistory.size - C2_HISTORY_LIMIT);
+        toRemove.forEach(word => c2WordHistory.delete(word));
+    }
+    
+    return selectedWords.slice(0, sessionSize);
 };
 
 // ฟังก์ชันดึงคำศัพท์แบบ "Smoothing" - ผสมระดับความยาก
@@ -115,4 +188,19 @@ export const hasDdaWords = async (difficultyLevel: number): Promise<boolean> => 
 export const getDdaWordCount = async (difficultyLevel: number): Promise<number> => {
     const words = await getDdaWords(difficultyLevel);
     return words.length;
+};
+
+// Check if player should be offered C2 mastery completion
+export const shouldOfferC2Completion = (totalWordsPlayed: number, streakCount: number): boolean => {
+    // Offer completion after significant C2 gameplay
+    const MASTERY_WORD_THRESHOLD = 100; // After 100 words at C2
+    const MASTERY_STREAK_THRESHOLD = 15; // With good streak performance
+    
+    return totalWordsPlayed >= MASTERY_WORD_THRESHOLD && streakCount >= MASTERY_STREAK_THRESHOLD;
+};
+
+// Clear C2 word history (for new games)
+export const clearC2WordHistory = (): void => {
+    c2WordHistory.clear();
+    console.log('🔄 C2 word history cleared for new session');
 };

@@ -2,14 +2,7 @@ import EchoMode from '@/components/game/modes/EchoMode';
 import TypingMode from '@/components/game/modes/TypingMode';
 import MemoryMode from '@/components/game/modes/MemoryMode';
 import { HeatLevel } from '@/hooks/useOverdriveSystem';
-
-interface Word {
-    word: string;
-    meaning?: string;
-    type?: string;
-    level?: string; // CEFR level: 'a1', 'a2', 'b1', 'b2', 'c1', 'c2'
-    id?: number; // Optional ID for database records
-}
+import { Word } from '@/lib/types';
 
 interface GameModeRendererProps {
     modeId: string;
@@ -46,9 +39,6 @@ interface GameModeRendererProps {
     // Point change notification props for Typing Challenge
     lastScoreChange?: number;
     scoreChangeCounter?: number;
-    // Energy change notification props for Typing Challenge
-    lastEnergyChange?: number;
-    energyChangeCounter?: number;
     // Debug props for Memory Mode
     ddaLevel?: number;
     viewingTime?: number;
@@ -82,20 +72,21 @@ export default function GameModeRenderer({
     streakCount,
     lastScoreChange,
     scoreChangeCounter,
-    lastEnergyChange,
-    energyChangeCounter,
     ddaLevel,
     viewingTime
 }: GameModeRendererProps) {
-    // Don't render any content during DDA transition to prevent word flashing
-    const currentWord = (!words[currentWordIndex]) 
-        ? '' 
-        : words[currentWordIndex]?.word;
+    // Get current word object - create fallback if needed
+    const currentWordObject = words[currentWordIndex] || {
+        word: '',
+        meaning: '',
+        type: '',
+        level: 'a1'
+    };
 
     if (modeId === 'echo') {
         return (
             <EchoMode
-                currentWord={currentWord}
+                currentWordObject={currentWordObject}
                 isTransitioning={isTransitioning}
                 onSpeak={onSpeak}
                 gameStyle={gameStyle}
@@ -114,7 +105,7 @@ export default function GameModeRenderer({
     if (modeId === 'typing') {
         return (
             <TypingMode
-                currentWord={currentWord}
+                currentWordObject={currentWordObject}
                 currentWordIndex={currentWordIndex}
                 isTransitioning={isTransitioning}
                 gameStyle={gameStyle}
@@ -127,8 +118,6 @@ export default function GameModeRenderer({
                 streakCount={streakCount}
                 lastScoreChange={lastScoreChange}
                 scoreChangeCounter={scoreChangeCounter}
-                lastEnergyChange={lastEnergyChange}
-                energyChangeCounter={energyChangeCounter}
             />
         );
     }
@@ -136,7 +125,7 @@ export default function GameModeRenderer({
     if (modeId === 'memory') {
         return (
             <MemoryMode
-                currentWord={currentWord}
+                currentWordObject={currentWordObject}
                 currentWordIndex={currentWordIndex}
                 isWordVisible={isWordVisible}
                 promptText={promptText}

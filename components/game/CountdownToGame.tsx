@@ -15,7 +15,6 @@ export default function CountdownToGame({
   return (
     <main
       className={`flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 overflow-hidden relative ${className}`}
-      style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
     >
       {/* Enhanced Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

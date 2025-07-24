@@ -43,11 +43,15 @@ export default function LevelChangeNotification({ currentLevel }: LevelChangeNot
     }, [currentLevel, previousLevel]);
 
     const getCurrentLevelName = () => {
-        return levelNames[currentLevel - 1] || 'A1';
+        // Clamp currentLevel to valid range (1-6)
+        const clampedLevel = Math.max(1, Math.min(6, currentLevel));
+        return levelNames[clampedLevel - 1] || 'A1';
     };
 
     const getPreviousLevelName = () => {
-        return levelNames[previousLevel - 1] || 'A1';
+        // Clamp previousLevel to valid range (1-6)
+        const clampedLevel = Math.max(1, Math.min(6, previousLevel));
+        return levelNames[clampedLevel - 1] || 'A1';
     };
 
     return (
@@ -73,7 +77,7 @@ export default function LevelChangeNotification({ currentLevel }: LevelChangeNot
                             : 'bg-gradient-to-r from-orange-500/20 to-red-500/20 border-orange-400/30 text-orange-300'
                         }
                     `}>
-                        <div className="text-center" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                        <div className="text-center">
                             <div className="text-sm font-medium opacity-90 mb-1">
                                 {levelChange === 'up' ? 'เลื่อนระดับขึ้น!' : 'ระดับลดลง'}
                             </div>

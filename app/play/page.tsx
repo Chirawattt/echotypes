@@ -98,7 +98,6 @@ export default function ModeSelectPage() {
             >
                 <motion.h1
                     className="text-5xl sm:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4"
-                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                     animate={{
                         backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                     }}
@@ -111,7 +110,6 @@ export default function ModeSelectPage() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.6, duration: 0.8 }}
                     className="text-xl text-slate-300 max-w-2xl mx-auto"
-                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                 >
                     เลือกโหมดที่เหมาะสมกับระดับและเป้าหมายของคุณ
                 </motion.p>
@@ -186,15 +184,15 @@ export default function ModeSelectPage() {
                                     <selectedMode.icon className={`text-5xl ${selectedMode.iconColor}`} />
                                 </motion.div>
                                 
-                                <h2 className="text-4xl sm:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                <h2 className="text-4xl sm:text-5xl font-bold text-white mb-3">
                                     {selectedMode.name}
                                 </h2>
                                 
-                                <p className="text-xl text-slate-300 mb-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                <p className="text-xl text-slate-300 mb-2">
                                     {selectedMode.descriptionThai}
                                 </p>
                                 
-                                <p className="text-lg text-slate-400" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                <p className="text-lg text-slate-400">
                                     {selectedMode.descriptionEng}
                                 </p>
                             </div>
@@ -204,7 +202,7 @@ export default function ModeSelectPage() {
                                 
                                 {/* Features */}
                                 <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-                                    <h3 className="text-2xl font-semibold text-white mb-4 flex items-center gap-3" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                    <h3 className="text-2xl font-semibold text-white mb-4 flex items-center gap-3">
                                         <FaStar className="text-yellow-400" />
                                         Features
                                     </h3>
@@ -216,7 +214,6 @@ export default function ModeSelectPage() {
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{ delay: index * 0.1 }}
                                                 className="text-slate-300 text-lg flex items-center gap-2"
-                                                style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                             >
                                                 <span className="text-sm">{feature}</span>
                                             </motion.li>
@@ -227,31 +224,31 @@ export default function ModeSelectPage() {
                                 {/* Game Info */}
                                 <div className="space-y-4">
                                     <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-                                        <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-3" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                        <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
                                             <FaGamepad className="text-green-400" />
                                             Game Information
                                         </h3>
                                         
                                         <div className="space-y-3">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-slate-400" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>ระดับความยาก:</span>
-                                                <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{selectedMode.difficulty}</span>
+                                                <span className="text-slate-400">ระดับความยาก:</span>
+                                                <span className="text-white font-medium">{selectedMode.difficulty}</span>
                                             </div>
                                             
                                             <div className="flex justify-between items-center">
-                                                <span className="text-slate-400 flex items-center gap-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                                <span className="text-slate-400 flex items-center gap-2">
                                                     <FaClock className="text-blue-400" />
                                                     ระยะเวลา:
                                                 </span>
-                                                <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{selectedMode.estimatedTime}</span>
+                                                <span className="text-white font-medium">{selectedMode.estimatedTime}</span>
                                             </div>
                                             
                                             <div className="flex justify-between items-center">
-                                                <span className="text-slate-400 flex items-center gap-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                                                <span className="text-slate-400 flex items-center gap-2">
                                                     <FaTrophy className="text-yellow-400" />
                                                     เหมาะสำหรับ:
                                                 </span>
-                                                <span className="text-white font-medium" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>{selectedMode.bestFor}</span>
+                                                <span className="text-white font-medium">{selectedMode.bestFor}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -263,7 +260,6 @@ export default function ModeSelectPage() {
                                 <motion.button
                                     onClick={handleStartSelectedMode}
                                     className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-5 px-12 rounded-2xl text-xl backdrop-blur-sm border border-emerald-400/30 transition-all duration-300 shadow-lg"
-                                    style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -282,7 +278,7 @@ export default function ModeSelectPage() {
                 transition={{ delay: 1, duration: 0.8 }}
                 className="mt-12 mb-8 text-center max-w-3xl"
             >
-                <p className="text-slate-400 text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
+                <p className="text-slate-400 text-lg">
                     💡 <strong>เคล็ดลับ:</strong> เริ่มต้นด้วย Echo Mode ถ้าคุณเป็นมือใหม่กับคำศัพท์ภาษาอังกฤษ 
                     หรือลองโหมดความจำสำหรับการสร้างคลังคำศัพท์ขั้นสูง!
                 </p>
