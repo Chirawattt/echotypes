@@ -1,6 +1,7 @@
 # EchoTypes - English Vocabulary Learning Game
 
 An interactive web application for learning English vocabulary through engaging game modes. Built with Next.js 15, TypeScript, and modern web technologies.
+Website: http://echotypes.vercel.app
 
 ## 🎮 Game Modes
 
