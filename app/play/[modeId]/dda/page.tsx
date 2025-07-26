@@ -318,7 +318,7 @@ export default function DDAPreGamePage() {
                         <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 text-center mb-6">
                             <div className="inline-flex items-center gap-2 text-emerald-400" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
                                 <FaCog className="text-lg" />
-                                <span className="font-semibold">ประระดับความยากอัตโนมัติ (A1-C2)</span>
+                                <span className="font-semibold">ปรับระดับความยากอัตโนมัติ (A1-C2)</span>
                             </div>
                             <p className="text-slate-300 text-sm mt-2" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>
                                 เกมจะปรับระดับความยากโดยอัตโนมัติตามผลการเล่นของคุณ

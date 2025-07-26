@@ -5,7 +5,8 @@
       "Bash(rm:*)",
       "Bash(cp:*)",
       "Bash(npm run lint:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx playwright:*)"
     ],
     "deny": []
   }

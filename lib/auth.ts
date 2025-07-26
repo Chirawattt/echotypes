@@ -27,7 +27,6 @@ export const authOptions: any = {
             .select('id')
             .eq('email', user.email)
             .single();
-
           if (fetchError && fetchError.code === 'PGRST116') {
             // User doesn't exist, create them
             const { error: createError } = await supabase
