@@ -4,23 +4,19 @@ Welcome to the EchoTypes documentation! This directory contains comprehensive gu
 
 ## 📁 Documentation Structure
 
-### Core Architecture
-- **[APP_STRUCTURE.md](./APP_STRUCTURE.md)** - Complete application architecture and routing structure
-- **[APP_FEATURE.md](./APP_FEATURE.md)** - Comprehensive feature overview and capabilities
-
-### Game Systems
-- **[GAME_MODES.md](./GAME_MODES.md)** - All game modes: Echo, Memory, Typing, and MeaningMatch
-- **[CHALLENGE_SYSTEM.md](./CHALLENGE_SYSTEM.md)** - Challenge mode scoring and DDA system
-- **[DDA_DESIGN.md](./DDA_DESIGN.md)** - Dynamic Difficulty Adjustment implementation
+### Core
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - App structure, routing, and UX patterns (consolidated)
+- **[GAMEPLAY_GUIDE.md](./GAMEPLAY_GUIDE.md)** - Modes, challenge rules, scoring, DDA (consolidated)
+- **[DDA_DESIGN.md](./DDA_DESIGN.md)** - Dynamic Difficulty details
 
 ### Development
-- **[DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)** - Setup, commands, and development workflow
+- **[DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md)** - Setup, commands, testing, deployment (consolidated)
 
 ## 🎮 Quick Overview
 
 EchoTypes is a modern English vocabulary learning game featuring:
 
-- **4 Game Modes**: Echo (listening), Memory (memorization), Typing (speed), MeaningMatch (comprehension)
+- **3 Game Modes**: Echo (listening), Memory (memorization), Typing (speed)
 - **2 Game Styles**: Practice (relaxed) and Challenge (competitive with scoring)
 - **Dynamic Difficulty**: AI-powered difficulty adjustment based on performance
 - **CEFR Levels**: A1-C2 vocabulary progression
@@ -29,14 +25,14 @@ EchoTypes is a modern English vocabulary learning game featuring:
 
 ## 🚀 Getting Started
 
-1. Read [APP_STRUCTURE.md](./APP_STRUCTURE.md) for architecture overview
-2. Check [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) for setup instructions
-3. Explore [GAME_MODES.md](./GAME_MODES.md) to understand gameplay mechanics
+1. Read [ARCHITECTURE.md](./ARCHITECTURE.md) for structure and routes
+2. Check [DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md) for setup
+3. Explore [GAMEPLAY_GUIDE.md](./GAMEPLAY_GUIDE.md) for gameplay systems
 
 ## 📊 Project Status
 
 ✅ **Completed Features**
-- All 4 game modes with Challenge variants
+- All 3 game modes with Challenge variants
 - Dynamic Difficulty Adjustment (DDA) system
 - User authentication and profiles
 - Scoring and leaderboard system

@@ -8,7 +8,6 @@ Website: http://echotypes.vercel.app
 - **Echo Mode**: Listen and type what you hear
 - **Memory Mode**: Memorize and recall words visually  
 - **Typing Mode**: Speed typing with energy management
-- **MeaningMatch Mode**: Match words with their definitions
 
 Each mode supports both **Practice** (learning-focused) and **Challenge** (competitive) styles.
 
@@ -39,13 +38,12 @@ Visit `http://localhost:3000` to start learning!
 
 ## 📚 Documentation
 
-Comprehensive documentation is available in the `/docs` directory:
+Key docs in `/docs`:
 
-- **[Development Guide](./docs/DEVELOPMENT_GUIDE.md)** - Setup and development workflow
-- **[Game Modes](./docs/GAME_MODES.md)** - Complete gameplay mechanics  
-- **[Challenge System](./docs/CHALLENGE_SYSTEM.md)** - Scoring and competitive features
-- **[App Structure](./docs/APP_STRUCTURE.md)** - Architecture overview
-- **[DDA Design](./docs/DDA_DESIGN.md)** - Dynamic difficulty system
+- **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - Structure, routing, UX patterns
+- **[GAMEPLAY_GUIDE.md](./docs/GAMEPLAY_GUIDE.md)** - Modes, challenge, scoring, DDA
+- **[DEVELOPER_GUIDE.md](./docs/DEVELOPER_GUIDE.md)** - Setup, testing, deployment
+- **[DDA_DESIGN.md](./docs/DDA_DESIGN.md)** - Dynamic difficulty details
 
 ## 🛠️ Tech Stack
 
