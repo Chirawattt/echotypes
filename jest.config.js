@@ -25,6 +25,9 @@ const customJestConfig = {
     '<rootDir>/tests/e2e/',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
   testEnvironmentOptions: {
     customExportConditions: [''],
   },
