@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaVolumeUp, FaKeyboard, FaBrain, FaPlay, FaTimes, FaGraduationCap, FaFire, FaClock, FaCog} from "react-icons/fa";
 import React from "react";
+import { useSession } from "next-auth/react";
 
 // Interface สำหรับข้อมูลโหมด
 interface ModeInfo {
@@ -156,6 +157,7 @@ export default function DDAPreGamePage() {
     const router = useRouter();
     const params = useParams();
     const modeId = params.modeId as string;
+    const { data: session } = useSession();
     // Everything is DDA now - no need for difficultyId
     const [showHowToPlay, setShowHowToPlay] = useState(false);
     const [selectedGameStyle, setSelectedGameStyle] = useState<'practice' | 'challenge'>('challenge');
@@ -217,7 +219,7 @@ export default function DDAPreGamePage() {
     };
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-20 px-4 overflow-hidden relative">
+    <main id="page-main" className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-20 px-4 overflow-hidden relative">
             
             {/* Main Content */}
             <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 relative z-10 max-w-5xl mx-auto">
@@ -437,6 +439,12 @@ export default function DDAPreGamePage() {
                             <span>เริ่มเล่น</span>
                         </motion.button>
                     </div>
+
+                    {!session && (
+                        <p className="text-center text-slate-500 text-sm mt-4" data-testid="guest-warning">
+                            Guest mode: scores aren’t saved. Sign in anytime to track your progress.
+                        </p>
+                    )}
                 </motion.div>
             </div>
 

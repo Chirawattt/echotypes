@@ -13,7 +13,7 @@ export default function CountdownToGame({
   const { countdown } = useGameStore();
 
   return (
-    <main
+  <section
       className={`flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white p-4 overflow-hidden relative ${className}`}
     >
       {/* Enhanced Animated Background */}
@@ -209,6 +209,6 @@ export default function CountdownToGame({
           />
         ))}
       </motion.div>
-    </main>
+  </section>
   );
 }

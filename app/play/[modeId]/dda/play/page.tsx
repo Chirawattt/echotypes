@@ -295,14 +295,14 @@ function DDAGamePlayPageContent() {
 
     if (!gameLogic.words || gameLogic.words.length === 0) {
         return (
-            <main className="flex items-center justify-center min-h-screen bg-[#101010] text-white">
+            <main id="page-main" className="flex items-center justify-center min-h-screen bg-[#101010] text-white">
                 Loading...
             </main>
         );
     }
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-10 px-4 overflow-hidden relative">
+    <main id="page-main" className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-10 px-4 overflow-hidden relative">
 
             {/* Enhanced Animated Background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -465,7 +465,7 @@ function DDAGamePlayPageContent() {
 export default function DDAGamePlayPage() {
     return (
         <Suspense fallback={
-            <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+            <main id="page-main" className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-white text-lg" style={{ fontFamily: "'Playpen Sans Thai', sans-serif" }}>

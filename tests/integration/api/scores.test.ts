@@ -1,246 +1,301 @@
-import { NextRequest } from 'next/server';
-import { GET, POST } from '@/app/api/scores/route';
-import { getServerSession } from 'next-auth';
-import type { Session } from 'next-auth';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+jest.mock("next/server", () => ({
+  NextResponse: {
+    json: (
+      body: unknown,
+      init?: { status?: number; headers?: Record<string, string> }
+    ) => {
+      const headers = new Headers(init?.headers ?? {});
+      if (!headers.has("content-type"))
+        headers.set("content-type", "application/json; charset=utf-8");
+      return new Response(JSON.stringify(body), {
+        status: init?.status ?? 200,
+        headers,
+      });
+    },
+  },
+  // Provide a placeholder value export for NextRequest to satisfy runtime import.
+  NextRequest: class {
+    url: string;
+    constructor(url: string) {
+      this.url = url;
+    }
+    async json() {
+      return {};
+    }
+  },
+}));
 
-// Define types for mocked functions
-type MockedSupabaseResponse = {
-  data: unknown[] | null;
-  error: Error | null;
-};
-
-type MockedSupabaseChain = {
-  select: jest.MockedFunction<() => {
-    eq: jest.MockedFunction<() => {
-      order: jest.MockedFunction<() => {
-        limit: jest.MockedFunction<() => Promise<MockedSupabaseResponse>>;
-      }>;
-    }>;
-  }>;
-};
+import { NextRequest } from "next/server";
+import { GET, POST } from "@/app/api/scores/route";
+import { getServerSession } from "next-auth/next";
+import type { Session } from "next-auth";
 
 // Mock dependencies
-jest.mock('next-auth');
-jest.mock('@/lib/supabase');
+jest.mock("next-auth/next", () => ({
+  getServerSession: jest.fn(),
+}));
+jest.mock("@/lib/supabase", () => ({
+  supabase: {
+    from: jest.fn(),
+  },
+}));
 
-const mockGetServerSession = getServerSession as jest.MockedFunction<typeof getServerSession>;
+const mockGetServerSession = getServerSession as unknown as jest.MockedFunction<
+  typeof getServerSession
+>;
+import { supabase as mockedSupabase } from "@/lib/supabase";
 
-describe('/api/scores API Integration', () => {
+// Helper to build a chainable supabase query mock
+type QueryResult<T = unknown> = { data: T | null; error: unknown };
+type Chain = {
+  select: jest.Mock;
+  eq: jest.Mock;
+  single: jest.Mock;
+  order: jest.Mock;
+  insert: jest.Mock;
+  upsert: jest.Mock;
+};
+
+const createChain = (
+  initial: Partial<{
+    single: Promise<QueryResult>;
+    order: Promise<QueryResult>;
+    insert: Promise<{ error: unknown }>;
+    upsert: Promise<{ error: unknown }>;
+  }> = {}
+) => {
+  const chain: any = {};
+  chain.select = jest.fn(() => chain);
+  chain.eq = jest.fn(() => chain);
+  chain.single = jest.fn(
+    () => initial.single ?? Promise.resolve({ data: null, error: null })
+  );
+  chain.order = jest.fn(
+    () => initial.order ?? Promise.resolve({ data: null, error: null })
+  );
+  chain.insert = jest.fn(
+    () => initial.insert ?? Promise.resolve({ error: null })
+  );
+  chain.upsert = jest.fn(
+    () => initial.upsert ?? Promise.resolve({ error: null })
+  );
+  return chain as Chain;
+};
+
+describe("/api/scores API Integration", () => {
   const mockSession: Session = {
     user: {
-      id: 'test-user-id',
-      email: 'test@example.com',
-      name: 'Test User'
+      id: "test-user-id",
+      email: "test@example.com",
+      name: "Test User",
     },
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-  };
-
-  // Mock supabase module
-  const mockSupabase = {
-    from: jest.fn(),
-    insert: jest.fn(),
-    upsert: jest.fn()
+    expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // expires in 24 hours
   };
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    
-    // Reset supabase mocks
-    const supabaseModule = await import('@/lib/supabase');
-    (supabaseModule as { supabase: typeof mockSupabase }).supabase = mockSupabase;
   });
 
-  describe('GET /api/scores', () => {
-    it('should return scores for authenticated user', async () => {
+  describe("GET /api/scores", () => {
+    it("should return scores for authenticated user", async () => {
       mockGetServerSession.mockResolvedValue(mockSession);
-      
-      const mockSupabaseResponse: MockedSupabaseResponse = {
-        data: [
-          {
-            id: 1,
-            game_mode: 'echo',
-            game_style: 'practice',
-            score: 100,
-            highest_streak: 5,
-            wpm: null
-          }
-        ],
-        error: null
-      };
+      const rows = [
+        {
+          id: 1,
+          game_mode: "echo",
+          game_style: "practice",
+          score: 100,
+          highest_streak: 5,
+          wpm: null,
+        },
+      ];
+      const chain = createChain({
+        order: Promise.resolve({ data: rows, error: null }),
+      });
+      (mockedSupabase.from as unknown as jest.Mock).mockReturnValue(chain);
 
-      // Mock the Supabase chain
-      const mockSelect = jest.fn(() => ({
-        eq: jest.fn(() => ({
-          order: jest.fn(() => ({
-            limit: jest.fn(() => Promise.resolve(mockSupabaseResponse))
-          }))
-        }))
-      }));
-      mockSupabase.from.mockReturnValue({ select: mockSelect } as MockedSupabaseChain);
-
-      const request = new NextRequest('http://localhost:3000/api/scores?gameMode=echo&gameStyle=practice');
+      const request = {
+        url: "http://localhost:3000/api/scores?gameMode=echo&gameStyle=practice",
+      } as unknown as NextRequest;
       const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
       expect(data.scores).toHaveLength(1);
-      expect(data.scores[0].game_mode).toBe('echo');
+      expect(data.scores[0].game_mode).toBe("echo");
     });
 
-    it('should return 401 for unauthenticated user', async () => {
+    it("should return 401 for unauthenticated user", async () => {
       mockGetServerSession.mockResolvedValue(null);
 
-      const request = new NextRequest('http://localhost:3000/api/scores');
+      const request = {
+        url: "http://localhost:3000/api/scores",
+      } as unknown as NextRequest;
       const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.success).toBe(false);
-      expect(data.message).toBe('Unauthorized');
+      expect(data).toEqual({ error: "Unauthorized" });
     });
 
-    it('should filter by game mode when provided', async () => {
+    it("should filter by game mode when provided", async () => {
       mockGetServerSession.mockResolvedValue(mockSession);
+      const chain = createChain({
+        order: Promise.resolve({ data: [], error: null }),
+      });
+      (mockedSupabase.from as unknown as jest.Mock).mockReturnValue(chain);
 
-      const mockEq = jest.fn(() => ({
-        order: jest.fn(() => ({
-          limit: jest.fn(() => Promise.resolve({ data: [], error: null }))
-        }))
-      }));
-      const mockSelect = jest.fn(() => ({ eq: mockEq }));
-      mockSupabase.from.mockReturnValue({ select: mockSelect });
-
-      const request = new NextRequest('http://localhost:3000/api/scores?gameMode=typing');
+      const request = {
+        url: "http://localhost:3000/api/scores?gameMode=typing",
+      } as unknown as NextRequest;
       await GET(request);
 
-      expect(mockEq).toHaveBeenCalledWith('game_mode', 'typing');
+      // First eq is for user_id, ensure one of the eq calls was for game_mode
+      expect(chain.eq.mock.calls).toEqual(
+        expect.arrayContaining([
+          ["user_id", "test-user-id"],
+          ["game_mode", "typing"],
+        ])
+      );
     });
 
-    it('should handle database errors gracefully', async () => {
+    it("should handle database errors gracefully", async () => {
+      const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
       mockGetServerSession.mockResolvedValue(mockSession);
+      const chain = createChain({
+        order: Promise.resolve({ data: null, error: new Error("db failed") }),
+      });
+      (mockedSupabase.from as unknown as jest.Mock).mockReturnValue(chain);
 
-      const mockError = new Error('Database connection failed');
-      const mockSelect = jest.fn(() => ({
-        eq: jest.fn(() => ({
-          order: jest.fn(() => ({
-            limit: jest.fn(() => Promise.resolve({
-              data: null,
-              error: mockError
-            }))
-          }))
-        }))
-      }));
-      mockSupabase.from.mockReturnValue({ select: mockSelect });
-
-      const request = new NextRequest('http://localhost:3000/api/scores');
+      const request = {
+        url: "http://localhost:3000/api/scores",
+      } as unknown as NextRequest;
       const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.success).toBe(false);
-      expect(data.message).toContain('Failed to fetch scores');
+      expect(data).toEqual({ error: "Internal Server Error" });
+      errSpy.mockRestore();
     });
   });
 
-  describe('POST /api/scores', () => {
+  describe("POST /api/scores", () => {
     const validScoreData = {
-      gameMode: 'echo',
-      gameStyle: 'practice',
+      gameMode: "echo",
+      gameStyle: "practice",
       score: 150,
-      streak: 8,
+      highestStreak: 8,
       wordsCorrect: 15,
       wordsIncorrect: 2,
-      timeSpentSeconds: 120
+      timeSpentSeconds: 120,
     };
 
-    it('should submit score for authenticated user', async () => {
+    it("should submit score for authenticated user", async () => {
       mockGetServerSession.mockResolvedValue(mockSession);
-
-      const mockInsert = jest.fn(() => Promise.resolve({
-        data: [{ id: 1, ...validScoreData }],
-        error: null
-      }));
-      const mockUpsert = jest.fn(() => Promise.resolve({
-        data: [{ id: 1 }],
-        error: null
-      }));
-      mockSupabase.from.mockReturnValue({ 
-        insert: mockInsert,
-        upsert: mockUpsert 
+      // Chain sequence: Users.single() -> ok, GameSessions.insert() -> ok, GameScores.single() -> not found (code PGRST116), upsert() -> ok
+      const usersChain = createChain({
+        single: Promise.resolve({
+          data: { id: "test-user-id", name: "Test User" },
+          error: null,
+        }),
       });
-
-      const request = new NextRequest('http://localhost:3000/api/scores', {
-        method: 'POST',
-        body: JSON.stringify(validScoreData)
+      const sessionsChain = createChain({
+        insert: Promise.resolve({ error: null }),
       });
+      const scoresChain = createChain({
+        single: Promise.resolve({ data: null, error: { code: "PGRST116" } }),
+        upsert: Promise.resolve({ error: null }),
+      });
+      (mockedSupabase.from as unknown as jest.Mock).mockImplementation(
+        (table: string) => {
+          if (table === "Users") return usersChain;
+          if (table === "GameSessions") return sessionsChain;
+          if (table === "GameScores") return scoresChain;
+          return createChain();
+        }
+      );
+
+      const request = {
+        url: "http://localhost:3000/api/scores",
+        method: "POST",
+        json: async () => validScoreData,
+      } as unknown as NextRequest;
 
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data.success).toBe(true);
-      expect(mockInsert).toHaveBeenCalled();
+      expect(data.sessionSaved).toBe(true);
+      expect(sessionsChain.insert).toHaveBeenCalled();
     });
 
-    it('should return 401 for unauthenticated user', async () => {
+    it("should return 401 for unauthenticated user", async () => {
       mockGetServerSession.mockResolvedValue(null);
 
-      const request = new NextRequest('http://localhost:3000/api/scores', {
-        method: 'POST',
-        body: JSON.stringify(validScoreData)
-      });
+      const request = {
+        url: "http://localhost:3000/api/scores",
+        method: "POST",
+        json: async () => validScoreData,
+      } as unknown as NextRequest;
 
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.success).toBe(false);
-      expect(data.message).toBe('Unauthorized');
+      expect(data).toEqual({ error: "Unauthorized" });
     });
 
-    it('should validate required fields', async () => {
+    it("should validate required fields", async () => {
       mockGetServerSession.mockResolvedValue(mockSession);
 
       const invalidData = {
-        gameMode: 'echo',
+        gameMode: "echo",
         // Missing required fields
       };
 
-      const request = new NextRequest('http://localhost:3000/api/scores', {
-        method: 'POST',
-        body: JSON.stringify(invalidData)
-      });
+      const request = {
+        url: "http://localhost:3000/api/scores",
+        method: "POST",
+        json: async () => invalidData as unknown as Record<string, unknown>,
+      } as unknown as NextRequest;
 
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.success).toBe(false);
-      expect(data.message).toContain('Missing required fields');
+      expect(data).toEqual({ error: "Invalid or missing required data" });
     });
 
-    it('should handle database insertion errors', async () => {
+    it("should handle database insertion errors", async () => {
+      const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
       mockGetServerSession.mockResolvedValue(mockSession);
-
-      const mockError = new Error('Insertion failed');
-      const mockInsert = jest.fn(() => Promise.resolve({
-        data: null,
-        error: mockError
-      }));
-      mockSupabase.from.mockReturnValue({ insert: mockInsert });
-
-      const request = new NextRequest('http://localhost:3000/api/scores', {
-        method: 'POST',
-        body: JSON.stringify(validScoreData)
+      const usersChain = createChain({
+        single: Promise.resolve({
+          data: { id: "test-user-id", name: "Test User" },
+          error: null,
+        }),
       });
+      const sessionsChain = createChain({
+        insert: Promise.resolve({ error: new Error("Insertion failed") }),
+      });
+      (mockedSupabase.from as unknown as jest.Mock).mockImplementation(
+        (table: string) => (table === "Users" ? usersChain : sessionsChain)
+      );
+
+      const request = {
+        url: "http://localhost:3000/api/scores",
+        method: "POST",
+        json: async () => validScoreData,
+      } as unknown as NextRequest;
 
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.success).toBe(false);
-      expect(data.message).toContain('Failed to submit score');
+      expect(data).toEqual({ error: "Internal Server Error" });
+      errSpy.mockRestore();
     });
   });
 });

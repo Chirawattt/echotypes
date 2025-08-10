@@ -20,7 +20,7 @@ export default function WelcomeBackToast({ show, userName, onClose }: WelcomeBac
     }, [show, onClose]);
 
     return (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 max-w-sm z-50">
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 max-w-sm z-50" data-testid="welcome-toast">
             <AnimatePresence mode="wait">
                 {show && (
                     <motion.div

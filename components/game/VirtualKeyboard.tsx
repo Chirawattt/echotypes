@@ -15,7 +15,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({ onKeyPress }) => {
   };
 
   return (
-    <div className="virtual-keyboard-container w-full">
+    <div className="virtual-keyboard-container w-full" data-testid="virtual-keyboard">
       <Keyboard
         onKeyPress={handleKeyboardPress}
         layout={{

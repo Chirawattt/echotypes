@@ -56,9 +56,7 @@ export default function RootLayout({
       )}>
         <AuthProvider>
           <Header />
-          <main className="relative min-h-screen">
-            {children}
-          </main>
+          {children}
         </AuthProvider>
       </body>
     </html>

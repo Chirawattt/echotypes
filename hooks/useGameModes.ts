@@ -22,7 +22,7 @@ export function useGameModes({
     words,
     speak,
     inputRef,
-    gameStyle = 'practice',
+    gameStyle,
     ddaLevel = 1
 }: UseGameModesProps) {
     const {

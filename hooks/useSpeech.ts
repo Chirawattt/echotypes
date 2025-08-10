@@ -29,6 +29,11 @@ export function useSpeech() {
                 // Speech started
             };
 
+            // E2E instrumentation: mark that speak was invoked
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (window as any).__ECHO_SPOKEN__ = true;
+            } catch {}
             window.speechSynthesis.speak(utterance);
             return utterance;
         } else {

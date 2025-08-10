@@ -21,7 +21,7 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleSignOut = async () => {
-    await signOut();
+    await signOut({ callbackUrl: '/auth/signin' });
   };
 
   const value: AuthContextType = {

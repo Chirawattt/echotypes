@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/test-results
+/playwright*
 
 # next.js
 /.next/
@@ -42,3 +44,6 @@ next-env.d.ts
 
 .claude
 .github
+
+dump*
+

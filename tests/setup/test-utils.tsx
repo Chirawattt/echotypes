@@ -108,7 +108,7 @@ export const mockLocalStorage = () => {
 // Mock Web APIs that games use
 export const mockWebAPIs = () => {
   // Mock speechSynthesis
-  global.speechSynthesis = {
+  global.speechSynthesis = ({
     speak: jest.fn(),
     cancel: jest.fn(),
     pause: jest.fn(),
@@ -116,7 +116,7 @@ export const mockWebAPIs = () => {
     getVoices: jest.fn(() => []),
     addEventListener: jest.fn(),
     removeEventListener: jest.fn()
-  } as SpeechSynthesis;
+  } as unknown) as SpeechSynthesis;
 
   // Mock AudioContext
   global.AudioContext = jest.fn().mockImplementation(() => ({

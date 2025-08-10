@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaChevronLeft, FaChevronRight, FaVolumeUp, FaKeyboard, FaBrain, FaTrophy, FaClock, FaGamepad, FaStar } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 // Define a type for our game modes
 interface GameMode {
@@ -70,6 +71,7 @@ const gameModes: GameMode[] = [
 export default function ModeSelectPage() {
     const router = useRouter();
     const [currentModeIndex, setCurrentModeIndex] = useState(0);
+    const { data: session } = useSession();
 
     const selectedMode = gameModes[currentModeIndex];
 
@@ -87,7 +89,7 @@ export default function ModeSelectPage() {
     }
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-20 px-4 overflow-hidden">
+    <main id="page-main" className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white pt-20 px-4 overflow-hidden">
             
             {/* Header Section */}
             <motion.div
@@ -282,6 +284,11 @@ export default function ModeSelectPage() {
                     💡 <strong>เคล็ดลับ:</strong> เริ่มต้นด้วย Echo Mode ถ้าคุณเป็นมือใหม่กับคำศัพท์ภาษาอังกฤษ 
                     หรือลองโหมดความจำสำหรับการสร้างคลังคำศัพท์ขั้นสูง!
                 </p>
+                {!session && (
+                    <p className="text-slate-500 text-sm mt-3" data-testid="guest-tip">
+                        You’re playing as Guest. Sign in to save your progress and appear on the leaderboard.
+                    </p>
+                )}
             </motion.div>
         </main>
     );

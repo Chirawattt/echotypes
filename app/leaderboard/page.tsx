@@ -180,6 +180,7 @@ export default function LeaderboardPage() {
             <FaTrophy className="text-yellow-400 text-4xl" />
             <h1
               className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+              data-testid="leaderboard-title"
             >
               Leaderboard
             </h1>
@@ -207,7 +208,7 @@ export default function LeaderboardPage() {
                 Game Mode
               </label>
               <div className="grid grid-cols-3 gap-2">
-                {gameModes.map((mode) => {
+        {gameModes.map((mode) => {
                   const Icon = mode.icon;
                   return (
                     <button
@@ -223,6 +224,7 @@ export default function LeaderboardPage() {
                             : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/8"
                         }
                       `}
+          data-testid={`filter-mode-${mode.id}`}
                     >
                       <Icon
                         className={`text-xl ${
@@ -250,7 +252,7 @@ export default function LeaderboardPage() {
                 Game Style
               </label>
               <div className="grid grid-cols-2 gap-2">
-                {gameStyles.map((style) => (
+        {gameStyles.map((style) => (
                   <button
                     key={style.id}
                     onClick={() =>
@@ -264,6 +266,7 @@ export default function LeaderboardPage() {
                           : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/8"
                       }
                     `}
+          data-testid={`filter-style-${style.id}`}
                   >
                     {style.name}
                   </button>
@@ -318,6 +321,7 @@ export default function LeaderboardPage() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ delay: 0.3 }}
               className="space-y-3"
+              data-testid="leaderboard-entries"
             >
               {leaderboard.map((entry, index) => (
                 <motion.div

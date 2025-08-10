@@ -97,7 +97,7 @@ export function useGameLogic({ modeId, gameStyle, selectedTime }: UseGameLogicPr
     const nitroEnergy = useNitroEnergy({
         isTypingMode: modeId === 'typing' && gameStyle === 'challenge',
         isGameActive: status === 'playing',
-        energyDecayInterval: overdriveSystem.currentHeatLevel.energyDecayInterval,
+        energyDecayInterval: overdriveSystem?.currentHeatLevel?.energyDecayInterval ?? 1000,
         isTransitioning: isTransitioning, // Prevent energy issues during DDA transitions
         onEnergyDepleted: () => {
             setStatus('gameOver');
@@ -136,7 +136,8 @@ export function useGameLogic({ modeId, gameStyle, selectedTime }: UseGameLogicPr
     const handleTimeUpCommon = useCallback(() => {
         setIsTransitioning(true);
         setIsWrong(true);
-        addIncorrectWord({ correct: words[currentWordIndex].word, incorrect: '(Time up)' });
+    const currentWordEntry = words[currentWordIndex];
+    addIncorrectWord({ correct: currentWordEntry?.word ?? '(Unknown)', incorrect: '(Time up)' });
         resetStreak();
         audio.playSound(audio.incorrectAudioRef, 0.8);
 
@@ -201,6 +202,13 @@ export function useGameLogic({ modeId, gameStyle, selectedTime }: UseGameLogicPr
             const gameKey = `${modeId}-${gameStyle}-timeSpent`;
             localStorage.removeItem(gameKey);
         }
+
+        // Always reset challenge scoring utilities to ensure a clean slate
+        try {
+            scoreUtils.resetChallengeScore();
+        } catch {
+            // ignore if not applicable
+        }
         
         // Use DDA system for DDA difficulty mode, regular difficulty selection otherwise
         const restartWithWords = async () => {
@@ -210,12 +218,18 @@ export function useGameLogic({ modeId, gameStyle, selectedTime }: UseGameLogicPr
             setScore(0);
             resetStreak();
             resetChallengeScore();
+            // Also reset challenge scoring utilities to ensure a clean slate across modes
+            try {
+                scoreUtils.resetChallengeScore();
+            } catch {
+                // ignore if not applicable
+            }
             
             // Reset DDA state first, then get words from cache
             dda.resetDdaState();
             const sessionWords = getDdaGameSessionWords(ddaConfig.INITIAL_DIFFICULTY_LEVEL);
             
-            if (sessionWords.length === 0) {
+            if (!Array.isArray(sessionWords) || sessionWords.length === 0) {
                 console.error(`❌ No words available for restart`);
                 return;
             }
@@ -347,7 +361,7 @@ export function useGameLogic({ modeId, gameStyle, selectedTime }: UseGameLogicPr
                     });
                 }, 2000); // Delay to ensure game has started
                 
-                if (sessionWords.length === 0) {
+                if (!Array.isArray(sessionWords) || sessionWords.length === 0) {
                     console.error(`❌ No words available`);
                     isLoadingWordsRef.current = false;
                     return;

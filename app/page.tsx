@@ -12,6 +12,7 @@ function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
+  // Only track registration when authenticated; guests can play without it
   const [userRegistered, setUserRegistered] = useState<boolean | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [showWelcomeToast, setShowWelcomeToast] = useState(false);
@@ -20,30 +21,33 @@ function HomeContent() {
   const checkUserRegistration = useCallback(async () => {
     try {
       const response = await fetch("/api/auth/register");
+      if (!response.ok) {
+        // Don’t block or redirect on errors; allow user to continue
+        setUserRegistered(true);
+        return;
+      }
       const result = await response.json();
-      setUserRegistered(result.registered);
-
-      if (!result.registered) {
+      if (result && result.registered === false) {
         setIsRedirecting(true);
         router.push("/auth/signup");
+      } else {
+        setUserRegistered(true);
       }
     } catch (error) {
-      console.error("Error checking user registration:", error);
-      setIsRedirecting(true);
-      router.push("/auth/signup");
+      console.warn("Registration check failed; continuing without redirect", error);
+      setUserRegistered(true);
     }
   }, [router]);
 
   useEffect(() => {
     if (status === "loading" || isRedirecting) return;
-
-    if (!session) {
-      setIsRedirecting(true);
-      router.push("/auth/signin");
-      return;
+    // For authenticated users, ensure they are registered (redirect to signup if not)
+    if (session) {
+      checkUserRegistration();
+    } else {
+      // Guest mode: skip registration checks
+      setUserRegistered(true);
     }
-
-    checkUserRegistration();
   }, [session, status, isRedirecting, router, checkUserRegistration]);
 
   // Detect fresh login from URL parameter
@@ -85,8 +89,8 @@ function HomeContent() {
     setShowWelcomeToast(false);
   };
 
-  // Show loading while checking authentication and registration
-  if (status === "loading" || userRegistered === null) {
+  // Show loading only while checking registration for authenticated users or redirecting
+  if ((status === "authenticated" && userRegistered === null) || isRedirecting) {
     return (
       <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-black to-gray-900 items-center justify-center">
         <div className="text-center">
@@ -102,7 +106,7 @@ function HomeContent() {
   }
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden relative">
+  <main id="page-main" className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden relative">
       {/* Welcome Back Toast */}
       <WelcomeBackToast
         show={showWelcomeToast}
@@ -190,6 +194,7 @@ function HomeContent() {
               className="bg-white/5 backdrop-blur-md hover:bg-white/10 text-white font-semibold py-4 px-8 rounded-2xl text-lg border border-white/15 hover:border-white/25 transition-all duration-300 flex items-center gap-3"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+                data-testid="home-profile"
             >
               <FaUser className="text-lg" />
               <span>โปรไฟล์</span>
@@ -201,6 +206,7 @@ function HomeContent() {
               className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-md hover:bg-gradient-to-r hover:from-yellow-500/20 hover:to-orange-500/20 text-white font-semibold py-4 px-8 rounded-2xl text-lg border border-yellow-400/20 hover:border-yellow-400/40 transition-all duration-300 flex items-center gap-3"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+                data-testid="home-leaderboard"
             >
               <FaTrophy className="text-lg text-yellow-400" />
               <span>อันดับ</span>
@@ -211,6 +217,7 @@ function HomeContent() {
           <motion.button
             onClick={handleStartGame}
             className="group relative"
+            data-testid="start-play"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -224,7 +231,7 @@ function HomeContent() {
           </motion.button>
         </motion.div>
 
-        {/* Welcome Message - Subtle */}
+        {/* Welcome Message for signed-in users */}
         {session?.user?.name && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -239,6 +246,20 @@ function HomeContent() {
               <span className="font-semibold text-emerald-400">
                 {session.user.name}
               </span>
+            </p>
+          </motion.div>
+        )}
+        {/* Guest hint for anonymous players */}
+    {!session && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 0.8 }}
+      className="text-center"
+      data-testid="guest-hint"
+          >
+            <p className="text-sm text-slate-500">
+              Playing as Guest — progress isn’t saved. Sign in to track scores.
             </p>
           </motion.div>
         )}

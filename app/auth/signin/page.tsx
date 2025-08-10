@@ -21,6 +21,10 @@ function SignInContent() {
     router.back();
   };
 
+  const handleContinueAsGuest = () => {
+    router.push('/play');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4">
       <motion.div
@@ -92,6 +96,21 @@ function SignInContent() {
               Continue with Google
             </span>
           </motion.button>
+
+          {/* Guest mode CTA */}
+          <div className="mt-6 text-center">
+            <p className="text-neutral-400 text-sm mb-3">Just want to try the game?</p>
+            <motion.button
+              onClick={handleContinueAsGuest}
+              className="w-full flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 text-white py-3 px-6 rounded-xl border border-white/15 transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              data-testid="continue-as-guest"
+            >
+              <span>Continue as Guest</span>
+            </motion.button>
+            <p className="text-neutral-500 text-xs mt-3">Progress won’t be saved in guest mode.</p>
+          </div>
 
           {/* Terms */}
           <p className="text-neutral-500 text-xs text-center mt-6 leading-relaxed">

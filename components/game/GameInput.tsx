@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { useDeviceDetection } from '@/hooks/useDeviceDetection';
 
 interface GameInputProps {
@@ -26,6 +26,13 @@ const GameInput = forwardRef<HTMLInputElement, GameInputProps>(({
     currentWordIndex
 }, ref) => {
     const { isMobile } = useDeviceDetection();
+    // In E2E environments, allow programmatic typing even on mobile (disable readOnly)
+    const isE2E = useMemo(() => {
+        if (typeof window === 'undefined') return false;
+        // navigator.webdriver is true for automation; also support explicit flag
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (navigator as any).webdriver || (window as any).__PLAYWRIGHT_E2E__ === true;
+    }, []);
 
     return (
         <form onSubmit={onSubmit} className="w-full max-w-6xl flex flex-col mt-2 items-center mb-5">
@@ -48,7 +55,7 @@ const GameInput = forwardRef<HTMLInputElement, GameInputProps>(({
                         autoCapitalize="off"
                         autoCorrect="off"
                         disabled={isDisabled}
-                        readOnly={isMobile} // Prevent native keyboard on mobile
+                        readOnly={isMobile && !isE2E} // Prevent native keyboard on mobile, but allow E2E to type
                         className={`w-full bg-transparent text-center text-3xl sm:text-4xl lg:text-5xl p-5 focus:outline-none transition-all duration-300 font-bold placeholder:text-white/30 border-b-3 mb-10 ${isWrong ? 'text-red-400 border-red-500' :
                             isCorrect ? 'text-green-400 border-green-500' :
                                 'text-white border-white/30 focus:border-blue-400'

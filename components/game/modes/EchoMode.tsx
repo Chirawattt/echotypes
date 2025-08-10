@@ -396,6 +396,7 @@ export default function EchoMode({
 
       {/* Speaker Button */}
       <motion.button
+        data-testid="speak-button"
         onClick={handleSpeak}
         className="flex flex-col items-center group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mb-2 sm:mb-3"
         whileHover={{ scale: isDisabled ? 1 : 1.05 }}
